@@ -1,15 +1,28 @@
 #include "Component.h"
 
-std::unordered_set<Component*> Component::gameElements;
+#include "GameObject.h"
 
-
-Component::Component(GameObject& gameObject) : gameObject(gameObject) {}
-
-Component::~Component() {
-	gameElements.erase(this);
+Component::Component() {
+	components.insert(this);
 }
+Component::Component(GameObject* gameObject) : gameObject(gameObject) {
+	components.insert(this);
+}
+Component::~Component() {
+	components.erase(this);
+}
+
+void Component::SetGameObject(GameObject* gameObject) {
+	this->gameObject = gameObject;
+}
+
+GameObject* Component::GetGameObject() const {
+	return gameObject;
+}
+
 
 void Component::Destroy() {
 	delete this;
 }
+
 

@@ -15,9 +15,11 @@ GameManager* GameManager::GetInstance() {
 }
 
 void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFullscreen) {
-	InitWindow(windowWidth, windowHeight, "Proiect POO");
 	SetTargetFPS(144);
 	SetConfigFlags(FLAG_VSYNC_HINT);
+	SetConfigFlags(FLAG_MSAA_4X_HINT);
+
+	InitWindow(windowWidth, windowHeight, "Proiect POO");
 
 	if(startInFullscreen) ToggleFullscreen();
 	//else ToggleBorderlessWindowed();
@@ -38,13 +40,13 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 }
 
 void GameManager::Start() {
-	for(auto element : Component::gameElements) {
+	for(auto element : Component::components) {
 		element->Start();
 	}
 }
 
 void GameManager::Update() {
-	for(auto element : Component::gameElements) {
+	for(auto element : Component::components) {
 		element->Update();
 	}
 }

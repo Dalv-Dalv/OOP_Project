@@ -1,14 +1,18 @@
 #ifndef PLAYERRENDERER_H
 #define PLAYERRENDERER_H
+#include "raylib.h"
 #include "../CoreGameLogic/Component.h"
 
-class PlayerRenderer : Component {
+class PlayerRenderer : public Component {
+private:
+	float size;
+	Color color;
 protected:
-	void Update() override;
 	void Start() override;
-	using Component::Component;
+	void Update() override;
+
+public:
+	PlayerRenderer(float size = 10.0f, Color color = BLUE);
 };
-
-
 
 #endif //PLAYERRENDERER_H

@@ -26,14 +26,17 @@ endif()
 
 # Our Project
 add_executable(${PROJECT_NAME} main.cpp
-        CoreGameLogic/Component.cpp
-        CoreGameLogic/Component.h
         CoreGameLogic/GameManager.cpp
         CoreGameLogic/GameManager.h
         CoreGameLogic/GameObject.cpp
         CoreGameLogic/GameObject.h
+        CoreGameLogic/Component.cpp
+        CoreGameLogic/Component.h
         GameLogic/PlayerRenderer.cpp
-        GameLogic/PlayerRenderer.h)
+        GameLogic/PlayerRenderer.h
+        GameLogic/PlayerMovement.cpp
+        GameLogic/PlayerMovement.h
+)
 target_link_libraries(${PROJECT_NAME} raylib)
 
 # Web Configurations

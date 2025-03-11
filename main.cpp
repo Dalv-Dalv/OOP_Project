@@ -3,8 +3,9 @@
 #include "GameLogic/PlayerRenderer.h"
 
 int main() {
-	GameObject player({150, 150});
-	player.AddComponent<PlayerRenderer>();
+	GameObject* player = new GameObject({100, 100});
+	player->AddComponent(new PlayerRenderer(15.0f, RED));
+
 
 	GameManager* gameManager = GameManager::GetInstance();
 
