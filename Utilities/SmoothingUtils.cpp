@@ -4,7 +4,8 @@
 
 namespace GameUtilities {
 	float lerp(float a, float b, float t) {
-		t = std::clamp(t, 0.0f, 1.0f);
+		if(t < 0) t = 0;
+		if(t > 1) t = 1;
 		return a + (b - a) * t;
 	}
 
@@ -13,7 +14,8 @@ namespace GameUtilities {
 	}
 
 	Vector2 lerp(Vector2 a, Vector2 b, float t) {
-		t = std::clamp(t, 0.0f, 1.0f);
+		if(t < 0) t = 0;
+		if(t > 1) t = 1;
 		return a + (b - a) * t;
 	}
 

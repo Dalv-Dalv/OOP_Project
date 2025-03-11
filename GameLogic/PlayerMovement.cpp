@@ -9,10 +9,10 @@
 using namespace GameUtilities;
 
 void PlayerMovement::Start() {
-
+	prevInput = {0, 0};
 }
 
-void PlayerMovement::Update() {
+void PlayerMovement::Update(float deltaTime) {
 	Vector2 input(0, 0);
 	if(IsKeyDown(KEY_W)) input.y -= 1.0;
 	if(IsKeyDown(KEY_A)) input.x -= 1.0;
@@ -20,9 +20,9 @@ void PlayerMovement::Update() {
 	if(IsKeyDown(KEY_D)) input.x += 1.0;
 	input = V2Normalized(input);
 
-	Vector2 finalInput = lerp(prevInput, input, GetFrameTime());
+	Vector2 finalInput = lerp(prevInput, input, deltaTime * 2.5);
 
-	gameObject->position += input * speed * GetFrameTime();
+	gameObject->position += finalInput * speed * deltaTime;
 
 	prevInput = finalInput;
 }

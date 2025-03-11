@@ -11,9 +11,12 @@ private:
 public:
 	Vector2 position;
 	GameObject();
+	~GameObject();
 	explicit GameObject(const Vector2& position);
 
 	void AddComponent(Component* component);
+	void Destroy();
+	//TODO: Add destroy method
 };
 
 

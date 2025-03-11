@@ -9,7 +9,7 @@ private:
 	Color color;
 protected:
 	void Start() override;
-	void Update() override;
+	void Update(float deltaTime) override;
 
 public:
 	PlayerRenderer(float size = 10.0f, Color color = BLUE);

@@ -9,7 +9,7 @@ void PlayerRenderer::Start() {
 	std::cout << "Player renderer start";
 }
 
-void PlayerRenderer::Update() {
+void PlayerRenderer::Update(float deltaTime) {
 	auto pos = gameObject->position;
 	DrawCircle(pos.x, pos.y, size, color);
 }

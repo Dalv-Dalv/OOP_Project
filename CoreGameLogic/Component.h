@@ -15,7 +15,7 @@ protected:
 	GameObject* gameObject = nullptr;
 
 	virtual void Start() = 0;
-	virtual void Update() = 0;
+	virtual void Update(float deltaTime) = 0;
 public:
 	Component();
 	explicit Component(GameObject* gameObject);

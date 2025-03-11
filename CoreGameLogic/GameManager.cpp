@@ -25,13 +25,16 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 
 	Start();
 
+	Vector2 worldSize = {1920, 1080};
+
 	while(!WindowShouldClose()) {
 		BeginDrawing();
-		ClearBackground(BLACK);
+		ClearBackground(RAYWHITE);
 
-		DrawText("Pog", 20, 20, 30, ORANGE);
-
-		DrawPolyLines({100, 100},6, 50, 0, RED);
+		for (int x = 0; x < worldSize.x; x += 100)
+			DrawLine(x, 0, x, worldSize.y, LIGHTGRAY);
+		for (int y = 0; y < worldSize.y; y += 100)
+			DrawLine(0, y, worldSize.x, y, LIGHTGRAY);
 
 		Update();
 
@@ -47,7 +50,11 @@ void GameManager::Start() {
 }
 
 void GameManager::Update() {
+	float deltaTime = GetFrameTime();
+
+	DrawText(TextFormat("%.1f", 1 / deltaTime), 15, 15, 25, DARKGREEN);
+
 	for(auto element : Component::components) {
-		element->Update();
+		element->Update(deltaTime);
 	}
 }
