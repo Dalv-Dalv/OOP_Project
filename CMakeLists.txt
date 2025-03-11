@@ -26,6 +26,8 @@ endif()
 
 # Our Project
 add_executable(${PROJECT_NAME} main.cpp
+        Utilities/Vector2Utils.cpp
+        Utilities/Vector2Utils.h
         CoreGameLogic/GameManager.cpp
         CoreGameLogic/GameManager.h
         CoreGameLogic/GameObject.cpp
@@ -36,6 +38,10 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/PlayerRenderer.h
         GameLogic/PlayerMovement.cpp
         GameLogic/PlayerMovement.h
+        GameLogic/Dynamics/V2SecondOrderDynamics.cpp
+        GameLogic/Dynamics/V2SecondOrderDynamics.h
+        Utilities/SmoothingUtils.cpp
+        Utilities/SmoothingUtils.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

@@ -21,8 +21,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 
 	InitWindow(windowWidth, windowHeight, "Proiect POO");
 
-	if(startInFullscreen) ToggleFullscreen();
-	//else ToggleBorderlessWindowed();
+	if(startInFullscreen) ToggleBorderlessWindowed();
 
 	Start();
 
@@ -31,6 +30,8 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 		ClearBackground(BLACK);
 
 		DrawText("Pog", 20, 20, 30, ORANGE);
+
+		DrawPolyLines({100, 100},6, 50, 0, RED);
 
 		Update();
 
