@@ -25,9 +25,15 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 # Our Project
-
-add_executable(${PROJECT_NAME} main.cpp)
-#set(raylib_VERBOSE 1)
+add_executable(${PROJECT_NAME} main.cpp
+        CoreGameLogic/Component.cpp
+        CoreGameLogic/Component.h
+        CoreGameLogic/GameManager.cpp
+        CoreGameLogic/GameManager.h
+        CoreGameLogic/GameObject.cpp
+        CoreGameLogic/GameObject.h
+        GameLogic/PlayerRenderer.cpp
+        GameLogic/PlayerRenderer.h)
 target_link_libraries(${PROJECT_NAME} raylib)
 
 # Web Configurations

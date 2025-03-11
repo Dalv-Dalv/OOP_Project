@@ -1,19 +1,16 @@
-#include <iostream>
-#include <raylib.h>
+#include "CoreGameLogic/GameManager.h"
+#include "CoreGameLogic/GameObject.h"
+#include "GameLogic/PlayerRenderer.h"
 
 int main() {
-	InitWindow(600, 300, "Proiect POO");
-	SetTargetFPS(144);
-	SetConfigFlags(FLAG_VSYNC_HINT);
+	GameObject player({150, 150});
+	player.AddComponent<PlayerRenderer>();
 
-	while(!WindowShouldClose()) {
-		BeginDrawing();
-		ClearBackground(BLACK);
+	GameManager* gameManager = GameManager::GetInstance();
 
-		DrawText("Pog", 20, 20, 30, ORANGE);
+	int windowWidth = 1920 * 0.8, windowHeight = 1080 * 0.8;
+	bool startInFullscreen = false;
 
-		EndDrawing();
-	}
-	CloseWindow();
+	gameManager->Initialize(windowWidth, windowHeight, startInFullscreen);
 	return 0;
 }
