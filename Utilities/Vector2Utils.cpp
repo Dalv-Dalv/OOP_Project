@@ -40,6 +40,10 @@ namespace GameUtilities {
 	Vector2 operator*(float scalar, const Vector2& v) {
 		return {v.x * scalar, v.y * scalar};
 	}
+	Vector2 operator*(const Vector2& lhs, const Vector2& rhs) {
+		return {lhs.x * rhs.x, lhs.y * rhs.y};
+	}
+
 
 	Vector2 operator/(const Vector2& v, float scalar) {
 		return {v.x / scalar, v.y / scalar};
@@ -55,6 +59,11 @@ namespace GameUtilities {
 	void operator-=(Vector2& lhs, const Vector2& rhs) {
 		lhs.x -= rhs.x;
 		lhs.y -= rhs.y;
+	}
+
+	std::ostream& operator<<(std::ostream& os, const Vector2& v) {
+		os << "(" << v.x << ", " << v.y << ")";
+		return os;
 	}
 
 	float V2Length(const Vector2& v) {

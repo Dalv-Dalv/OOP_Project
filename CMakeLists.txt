@@ -42,6 +42,11 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Dynamics/V2SecondOrderDynamics.h
         Utilities/SmoothingUtils.cpp
         Utilities/SmoothingUtils.h
+        Libraries/stb_image.h
+        GameLogic/Map/MapFileReader.cpp
+        GameLogic/Map/MapFileReader.h
+        GameLogic/Map/MapGenerator.cpp
+        GameLogic/Map/MapGenerator.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
