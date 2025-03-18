@@ -119,8 +119,12 @@ void MapGenerator::GenerateMap(const float surfaceLevel, const float interpolati
 	Texture2D mapTexture = LoadTextureFromImage(mapImage);
 	UnloadImage(mapImage);
 
-	// Shader simpleShader = LoadShader("../Shaders/testShader.vs", "../Shaders/testShader.fs");
-	Shader terrainShader = LoadShader(0, TextFormat("../Shaders/testShader.fs", 330));
+	RenderTexture2D renderTexture = LoadRenderTexture(screenSize.x, screenSize.y);
+	Shader postProcessingShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.fs", 430));
+	int ppScreenSizeLoc = GetShaderLocation(postProcessingShader, "screenSize");
+	SetShaderValue(postProcessingShader, ppScreenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
+
+	Shader terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.fs", 430));
 
 	int mapLoc = GetShaderLocation(terrainShader, "mapTexture");
 	int screenSizeLoc = GetShaderLocation(terrainShader, "screenSize");
@@ -136,28 +140,60 @@ void MapGenerator::GenerateMap(const float surfaceLevel, const float interpolati
 	Vector2 pos = {0, 0};
 
 	while(!WindowShouldClose()) {
+		BeginTextureMode(renderTexture);
+			// ClearBackground(RAYWHITE);
+			// DrawCircle(screenSize.x / 2, screenSize.y / 2, 100, RED);
+			// DrawCircle(screenSize.x / 2 + 30, screenSize.y / 2 + 50, 100, GREEN);
+			// DrawCircle(screenSize.x / 2 - 30, screenSize.y / 2 + 50, 100, BLUE);
+			ClearBackground(BLACK);
+
+			Vector2 input(0, 0);
+			if(IsKeyDown(KEY_W)) input.y -= 1.0;
+			if(IsKeyDown(KEY_A)) input.x -= 1.0;
+			if(IsKeyDown(KEY_S)) input.y += 1.0;
+			if(IsKeyDown(KEY_D)) input.x += 1.0;
+			input = V2Normalized(input);
+			pos += input * GetFrameTime() * 0.9;
+			SetShaderValue(terrainShader, positionLoc, &pos, SHADER_UNIFORM_VEC2);
+
+			BeginShaderMode(terrainShader);
+				SetShaderValueTexture(terrainShader, mapLoc, mapTexture);
+				DrawRectangle(0, 0, screenSize.x, screenSize.y, WHITE);
+			EndShaderMode();
+		EndTextureMode();
+
 		BeginDrawing();
-		ClearBackground(BLACK);
-
-		Vector2 input(0, 0);
-		if(IsKeyDown(KEY_W)) input.y += 1.0;
-		if(IsKeyDown(KEY_A)) input.x -= 1.0;
-		if(IsKeyDown(KEY_S)) input.y -= 1.0;
-		if(IsKeyDown(KEY_D)) input.x += 1.0;
-		input = V2Normalized(input);
-		pos += input * GetFrameTime() * 0.9;
-		SetShaderValue(terrainShader, positionLoc, &pos, SHADER_UNIFORM_VEC2);
-
-		BeginShaderMode(terrainShader);
-		SetShaderValueTexture(terrainShader, mapLoc, mapTexture);
-		DrawRectangle(0, 0, screenSize.x, screenSize.y, WHITE);
-		EndShaderMode();
-
-		// for(auto line	 : lines) {
-		// 	DrawLineEx(line.first, line.second, 3.1, GREEN);
-		// }
-
+			ClearBackground(MAGENTA);
+			BeginShaderMode(postProcessingShader);
+				DrawTextureRec(renderTexture.texture,
+					{0, 0, screenSize.x, screenSize.y},
+					{0, 0},
+					WHITE);
+			EndShaderMode();
 		EndDrawing();
+
+		// BeginDrawing();
+		// ClearBackground(BLACK);
+		//
+		// Vector2 input(0, 0);
+		// if(IsKeyDown(KEY_W)) input.y += 1.0;
+		// if(IsKeyDown(KEY_A)) input.x -= 1.0;
+		// if(IsKeyDown(KEY_S)) input.y -= 1.0;
+		// if(IsKeyDown(KEY_D)) input.x += 1.0;
+		// input = V2Normalized(input);
+		// pos += input * GetFrameTime() * 0.9;
+		// SetShaderValue(terrainShader, positionLoc, &pos, SHADER_UNIFORM_VEC2);
+		//
+		// BeginShaderMode(terrainShader);
+		// SetShaderValueTexture(terrainShader, mapLoc, mapTexture);
+		// DrawRectangle(0, 0, screenSize.x, screenSize.y, WHITE);
+		// EndShaderMode();
+		//
+		// // for(auto line	 : lines) {
+		// // 	DrawLineEx(line.first, line.second, 3.1, GREEN);
+		// // }
+		//
+		// EndDrawing();
 	}
 	UnloadShader(terrainShader);
 	CloseWindow();
