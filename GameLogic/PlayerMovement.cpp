@@ -8,7 +8,7 @@
 #include "../Utilities/Vector2Utils.h"
 using namespace GameUtilities;
 
-void PlayerMovement::Start() {
+void PlayerMovement::Awake() {
 	prevInput = {0, 0};
 }
 

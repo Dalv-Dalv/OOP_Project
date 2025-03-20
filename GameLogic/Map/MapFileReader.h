@@ -4,11 +4,13 @@
 
 #include <vector>
 
+#include "TerrainData.h"
+
 using namespace std;
 
 class MapFileReader {
 public:
-	static vector<vector<float>> ReadMap(const char* filepath);
+	static TerrainData ReadMap(const char* filepath);
 };
 
 #endif //MAPFILEREADER_H

@@ -1,20 +1,25 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
+#include "raylib.h"
 
 class GameManager {
 private:
 	static GameManager* instancePtr;
 	GameManager() {}
 
+	int windowWidth, windowHeight;
+
+	void Awake();
+	void Update();
 public:
 	GameManager(const GameManager& obj) = delete;
 
 	static GameManager* GetInstance();
 
-	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen);
+	static int GetWindowWidth();
+	static int GetWindowHeight();
 
-	void Start();
-	void Update();
+	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen);
 };
 
 #endif //GAMEMANAGER_H

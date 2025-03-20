@@ -141,10 +141,6 @@ void MapGenerator::GenerateMap(const float surfaceLevel, const float interpolati
 
 	while(!WindowShouldClose()) {
 		BeginTextureMode(renderTexture);
-			// ClearBackground(RAYWHITE);
-			// DrawCircle(screenSize.x / 2, screenSize.y / 2, 100, RED);
-			// DrawCircle(screenSize.x / 2 + 30, screenSize.y / 2 + 50, 100, GREEN);
-			// DrawCircle(screenSize.x / 2 - 30, screenSize.y / 2 + 50, 100, BLUE);
 			ClearBackground(BLACK);
 
 			Vector2 input(0, 0);

@@ -47,6 +47,22 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Map/MapFileReader.h
         GameLogic/Map/MapGenerator.cpp
         GameLogic/Map/MapGenerator.h
+        GameLogic/Map/Terrain.cpp
+        GameLogic/Map/Terrain.h
+        GameLogic/Map/TerrainData.cpp
+        GameLogic/Map/TerrainData.h
+        GameLogic/Map/TerrainChunk.cpp
+        GameLogic/Map/TerrainChunk.h
+        GameLogic/GameCamera.cpp
+        GameLogic/GameCamera.h
+        CoreGameLogic/RenderPipeline.cpp
+        CoreGameLogic/RenderPipeline.h
+        EventSystem/ActionEvent.cpp
+        EventSystem/ActionEvent.h
+        EventSystem/FunctionEvent.cpp
+        EventSystem/FunctionEvent.h
+        CoreGameLogic/RenderPass.cpp
+        CoreGameLogic/RenderPass.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

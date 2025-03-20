@@ -6,25 +6,27 @@
 #include "../../Libraries/stb_image.h"
 #include <vector>
 
+#include "TerrainData.h"
+
 using namespace std;
 
-vector<vector<float>> MapFileReader::ReadMap(const char* filepath) {
-	vector<vector<float>> map;
+TerrainData MapFileReader::ReadMap(const char* filepath) {
+	vector<uint8_t> map;
 	int width, height, channels;
 	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
 
 	assert(data);
 
-	map.resize(height, vector(width, 0.0f));
+	map.resize(height * width);
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			int index = (y * width + x) * channels;
 			unsigned char r = data[index];
 
-			map[y][x] = static_cast<float>(r) / 255.0f;
+			map[y * width + x] = r;
 		}
 	}
 
-	return map;
+	return TerrainData(width, height, map);
 }

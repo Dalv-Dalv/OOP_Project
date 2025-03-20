@@ -8,7 +8,7 @@ private:
 	float size;
 	Color color;
 protected:
-	void Start() override;
+	void Awake() override;
 	void Update(float deltaTime) override;
 
 public:

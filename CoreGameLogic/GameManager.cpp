@@ -13,28 +13,26 @@ GameManager* GameManager::GetInstance() {
 	}
 	return instancePtr;
 }
+int GameManager::GetWindowWidth() { return instancePtr->windowWidth; }
+int GameManager::GetWindowHeight() { return instancePtr->windowHeight; }
+
 
 void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFullscreen) {
 	SetTargetFPS(144);
 	SetConfigFlags(FLAG_VSYNC_HINT);
 	SetConfigFlags(FLAG_MSAA_4X_HINT);
 
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
+
 	InitWindow(windowWidth, windowHeight, "Proiect POO");
 
 	if(startInFullscreen) ToggleBorderlessWindowed();
 
-	Start();
-
-	Vector2 worldSize = {1920, 1080};
+	Awake();
 
 	while(!WindowShouldClose()) {
 		BeginDrawing();
-		ClearBackground(RAYWHITE);
-
-		for (int x = 0; x < worldSize.x; x += 100)
-			DrawLine(x, 0, x, worldSize.y, LIGHTGRAY);
-		for (int y = 0; y < worldSize.y; y += 100)
-			DrawLine(0, y, worldSize.x, y, LIGHTGRAY);
 
 		Update();
 
@@ -43,16 +41,14 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	CloseWindow();
 }
 
-void GameManager::Start() {
+void GameManager::Awake() {
 	for(auto element : Component::components) {
-		element->Start();
+		element->Awake();
 	}
 }
 
 void GameManager::Update() {
 	float deltaTime = GetFrameTime();
-
-	DrawText(TextFormat("%.1f", 1 / deltaTime), 15, 15, 25, DARKGREEN);
 
 	for(auto element : Component::components) {
 		element->Update(deltaTime);

@@ -8,7 +8,7 @@ private:
 	float speed;
 	Vector2 prevInput; // For input smoothing
 protected:
-	void Start() override;
+	void Awake() override;
 	void Update(float deltaTime) override;
 public:
 	PlayerMovement(float speed = 10) : speed(speed) {}

@@ -5,7 +5,7 @@
 #include "raylib.h"
 #include "../CoreGameLogic/GameObject.h"
 
-void PlayerRenderer::Start() {
+void PlayerRenderer::Awake() {
 	std::cout << "Player renderer start";
 }
 
