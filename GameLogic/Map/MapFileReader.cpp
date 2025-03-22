@@ -10,14 +10,12 @@
 
 using namespace std;
 
-TerrainData MapFileReader::ReadMap(const char* filepath) {
-	vector<uint8_t> map;
+TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	int width, height, channels;
 	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
-
 	assert(data);
 
-	map.resize(height * width);
+	unsigned char* map = new unsigned char[width * height];
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
@@ -28,5 +26,5 @@ TerrainData MapFileReader::ReadMap(const char* filepath) {
 		}
 	}
 
-	return TerrainData(width, height, map);
+	return new TerrainData(width, height, map);
 }

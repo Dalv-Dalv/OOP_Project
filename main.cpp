@@ -13,21 +13,14 @@
 int main() {
 	auto map = MapFileReader::ReadMap("C:\\Dalv\\School\\University\\Classes\\Semestrul2\\POO\\ProiectPOO_Map\\GeneratedMaps\\Test.png");
 
-	SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-	InitWindow(1920, 1080, "hello");
+	GameObject* terrain = new GameObject({0, 0});
+	terrain->AddComponent(new Terrain(map, 0.5, 1.8, 0, 13));
 
-	auto region = map.ExtractRegion(3, 3, 5, 5);
+	//TODO: FIX MINING
 
-	cout << "Region extracted\n";
+	GameManager* gameManager = GameManager::GetInstance();
+	gameManager->Initialize(1000, 700, false);
 
-	auto* chunk = new TerrainChunk({0, 0}, 16, 16, region);
-
-	cout << "Chunk created\n";
-
-	CloseWindow();
-
-	// GameManager* gameManager = GameManager::GetInstance();
-	// gameManager->Initialize(1920, 1080, false);
 
 	// auto map = MapFileReader::ReadMap("C:\\Dalv\\School\\University\\Classes\\Semestrul2\\POO\\ProiectPOO_Map\\GeneratedMaps\\Third.png");
 	//

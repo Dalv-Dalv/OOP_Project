@@ -2,35 +2,82 @@
 
 #include <iostream>
 
+#include "../../cmake-build-release/_deps/raylib-src/src/raymath.h"
+#include "../../Utilities/GameUtilities.h"
+
 void TerrainChunk::UpdateGPUData() {
-	auto v = cpuData.GetFlattenedValues();
-	UpdateTexture(gpuData, v.data());
+	auto imageData = cpuData->GetFlattenedValues();
+	UpdateTexture(gpuData, imageData);
 }
 
-TerrainChunk::TerrainChunk(Vector2 position, int width, int height, const TerrainData& mapData)
-: position(position), width(width), height(height), cpuData(mapData){
-	unsigned char* imageData = mapData.GetFlattenedValues();
+float TerrainChunk::MiningFalloff(float radius, float dist, float miningPower) {
+	if(dist > radius || dist < 0) return 0;
+	// linear
+	float t = GameUtilities::inverseLerp(0, radius, dist);
+
+	// quadratic
+	t = 1 - t * t * t;
+	return t * miningPower;
+}
+
+
+TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData)
+: position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
+	unsigned char* imageData = mapData->GetFlattenedValues();
+
 	Image mapImage = {
 		.data = imageData,
-		.width = mapData.GetWidth(),
-		.height = mapData.GetHeight(),
+		.width = mapData->GetWidth(),
+		.height = mapData->GetHeight(),
 		.mipmaps = 1,
 		.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
 	};
 
 	gpuData = LoadTextureFromImage(mapImage);
-	UnloadImage(mapImage);
-
-	cout << "CONSTRUCTOR DONE???????\n";
+	// UnloadImage(mapImage); UNCOMMENTING THIS MAKES CHUNKS SHARE mapData ADDRESS FOR ??SOME REASON??
+}
+TerrainChunk::~TerrainChunk() {
+	delete cpuData;
 }
 
-void TerrainChunk::Render(Shader shader, int posLoc, int texLoc) const {
-	// Shader mode is assumed to be already started
-	SetShaderValue(shader, posLoc, &position, SHADER_UNIFORM_VEC2);
-	SetShaderValueTexture(shader, texLoc, gpuData);
 
-	DrawRectangle(position.x, position.y, width, height, WHITE);
+void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc) {
+	BeginShaderMode(shader);
+		SetShaderValueTexture(shader, textureLoc, gpuData);
+		SetShaderValue(shader, posLoc, &position, SHADER_UNIFORM_VEC2);
+		DrawRectangle(position.x, position.y, width + 1, height + 1, WHITE);
+	EndShaderMode();
 }
+
+void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
+	for(int x = posx - radius; x < posx + radius; x++) {
+		if(x < 0) continue;
+		if(x > chunkWidth) break;
+
+		for(int y = posy - radius; y < posy + radius; y++) {
+			if(y < 0) continue;
+			if(y > chunkHeight) break;
+
+			float val = cpuData->GetValueAt(x, y);
+			cpuData->SetValueAt(x, y, val - miningPower * deltaTime);
+		}
+	}
+	Highlight();
+	UpdateGPUData();
+}
+void TerrainChunk::MineAt(int posx, int posy, float miningPower, float deltaTime) {
+	if(posx < 0 || posx > chunkWidth || posy < 0 || posy > chunkHeight) return;
+
+	float val = cpuData->GetValueAt(posx, posy);
+	cpuData->SetValueAt(posx, posy, val - miningPower * deltaTime);
+
+	UpdateGPUData();
+}
+
+void TerrainChunk::Highlight() {
+	DrawRectangle(position.x, position.y, width + 1, height + 1, Color(0, 255, 0, 100));
+}
+
 
 
 // Getters

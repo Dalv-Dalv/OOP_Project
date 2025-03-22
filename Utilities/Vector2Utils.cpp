@@ -40,9 +40,18 @@ namespace GameUtilities {
 	Vector2 operator*(float scalar, const Vector2& v) {
 		return {v.x * scalar, v.y * scalar};
 	}
+	void operator*=(Vector2& lhs, float scalar) {
+		lhs.x *= scalar;
+		lhs.y *= scalar;
+	}
 	Vector2 operator*(const Vector2& lhs, const Vector2& rhs) {
 		return {lhs.x * rhs.x, lhs.y * rhs.y};
 	}
+	void operator*=(Vector2& lhs, const Vector2& rhs) {
+		lhs.x *= rhs.x;
+		lhs.y *= rhs.y;
+	}
+
 
 
 	Vector2 operator/(const Vector2& v, float scalar) {
@@ -51,6 +60,19 @@ namespace GameUtilities {
 	Vector2 operator/(float scalar, const Vector2& v) {
 		return {v.x * scalar, v.y * scalar};
 	}
+	void operator/=(Vector2& lhs, float scalar) {
+		lhs.x /= scalar;
+		lhs.y /= scalar;
+	}
+
+	Vector2 operator/(const Vector2& lhs, const Vector2& rhs) {
+		return {lhs.x / rhs.x, lhs.y / rhs.y};
+	}
+	void operator/=(Vector2& lhs, const Vector2& rhs) {
+		lhs.x /= rhs.x;
+		lhs.y /= rhs.y;
+	}
+
 
 	void operator+=(Vector2& lhs, const Vector2& rhs) {
 		lhs.x += rhs.x;

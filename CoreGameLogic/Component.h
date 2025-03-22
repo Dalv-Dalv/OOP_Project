@@ -16,6 +16,7 @@ protected:
 
 	virtual void Awake() = 0;
 	virtual void Update(float deltaTime) = 0;
+	virtual void OnGameClose() = 0;
 public:
 	Component();
 	explicit Component(GameObject* gameObject);

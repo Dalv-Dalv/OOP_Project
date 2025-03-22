@@ -25,6 +25,6 @@ void V2SecondOrderDynamics::ChangeParameters(float f, float z, float r) {
 Vector2 V2SecondOrderDynamics::Update(float T, Vector2 x, Vector2 xd) {
 	float k2stable = std::max(k2, 1.1f * (T * T / 4 + T * k1 / 2));
 	y = y + T * yd;
-	yd = yd + T * (x + k3 * xd - y - k1 * yd) / k2stable;
+	yd = yd + T * (x * k3 * xd - y - k1 * yd) / k2stable;
 	return y;
 }

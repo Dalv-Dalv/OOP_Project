@@ -10,12 +10,15 @@ void main() {
     vec2 uv = fragTexCoord;
     vec2 screenUnit = 1 / screenSize;
 
+    uv.y = 1 - uv.y;
+
     vec4 col = texture(texture0, uv);
 
     vec4 total = vec4(0);
     int div = 0;
-    for(int i = -2; i <= 2; i++){
-        for(int j = -2; j <= 2; j++){
+    const int blurSize = 1;
+    for(int i = -blurSize; i <= blurSize; i++){
+        for(int j = -blurSize; j <= blurSize; j++){
             vec2 offset = vec2(i, j) * screenUnit;
             total += texture(texture0, uv + offset);
 

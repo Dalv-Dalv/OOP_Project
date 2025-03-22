@@ -4,23 +4,34 @@
 #include "TerrainData.h"
 #include "../../CoreGameLogic/Component.h"
 
-class Terrain : Component {
+class Terrain : public Component {
 private:
 	int chunkSize;
 	int width, height;
 	TerrainChunk*** chunks; // 2D Array of chunk pointers
+	const TerrainData* data;
 
+	float surfaceLevel, worldScale, interpolationAmount;
+
+	const float TerrainScale = 15.0;
+
+	RenderTexture2D terrainRenderTexture, cleanupRenderTexture;
+	Shader terrainShader; int textureLoc, posLoc;
 	Shader cleanupShader; // Used to clean artificats left from square marching rendering
 
-public:
-	explicit Terrain(int chunkSize = 16);
-	void Initialize(const TerrainData& map);
-
-	~Terrain();
+	void InitializeChunks();
+	void GetChunkPosFromWorldPos(Vector2 worldPos);
+	void MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime);
 
 protected:
 	void Awake() override;
 	void Update(float deltaTime) override;
+	void OnGameClose() override;
+
+public:
+	Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize = 16);
+
+	~Terrain();
 };
 
 #endif //TERRAIN_H

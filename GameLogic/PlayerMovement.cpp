@@ -4,7 +4,7 @@
 
 #include "raylib.h"
 #include "../CoreGameLogic/GameObject.h"
-#include "../Utilities/SmoothingUtils.h"
+#include "../Utilities/GameUtilities.h"
 #include "../Utilities/Vector2Utils.h"
 using namespace GameUtilities;
 

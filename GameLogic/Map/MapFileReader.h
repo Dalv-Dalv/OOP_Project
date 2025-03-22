@@ -10,7 +10,7 @@ using namespace std;
 
 class MapFileReader {
 public:
-	static TerrainData ReadMap(const char* filepath);
+	static TerrainData* ReadMap(const char* filepath);
 };
 
 #endif //MAPFILEREADER_H

@@ -13,10 +13,15 @@ namespace GameUtilities {
 
 	Vector2 operator*(const Vector2& v, float scalar);
 	Vector2 operator*(float scalar, const Vector2& v);
+	void operator*=(Vector2& lhs, float scalar);
 	Vector2 operator*(const Vector2& lhs, const Vector2& rhs);
+	void operator*=(Vector2& lhs, const Vector2& rhs);
 
 	Vector2 operator/(const Vector2& v, float scalar);
 	Vector2 operator/(float scalar, const Vector2& v);
+	void operator/=(Vector2& lhs, float scalar);
+	Vector2 operator/(const Vector2& lhs, const Vector2& rhs);
+	void operator/=(Vector2& lhs, const Vector2& rhs);
 
 	void operator+=(Vector2& lhs, const Vector2& rhs);
 	void operator-=(Vector2& lhs, const Vector2& rhs);

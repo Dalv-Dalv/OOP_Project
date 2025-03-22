@@ -9,12 +9,17 @@ private:
 
 	int windowWidth, windowHeight;
 
+	RenderTexture2D renderTexture;
+
 	void Awake();
-	void Update();
+	void Update(float deltaTime);
+	void OnGameClose();
 public:
 	GameManager(const GameManager& obj) = delete;
 
 	static GameManager* GetInstance();
+	static RenderTexture2D& GetActiveRenderTexture();
+	static void SetActiveRenderTexture(RenderTexture2D& renderTexture);
 
 	static int GetWindowWidth();
 	static int GetWindowHeight();

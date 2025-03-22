@@ -4,12 +4,16 @@
 in vec2 fragTexCoord;
 out vec4 finalColor;
 
+uniform float time;
 uniform sampler2D mapTexture;
 uniform vec2 screenSize;
 uniform vec2 position;
 uniform float terrainScale;
 uniform float surfaceLevel;
 uniform float interpolationAmount;
+uniform float chunkSize;
+uniform vec2 chunkWorldSize;
+uniform vec2 mousePos;
 
 const int squareMarchingTable[16][4] = {
     {-1, -1, -1, -1}, // Case 0 // 0 Bottom
@@ -37,13 +41,35 @@ vec2 calculateEdgePoint(vec3 v1, vec3 v2){
     return v1.xy + (v2.xy - v1.xy) * t;
 }
 
+float lerp(float a, float b, float t){
+    return a + (b - a) * t;
+}
+
 void main() {
-    vec2 coord =  vec2(gl_FragCoord.x, gl_FragCoord.y) / screenSize.y + position;
-    coord.y = 1.0 - coord.y;
-    coord = coord / terrainScale * 22.3; //22.3
-//     coord = clamp(coord, vec2(0.0, 0.0), vec2(1.0, 1.0));
+    // Screen 0-1920/1080 coordinates
+    vec2 coord =  vec2(gl_FragCoord.x, gl_FragCoord.y);
+    vec2 correctedPos = vec2(position.x - chunkWorldSize.x, screenSize.y - position.y - chunkWorldSize.y);
+    coord = coord - correctedPos;
+    coord /= chunkWorldSize;
+    coord %= 1.0; // Coordinates within the chunk 0-1
+
+    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
+
+    if(coord.x < 0 || coord.x > 1 || coord.y < 0 || coord.y > 1){
+        finalColor = vec4(0,0,0,1);
+        return;
+    }
 
     vec2 texUnits = 1.0 / textureSize(mapTexture, 0);
+
+// Discard 1 pixel border
+//     coord *= chunkSize / (chunkSize + 2) + 0.0001;
+//     coord += vec2(texUnits.x, texUnits.y);
+
+    float tes = texture(mapTexture, coord, 0).r;
+    finalColor = vec4(tes, tes, tes, 1.0);
+
+    return;
 
     vec2 texCoords = coord / texUnits;
 
@@ -53,8 +79,6 @@ void main() {
         vec3(floor(texCoords) + vec2(1, 0), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).r),  // Top right
         vec3(floor(texCoords), texture(mapTexture, coord, 0).r)                                               // Top left
     };
-
-
 
     int caseIndex = 0;
     if(corners[0].z >= surfaceLevel) caseIndex |= 1;

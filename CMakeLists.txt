@@ -40,8 +40,8 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/PlayerMovement.h
         GameLogic/Dynamics/V2SecondOrderDynamics.cpp
         GameLogic/Dynamics/V2SecondOrderDynamics.h
-        Utilities/SmoothingUtils.cpp
-        Utilities/SmoothingUtils.h
+        Utilities/GameUtilities.cpp
+        Utilities/GameUtilities.h
         Libraries/stb_image.h
         GameLogic/Map/MapFileReader.cpp
         GameLogic/Map/MapFileReader.h
