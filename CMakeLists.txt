@@ -63,6 +63,8 @@ add_executable(${PROJECT_NAME} main.cpp
         EventSystem/FunctionEvent.h
         CoreGameLogic/RenderPass.cpp
         CoreGameLogic/RenderPass.h
+        GameLogic/TerrainMinerTest.cpp
+        GameLogic/TerrainMinerTest.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

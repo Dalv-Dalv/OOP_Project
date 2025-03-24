@@ -7,11 +7,19 @@
 #include "config.h"
 #include "../../cmake-build-debug/_deps/raylib-src/src/rlgl.h"
 #include "../../CoreGameLogic/GameManager.h"
+#include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"
 using namespace GameUtilities;
 
+Terrain* Terrain::instance = nullptr;
+
 Terrain::Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize)
-	: data(data), surfaceLevel(surfaceLevel), worldScale(scale), interpolationAmount(interpolationAmount), chunkSize(chunkSize) {}
+	: data(data), surfaceLevel(surfaceLevel), worldScale(scale), interpolationAmount(interpolationAmount), chunkSize(chunkSize) {
+	if(instance != nullptr) {
+		instance->gameObject->Destroy();
+	}
+	instance = this;
+}
 
 Terrain::~Terrain() {
 	for(int y = 0; y < height; y++){
@@ -51,36 +59,6 @@ void Terrain::InitializeChunks() {
 	data = nullptr;
 }
 
-void Terrain::MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime) {
-	float unit = TerrainScale * worldScale;
-
-	int pixelX = round(minePos.x / unit);
-	int pixelY = round(minePos.y / unit);
-
-	DrawCircle(pixelX * unit, pixelY * unit, 4, GREEN);
-
-	pixelX %= chunkSize + 1;
-	pixelY %= chunkSize + 1;
-	pixelY = chunkSize - pixelY;
-	pixelX += 1;
-
-	DrawCircle(pixelX * unit, pixelY * unit, 4, DARKGREEN);
-
-
-	DrawCircle(minePos.x, minePos.y, 3, RED);
-	int posx = round(minePos.x / (unit));
-	int posy = round(minePos.y / (unit));
-	int bound_lx = posx - radius, bound_rx = posx + radius;
-	int bound_ly = posy - radius, bound_ry = posy + radius;
-	DrawCircle(bound_lx * unit, bound_ly * unit, 3, BLUE);
-	DrawCircle(bound_lx * unit, bound_ry * unit, 3, BLUE);
-	DrawCircle(bound_rx * unit, bound_ry * unit, 3, BLUE);
-	DrawCircle(bound_rx * unit, bound_ly * unit, 3, BLUE);
-
-	// chunks[posy][posx]->Highlight();
-	// chunks[posy][posx]->MineAt(pixelX, pixelY, radius, miningPower, deltaTime);
-}
-
 
 void Terrain::Awake() {
 	InitializeChunks();
@@ -88,8 +66,8 @@ void Terrain::Awake() {
 	terrainRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 	cleanupRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 
-	terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.fs"));
-	cleanupShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.fs", 430));
+	terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.frag"));
+	cleanupShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.frag", 430));
 
 
 	int screenSizeLoc = GetShaderLocation(cleanupShader, "screenSize");
@@ -118,27 +96,21 @@ void Terrain::Awake() {
 
 
 void Terrain::Update(float deltaTime) {
-	//TODO: Get the chunks that are in view and call Render()
-
 	Vector2 mousePos = GetMousePosition();
 	mousePos.y = GameManager::GetWindowHeight() - mousePos.y;
-	int mouseLoc = GetShaderLocation(terrainShader, "mousePos");
-	SetShaderValue(terrainShader, mouseLoc, &mousePos, SHADER_UNIFORM_VEC2);
 
-	int timeLoc = GetShaderLocation(terrainShader, "time");
-	float time = GetTime();
-	SetShaderValue(terrainShader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 
 	BeginTextureMode(terrainRenderTexture);
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
+	//TODO: RENDER ONLY CHUNKS IN VIEW
 				chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
 			}
 		}
 
-		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-			MineAt(mousePos, 1, 0.3, deltaTime);
-		}
+		// if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+		// 	MineAt(mousePos, 4, 30.0, deltaTime);
+		// }
 	EndTextureMode();
 
 	// Clean up artifacts left over by square marching shader
@@ -151,8 +123,6 @@ void Terrain::Update(float deltaTime) {
 	// EndTextureMode();
 
 	GameManager::SetActiveRenderTexture(terrainRenderTexture);
-
-	//TODO: After rendering each chunk, render square marching post processing shader
 }
 
 void Terrain::OnGameClose() {
@@ -160,6 +130,45 @@ void Terrain::OnGameClose() {
 	UnloadShader(cleanupShader);
 }
 
+void Terrain::UpdateSurfaceLevel(float newSurfaceLevel) {
+	int surfaceLevelLoc = GetShaderLocation(terrainShader, "surfaceLevel");
+	this->surfaceLevel = newSurfaceLevel;
+	SetShaderValue(terrainShader, surfaceLevelLoc, &surfaceLevel, SHADER_UNIFORM_FLOAT);
+}
 
 
+void Terrain::MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime) {
+	DrawCircle(minePos.x, minePos.y, 3, RED);
+
+	float unit = TerrainScale * worldScale;
+
+	int pixelX = round(minePos.x / unit);
+	int pixelY = round(minePos.y / unit);
+
+	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
+	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
+	// DrawCircle((bound_lx + 1) * unit, (bound_ly + 1) * unit, 3, BLUE);
+	// DrawCircle((bound_lx + 1) * unit, bound_ry * unit, 3, BLUE);
+	// DrawCircle(bound_rx * unit, bound_ry * unit, 3, BLUE);
+	// DrawCircle(bound_rx * unit, (bound_ly + 1) * unit, 3, BLUE);
+	//
+	// DrawCircle(pixelX * unit, pixelY * unit, 4, GREEN);
+
+	bound_lx /= chunkSize; bound_rx /= chunkSize;
+	bound_ly /= chunkSize; bound_ry /= chunkSize;
+
+	for(int y = bound_ly; y <= bound_ry; y++) {
+		for(int x = bound_lx; x <= bound_rx; x++) {
+			int localX = pixelX - x * chunkSize;
+			int localY = pixelY - y * chunkSize;
+			localY = (chunkSize + 2) - localY;
+			// DrawCircle(localX * unit, localY * unit, 3, MAGENTA);
+			chunks[y][x]->MineAt(localX + 1, localY, radius, miningPower, deltaTime);
+		}
+	}
+}
+
+Terrain* Terrain::GetActiveTerrain() {
+	return instance;
+}
 

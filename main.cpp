@@ -6,17 +6,19 @@
 #include "GameLogic/PlayerRenderer.h"
 #include "Libraries/stb_image.h"
 #include "iostream"
+#include "GameLogic/TerrainMinerTest.h"
 #include "GameLogic/Map/MapFileReader.h"
 #include "GameLogic/Map/MapGenerator.h"
 #include "GameLogic/Map/Terrain.h"
 
 int main() {
-	auto map = MapFileReader::ReadMap("C:\\Dalv\\School\\University\\Classes\\Semestrul2\\POO\\ProiectPOO_Map\\GeneratedMaps\\Test.png");
+	auto map = MapFileReader::ReadMap("C:\\Dalv\\School\\University\\Classes\\Semestrul2\\POO\\ProiectPOO_Map\\GeneratedMaps\\Small.png");
 
 	GameObject* terrain = new GameObject({0, 0});
-	terrain->AddComponent(new Terrain(map, 0.5, 1.8, 0, 13));
+	terrain->AddComponent(new Terrain(map, 0.5, 1.0, 0, 8));
 
-	//TODO: FIX MINING
+	GameObject* miner = new GameObject({0, 0});
+	miner->AddComponent(new TerrainMinerTest(4, 0.01));
 
 	GameManager* gameManager = GameManager::GetInstance();
 	gameManager->Initialize(1000, 700, false);

@@ -59,10 +59,11 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			if(y > chunkHeight) break;
 
 			float val = cpuData->GetValueAt(x, y);
-			cpuData->SetValueAt(x, y, val - miningPower * deltaTime);
+			if(miningPower * deltaTime > val) val = 0;
+			else val -= miningPower * deltaTime;
+			cpuData->SetValueAt(x, y, val	);
 		}
 	}
-	Highlight();
 	UpdateGPUData();
 }
 void TerrainChunk::MineAt(int posx, int posy, float miningPower, float deltaTime) {

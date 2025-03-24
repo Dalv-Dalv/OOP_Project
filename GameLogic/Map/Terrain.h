@@ -6,6 +6,8 @@
 
 class Terrain : public Component {
 private:
+	static Terrain* instance;
+
 	int chunkSize;
 	int width, height;
 	TerrainChunk*** chunks; // 2D Array of chunk pointers
@@ -21,7 +23,6 @@ private:
 
 	void InitializeChunks();
 	void GetChunkPosFromWorldPos(Vector2 worldPos);
-	void MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime);
 
 protected:
 	void Awake() override;
@@ -30,8 +31,13 @@ protected:
 
 public:
 	Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize = 16);
-
 	~Terrain();
+
+	void UpdateSurfaceLevel(float newSurfaceLevel);
+
+	void MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime);
+
+	static Terrain* GetActiveTerrain();
 };
 
 #endif //TERRAIN_H

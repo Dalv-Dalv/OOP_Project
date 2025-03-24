@@ -120,11 +120,11 @@ void MapGenerator::GenerateMap(const float surfaceLevel, const float interpolati
 	UnloadImage(mapImage);
 
 	RenderTexture2D renderTexture = LoadRenderTexture(screenSize.x, screenSize.y);
-	Shader postProcessingShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.fs", 430));
+	Shader postProcessingShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.frag", 430));
 	int ppScreenSizeLoc = GetShaderLocation(postProcessingShader, "screenSize");
 	SetShaderValue(postProcessingShader, ppScreenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
 
-	Shader terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.fs", 430));
+	Shader terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.frag", 430));
 
 	int mapLoc = GetShaderLocation(terrainShader, "mapTexture");
 	int screenSizeLoc = GetShaderLocation(terrainShader, "screenSize");

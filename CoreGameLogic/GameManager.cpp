@@ -37,7 +37,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	if(startInFullscreen) ToggleFullscreen();
 
 	renderTexture = LoadRenderTexture(windowWidth, windowHeight);
-	// Shader test = LoadShader(0, TextFormat("../Shaders/posTestShader.fs", 430));
+	// Shader test = LoadShader(0, TextFormat("../Shaders/posTestShader.frag", 430));
 	// int screenLoc = GetShaderLocation(test, "screenSize");
 	// int posLoc = GetShaderLocation(test, "position");
 	// int timeLoc = GetShaderLocation(test, "time");

@@ -4,7 +4,6 @@
 in vec2 fragTexCoord;
 out vec4 finalColor;
 
-uniform float time;
 uniform sampler2D mapTexture;
 uniform vec2 screenSize;
 uniform vec2 position;
@@ -13,25 +12,24 @@ uniform float surfaceLevel;
 uniform float interpolationAmount;
 uniform float chunkSize;
 uniform vec2 chunkWorldSize;
-uniform vec2 mousePos;
 
 const int squareMarchingTable[16][4] = {
-    {-1, -1, -1, -1}, // Case 0 // 0 Bottom
-    {0, 3, -1, -1}, // Case 1 // 1 Right
-    {1, 0, -1, -1}, // Case 2 // 2 Top
-    {1, 3, -1, -1}, // Case 3 // 3 Left
-    {2, 1, -1, -1}, // Case 4
-    {2, 3, 0, 1}, // Case 5
-    {2, 0, -1, -1}, // Case 6
-    {2, 3, -1, -1}, // Case 7
-    {3, 2, -1, -1}, // Case 8
-    {0, 2, -1, -1}, // Case 9
-    {1, 2, 3, 0}, // Case 10
-    {1, 2, -1, -1}, // Case 11
-    {3, 1, -1, -1}, // Case 12
-    {0, 1, -1, -1}, // Case 13
-    {3, 0, -1, -1}, // Case 14
-    {-1, -1, -1, -1}, // Case 15
+    {-1, -1, -1, -1},// Case 0 // 0 Bottom
+    {0, 3, -1, -1},  // Case 1 // 1 Right
+    {1, 0, -1, -1},  // Case 2 // 2 Top
+    {1, 3, -1, -1},  // Case 3 // 3 Left
+    {2, 1, -1, -1},  // Case 4
+    {2, 3, 0, 1},    // Case 5
+    {2, 0, -1, -1},  // Case 6
+    {2, 3, -1, -1},  // Case 7
+    {3, 2, -1, -1},  // Case 8
+    {0, 2, -1, -1},  // Case 9
+    {1, 2, 3, 0},    // Case 10
+    {1, 2, -1, -1},  // Case 11
+    {3, 1, -1, -1},  // Case 12
+    {0, 1, -1, -1},  // Case 13
+    {3, 0, -1, -1},  // Case 14
+    {-1, -1, -1, -1},// Case 15
 };
 
 vec2 calculateEdgePoint(vec3 v1, vec3 v2){
@@ -53,7 +51,7 @@ void main() {
     coord /= chunkWorldSize;
     coord %= 1.0; // Coordinates within the chunk 0-1
 
-    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
+//    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
 
     if(coord.x < 0 || coord.x > 1 || coord.y < 0 || coord.y > 1){
         finalColor = vec4(0,0,0,1);
@@ -63,13 +61,13 @@ void main() {
     vec2 texUnits = 1.0 / textureSize(mapTexture, 0);
 
 // Discard 1 pixel border
-//     coord *= chunkSize / (chunkSize + 2) + 0.0001;
-//     coord += vec2(texUnits.x, texUnits.y);
+     coord *= chunkSize / (chunkSize + 2) + 0.0001;
+     coord += vec2(texUnits.x, texUnits.y);
 
-    float tes = texture(mapTexture, coord, 0).r;
-    finalColor = vec4(tes, tes, tes, 1.0);
-
-    return;
+//    float tes = texture(mapTexture, coord, 0).r;
+//    finalColor = vec4(tes, tes, tes, 1.0);
+//
+//    return;
 
     vec2 texCoords = coord / texUnits;
 
