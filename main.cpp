@@ -17,8 +17,8 @@ int main() {
 	GameObject* terrain = new GameObject({0, 0});
 	terrain->AddComponent(new Terrain(map, 0.5, 1.0, 0, 8));
 
-	GameObject* miner = new GameObject({0, 0});
-	miner->AddComponent(new TerrainMinerTest(4, 0.01));
+	// GameObject* miner = new GameObject({0, 0});
+	// miner->AddComponent(new TerrainMinerTest(4, 0.01));
 
 	GameManager* gameManager = GameManager::GetInstance();
 	gameManager->Initialize(1000, 700, false);

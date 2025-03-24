@@ -25,7 +25,7 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 : position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
 	unsigned char* imageData = mapData->GetFlattenedValues();
 
-	Image mapImage = {
+	Image mapImage {
 		.data = imageData,
 		.width = mapData->GetWidth(),
 		.height = mapData->GetHeight(),
@@ -64,6 +64,9 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			cpuData->SetValueAt(x, y, val	);
 		}
 	}
+
+	Highlight();
+
 	UpdateGPUData();
 }
 void TerrainChunk::MineAt(int posx, int posy, float miningPower, float deltaTime) {
@@ -76,7 +79,7 @@ void TerrainChunk::MineAt(int posx, int posy, float miningPower, float deltaTime
 }
 
 void TerrainChunk::Highlight() {
-	DrawRectangle(position.x, position.y, width + 1, height + 1, Color(0, 255, 0, 100));
+	DrawRectangle(position.x, position.y, width + 1, height + 1, Color(0, 0, 255, 100));
 }
 
 

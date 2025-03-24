@@ -80,6 +80,9 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 			DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
 		EndDrawing();
 	}
+
+	OnGameClose();
+
 	CloseWindow();
 }
 

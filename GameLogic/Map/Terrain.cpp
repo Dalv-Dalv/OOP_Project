@@ -108,24 +108,25 @@ void Terrain::Update(float deltaTime) {
 			}
 		}
 
-		// if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-		// 	MineAt(mousePos, 4, 30.0, deltaTime);
-		// }
+		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+			MineAt(mousePos, 4, 400.6, deltaTime);
+		}
 	EndTextureMode();
 
 	// Clean up artifacts left over by square marching shader
-	// BeginTextureMode(cleanupRenderTexture);
-	// 	ClearBackground(MAGENTA);
-	// 	BeginShaderMode(cleanupShader);
-	// 		Rectangle screenBounds(0, 0, GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-	// 		DrawTextureRec(terrainRenderTexture.texture,screenBounds,{0, 0},WHITE);
-	// 	EndShaderMode();
-	// EndTextureMode();
+	BeginTextureMode(cleanupRenderTexture);
+		ClearBackground(MAGENTA);
+		BeginShaderMode(cleanupShader);
+			Rectangle screenBounds(0, 0, GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
+			DrawTextureRec(terrainRenderTexture.texture,screenBounds,{0, 0},WHITE);
+		EndShaderMode();
+	EndTextureMode();
 
-	GameManager::SetActiveRenderTexture(terrainRenderTexture);
+	GameManager::SetActiveRenderTexture(cleanupRenderTexture);
 }
 
 void Terrain::OnGameClose() {
+	cout << "ON GAME CLSOE TERRAIN";
 	UnloadShader(terrainShader);
 	UnloadShader(cleanupShader);
 }
@@ -147,22 +148,26 @@ void Terrain::MineAt(Vector2 minePos, float radius, float miningPower, float del
 
 	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
 	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
-	// DrawCircle((bound_lx + 1) * unit, (bound_ly + 1) * unit, 3, BLUE);
-	// DrawCircle((bound_lx + 1) * unit, bound_ry * unit, 3, BLUE);
-	// DrawCircle(bound_rx * unit, bound_ry * unit, 3, BLUE);
-	// DrawCircle(bound_rx * unit, (bound_ly + 1) * unit, 3, BLUE);
+	DrawCircle((bound_lx + 1) * unit, (bound_ly + 1) * unit, 3, BLUE);
+	DrawCircle((bound_lx + 1) * unit, bound_ry * unit, 3, BLUE);
+	DrawCircle(bound_rx * unit, bound_ry * unit, 3, BLUE);
+	DrawCircle(bound_rx * unit, (bound_ly + 1) * unit, 3, BLUE);
 	//
-	// DrawCircle(pixelX * unit, pixelY * unit, 4, GREEN);
+	DrawCircle(pixelX * unit, pixelY * unit, 4, GREEN);
 
 	bound_lx /= chunkSize; bound_rx /= chunkSize;
 	bound_ly /= chunkSize; bound_ry /= chunkSize;
+
+	bound_lx = max(0, bound_lx); bound_ly = max(0, bound_ly);
+	bound_rx = min(bound_rx, width - 1); bound_ry = min(bound_ry, height - 1);
 
 	for(int y = bound_ly; y <= bound_ry; y++) {
 		for(int x = bound_lx; x <= bound_rx; x++) {
 			int localX = pixelX - x * chunkSize;
 			int localY = pixelY - y * chunkSize;
 			localY = (chunkSize + 2) - localY;
-			// DrawCircle(localX * unit, localY * unit, 3, MAGENTA);
+			DrawCircle(localX * unit, localY * unit, 3, MAGENTA);
+
 			chunks[y][x]->MineAt(localX + 1, localY, radius, miningPower, deltaTime);
 		}
 	}
