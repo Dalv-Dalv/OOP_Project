@@ -10,10 +10,13 @@ void TerrainChunk::UpdateGPUData() {
 	UpdateTexture(gpuData, imageData);
 }
 
-float TerrainChunk::MiningFalloff(float radius, float dist, float miningPower) {
-	if(dist > radius || dist < 0) return 0;
+float TerrainChunk::MiningFalloff(float radius, float distSqr, float miningPower) {
+	if(distSqr > radius * radius || distSqr < 0) return 0;
+
+	distSqr = sqrt(distSqr);
+
 	// linear
-	float t = GameUtilities::inverseLerp(0, radius, dist);
+	float t = GameUtilities::inverseLerp(0, radius, distSqr);
 
 	// quadratic
 	t = 1 - t * t * t;
@@ -58,22 +61,15 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			if(y < 0) continue;
 			if(y > chunkHeight) break;
 
+			// Distance squared
+			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
+
 			float val = cpuData->GetValueAt(x, y);
 			if(miningPower * deltaTime > val) val = 0;
 			else val -= miningPower * deltaTime;
-			cpuData->SetValueAt(x, y, val	);
+			cpuData->SetValueAt(x, y, val);
 		}
 	}
-
-	Highlight();
-
-	UpdateGPUData();
-}
-void TerrainChunk::MineAt(int posx, int posy, float miningPower, float deltaTime) {
-	if(posx < 0 || posx > chunkWidth || posy < 0 || posy > chunkHeight) return;
-
-	float val = cpuData->GetValueAt(posx, posy);
-	cpuData->SetValueAt(posx, posy, val - miningPower * deltaTime);
 
 	UpdateGPUData();
 }

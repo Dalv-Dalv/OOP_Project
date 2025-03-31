@@ -12,7 +12,7 @@ private:
 	TerrainData* cpuData; // Used for collisions
 
 	void UpdateGPUData();
-	float MiningFalloff(float radius, float dist, float miningPower);
+	float MiningFalloff(float radius, float distSqr, float miningPower);
 public:
 	TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData);
 	~TerrainChunk();
@@ -20,7 +20,6 @@ public:
 	// TODO: Possible Optimization (MUST MEASURE FIRST): each chunk with its own shader instance
 	void Render(Shader& shader, int textureLoc, int posLoc);
 	void MineAt(int posx, int posy, float radius, float miningPower, float deltaTime);
-	void MineAt(int posx, int posy, float miningPower, float deltaTime);
 
 	void Highlight();
 

@@ -14,6 +14,7 @@ void main() {
 
     vec4 col = texture(texture0, uv);
 
+    //TODO: OPTIMIZE WITH TWO PASSES: ONE HORIZONTAL ONE VERTICAL
     vec4 total = vec4(0);
     int div = 0;
     const int blurSize = 1;

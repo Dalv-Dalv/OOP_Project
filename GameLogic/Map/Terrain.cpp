@@ -39,6 +39,7 @@ void Terrain::InitializeChunks() {
 	int mapWidth = data->GetWidth();
 	int mapHeight = data->GetHeight();
 
+	// Determine how many chunks we need to make sure we can fit the whole map
 	width = (mapWidth + chunkSize - 1) / chunkSize;
 	height = (mapHeight + chunkSize - 1) / chunkSize;
 
@@ -48,6 +49,7 @@ void Terrain::InitializeChunks() {
 		for(int x = 0; x < width; x++) {
 			auto pos = Vector2(x * chunkSize * TerrainScale * worldScale, y * chunkSize * TerrainScale * worldScale);
 
+			// Get a region of the map to pass to the chunk
 			TerrainData* chunkData = data->ExtractRegion(x * chunkSize - 1, (height - y - 1) * chunkSize - 1, chunkSize + 2, chunkSize + 2);
 
 			chunks[y][x] = new TerrainChunk(pos, chunkSize * TerrainScale * worldScale, chunkSize * TerrainScale * worldScale, chunkSize + 2, chunkSize + 2, chunkData);
@@ -66,9 +68,8 @@ void Terrain::Awake() {
 	terrainRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 	cleanupRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 
-	terrainShader = LoadShader(0, TextFormat("../Shaders/squareMarchingShader.frag"));
-	cleanupShader = LoadShader(0, TextFormat("../Shaders/squareMarchingPostProcessingShader.frag", 430));
-
+	terrainShader = LoadShader(0, TextFormat("Shaders/squareMarchingShader.frag"));
+	cleanupShader = LoadShader(0, TextFormat("Shaders/squareMarchingPostProcessingShader.frag", 430));
 
 	int screenSizeLoc = GetShaderLocation(cleanupShader, "screenSize");
 	Vector2 screenSize(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
@@ -99,21 +100,17 @@ void Terrain::Update(float deltaTime) {
 	Vector2 mousePos = GetMousePosition();
 	mousePos.y = GameManager::GetWindowHeight() - mousePos.y;
 
-
 	BeginTextureMode(terrainRenderTexture);
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
 	//TODO: RENDER ONLY CHUNKS IN VIEW
+	//TODO:		MAYBE EXTRACT IT TO A FUNCTION AND USE IT IN MineAt TOO
 				chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
 			}
 		}
-
-		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-			MineAt(mousePos, 4, 400.6, deltaTime);
-		}
 	EndTextureMode();
 
-	// Clean up artifacts left over by square marching shader
+	// Clean up artifacts left over by square marching shader and make it prettier
 	BeginTextureMode(cleanupRenderTexture);
 		ClearBackground(MAGENTA);
 		BeginShaderMode(cleanupShader);
@@ -126,7 +123,6 @@ void Terrain::Update(float deltaTime) {
 }
 
 void Terrain::OnGameClose() {
-	cout << "ON GAME CLSOE TERRAIN";
 	UnloadShader(terrainShader);
 	UnloadShader(cleanupShader);
 }
@@ -137,23 +133,16 @@ void Terrain::UpdateSurfaceLevel(float newSurfaceLevel) {
 	SetShaderValue(terrainShader, surfaceLevelLoc, &surfaceLevel, SHADER_UNIFORM_FLOAT);
 }
 
-
-void Terrain::MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime) {
-	DrawCircle(minePos.x, minePos.y, 3, RED);
-
+void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime) {
 	float unit = TerrainScale * worldScale;
 
+	// Snap mouse position to nearest pixel
 	int pixelX = round(minePos.x / unit);
 	int pixelY = round(minePos.y / unit);
 
+	// Get the chunk indices within the rectangle determined by the mining radius
 	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
 	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
-	DrawCircle((bound_lx + 1) * unit, (bound_ly + 1) * unit, 3, BLUE);
-	DrawCircle((bound_lx + 1) * unit, bound_ry * unit, 3, BLUE);
-	DrawCircle(bound_rx * unit, bound_ry * unit, 3, BLUE);
-	DrawCircle(bound_rx * unit, (bound_ly + 1) * unit, 3, BLUE);
-	//
-	DrawCircle(pixelX * unit, pixelY * unit, 4, GREEN);
 
 	bound_lx /= chunkSize; bound_rx /= chunkSize;
 	bound_ly /= chunkSize; bound_ry /= chunkSize;
@@ -163,6 +152,7 @@ void Terrain::MineAt(Vector2 minePos, float radius, float miningPower, float del
 
 	for(int y = bound_ly; y <= bound_ry; y++) {
 		for(int x = bound_lx; x <= bound_rx; x++) {
+			// Calculate the local pixel coordinates for the chunk to use
 			int localX = pixelX - x * chunkSize;
 			int localY = pixelY - y * chunkSize;
 			localY = (chunkSize + 2) - localY;

@@ -14,14 +14,9 @@ void TerrainMinerTest::Update(float deltaTime) {
 	Vector2 mousePos = GetMousePosition();
 	mousePos.y = GameManager::GetWindowHeight() - mousePos.y;
 
-	// BeginDrawing();
-
-
 	if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
 		terrain->MineAt(mousePos, miningRadius, miningPower, deltaTime);
 	}
-
-	// EndDrawing();
 
 	if(IsKeyDown(KEY_E)) {
 		surfaceLevel = Clamp(surfaceLevel + deltaTime * 0.5, 0, 1);
@@ -36,5 +31,5 @@ void TerrainMinerTest::OnGameClose() {}
 
 
 TerrainMinerTest::TerrainMinerTest() {}
-TerrainMinerTest::TerrainMinerTest(float miningRadius, float miningPower)
+TerrainMinerTest::TerrainMinerTest(int miningRadius, float miningPower)
 	: miningRadius(miningRadius), miningPower(miningPower){}

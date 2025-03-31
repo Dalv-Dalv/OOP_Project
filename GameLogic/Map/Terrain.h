@@ -35,7 +35,7 @@ public:
 
 	void UpdateSurfaceLevel(float newSurfaceLevel);
 
-	void MineAt(Vector2 minePos, float radius, float miningPower, float deltaTime);
+	void MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime);
 
 	static Terrain* GetActiveTerrain();
 };

@@ -7,14 +7,15 @@ class TerrainMinerTest : public Component {
 private:
 	Terrain* terrain = nullptr;
 	float surfaceLevel = 0.5;
-	float miningRadius = 4, miningPower = 30.0;
+	int miningRadius = 4;
+	float miningPower = 30.0;
 protected:
 	void Awake() override;
 	void Update(float deltaTime) override;
 	void OnGameClose() override;
 public:
 	TerrainMinerTest();
-	TerrainMinerTest(float miningRadius, float miningPower);
+	TerrainMinerTest(int miningRadius, float miningPower);
 };
 
 #endif //TERRAINMINERTEST_H

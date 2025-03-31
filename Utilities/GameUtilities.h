@@ -1,6 +1,5 @@
 #ifndef SMOOTHINGUTILS_H
 #define SMOOTHINGUTILS_H
-#include <bits/algorithmfwd.h>
 
 #include "raylib.h"
 

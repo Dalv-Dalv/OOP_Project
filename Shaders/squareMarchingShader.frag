@@ -49,7 +49,7 @@ void main() {
     vec2 correctedPos = vec2(position.x - chunkWorldSize.x, screenSize.y - position.y - chunkWorldSize.y);
     coord = coord - correctedPos;
     coord /= chunkWorldSize;
-    coord %= 1.0; // Coordinates within the chunk 0-1
+    coord = mod(coord, 1.0); // Coordinates within the chunk 0-1
 
 //    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
 

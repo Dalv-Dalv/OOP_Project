@@ -1,13 +1,22 @@
 cmake_minimum_required(VERSION 3.30) # FetchContent is available in 3.11+
 project(ProiectPOO)
 
-set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(cmake/Options.cmake)
+include(cmake/CompilerFlags.cmake)
+include(cmake/CopyHelper.cmake)
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Dependencies
 set(RAYLIB_VERSION 5.5)
+set(BUILD_SHARED_LIBS OFF) # Force static linking
 find_package(raylib ${RAYLIB_VERSION} QUIET) # QUIET or REQUIRED
 if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     include(FetchContent)
@@ -65,6 +74,8 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/RenderPass.h
         GameLogic/TerrainMinerTest.cpp
         GameLogic/TerrainMinerTest.h
+        Testing/LineCollisionTest.cpp
+        Testing/LineCollisionTest.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
@@ -80,3 +91,11 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
 endif()
+
+set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
+
+#TODO: FIX CMAKE WITH Stefan STUFF
+
+#copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+copy_files(DIRECTORY GeneratedMaps COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
+copy_files(DIRECTORY Shaders COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
