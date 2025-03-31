@@ -22,12 +22,10 @@ private:
 	Shader cleanupShader; // Used to clean artificats left from square marching rendering
 
 	void InitializeChunks();
-	void GetChunkPosFromWorldPos(Vector2 worldPos);
 
 protected:
 	void Awake() override;
 	void Update(float deltaTime) override;
-	void OnGameClose() override;
 
 public:
 	Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize = 16);

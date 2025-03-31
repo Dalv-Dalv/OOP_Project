@@ -1,5 +1,4 @@
-#ifndef PLAYERMOVEMENT_H
-#define PLAYERMOVEMENT_H
+#pragma once
 #include "raylib.h"
 #include "../CoreGameLogic/Component.h"
 
@@ -13,5 +12,3 @@ protected:
 public:
 	PlayerMovement(float speed = 10) : speed(speed) {}
 };
-
-#endif //PLAYERMOVEMENT_H

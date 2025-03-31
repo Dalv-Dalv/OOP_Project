@@ -27,8 +27,6 @@ void TerrainMinerTest::Update(float deltaTime) {
 	}
 }
 
-void TerrainMinerTest::OnGameClose() {}
-
 
 TerrainMinerTest::TerrainMinerTest() {}
 TerrainMinerTest::TerrainMinerTest(int miningRadius, float miningPower)

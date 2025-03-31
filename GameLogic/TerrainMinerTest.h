@@ -12,7 +12,6 @@ private:
 protected:
 	void Awake() override;
 	void Update(float deltaTime) override;
-	void OnGameClose() override;
 public:
 	TerrainMinerTest();
 	TerrainMinerTest(int miningRadius, float miningPower);

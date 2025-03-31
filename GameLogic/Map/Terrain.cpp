@@ -22,6 +22,9 @@ Terrain::Terrain(const TerrainData* data, float surfaceLevel, float scale, float
 }
 
 Terrain::~Terrain() {
+	UnloadShader(terrainShader);
+	UnloadShader(cleanupShader);
+
 	for(int y = 0; y < height; y++){
 		for(int x = 0; x < width; x++){
 			delete chunks[y][x];
@@ -119,12 +122,8 @@ void Terrain::Update(float deltaTime) {
 		EndShaderMode();
 	EndTextureMode();
 
-	GameManager::SetActiveRenderTexture(cleanupRenderTexture);
-}
-
-void Terrain::OnGameClose() {
-	UnloadShader(terrainShader);
-	UnloadShader(cleanupShader);
+	//TODO: Fix this
+	// GameManager::SetActiveRenderTexture(cleanupRenderTexture);
 }
 
 void Terrain::UpdateSurfaceLevel(float newSurfaceLevel) {
@@ -156,7 +155,6 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 			int localX = pixelX - x * chunkSize;
 			int localY = pixelY - y * chunkSize;
 			localY = (chunkSize + 2) - localY;
-			DrawCircle(localX * unit, localY * unit, 3, MAGENTA);
 
 			chunks[y][x]->MineAt(localX + 1, localY, radius, miningPower, deltaTime);
 		}

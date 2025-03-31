@@ -1,38 +1,50 @@
 #include "RenderPipeline.h"
 
 #include "GameManager.h"
-#include "../GameLogic/GameCamera.h"
+
+RenderPipeline* RenderPipeline::instance = nullptr;
+
+RenderPipeline* RenderPipeline::GetInstance() {
+	if(instance == nullptr) {
+		instance = new RenderPipeline();
+	}
+	return instance;
+}
 
 RenderPipeline::RenderPipeline() {
 	int width = GameManager::GetWindowWidth();
 	int height = GameManager::GetWindowHeight();
-	sceneTexture = LoadRenderTexture(width, height);
+	screenRenderTexture = LoadRenderTexture(width, height);
 }
 
 
 void RenderPipeline::Render() {
-	GameCamera* camera = GameCamera::GetMainCamera();
-	if(camera == nullptr) return;
-
-	//Draw the scene
-	BeginTextureMode(sceneTexture);
-		BeginMode2D(camera->GetInternalCamera2D());
-			onRenderScene();
-		EndMode2D();
+	RenderTexture2D& crnt = screenRenderTexture;
+	BeginTextureMode(crnt);
+		ClearBackground(MAGENTA);
 	EndTextureMode();
 
-	RenderTexture2D& crnt = sceneTexture;
 	for(auto& pass : renderPasses) {
-		crnt = pass(crnt);
+		crnt = pass->Execute(crnt);
 	}
 
 	int width = GameManager::GetWindowWidth();
 	int height = GameManager::GetWindowHeight();
 	Rectangle screenBounds = Rectangle(0, 0, width, height);
 	BeginDrawing();
-		ClearBackground(MAGENTA);
 		DrawTextureRec(crnt.texture, screenBounds, {0, 0}, WHITE);
 
-		onRenderUI();
+		float fps = GetFPS();
+		DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
 	EndDrawing();
+}
+
+//TODO: Implement a data structure to keep render passes in order
+void RenderPipeline::AddRenderPass(const shared_ptr<RenderPass>& renderPass) {
+	renderPasses.push_back(renderPass);
+}
+
+
+void RenderPipeline::DrawTextureFullScreen(const RenderTexture2D& texture) {
+	DrawTextureRec(texture.texture,GameManager::GetScreenRect(),{0, 0},WHITE);
 }

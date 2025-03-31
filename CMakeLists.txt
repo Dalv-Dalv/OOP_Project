@@ -62,13 +62,9 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Map/TerrainData.h
         GameLogic/Map/TerrainChunk.cpp
         GameLogic/Map/TerrainChunk.h
-        GameLogic/GameCamera.cpp
-        GameLogic/GameCamera.h
         CoreGameLogic/RenderPipeline.cpp
         CoreGameLogic/RenderPipeline.h
-        EventSystem/ActionEvent.cpp
         EventSystem/ActionEvent.h
-        EventSystem/FunctionEvent.cpp
         EventSystem/FunctionEvent.h
         CoreGameLogic/RenderPass.cpp
         CoreGameLogic/RenderPass.h
@@ -76,6 +72,8 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/TerrainMinerTest.h
         Testing/LineCollisionTest.cpp
         Testing/LineCollisionTest.h
+        CoreGameLogic/GameCamera.cpp
+        CoreGameLogic/GameCamera.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

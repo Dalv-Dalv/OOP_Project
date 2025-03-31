@@ -1,30 +1,40 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
 #include "raylib.h"
+#include "RenderPipeline.h"
 
 class GameManager {
 private:
-	static GameManager* instancePtr;
+	static GameManager* instance;
 	GameManager() {}
 
 	int windowWidth, windowHeight;
+	Rectangle screenRect;
 
-	RenderTexture2D renderTexture;
+	RenderPipeline* renderPipeline;
+	shared_ptr<RenderPass> scenePass;
+
+	static ActionEvent<> onGameClose;
+
+	void InitializeRenderPipeline();
 
 	void Awake();
 	void Update(float deltaTime);
-	void OnGameClose();
 public:
-	GameManager(const GameManager& obj) = delete;
-
 	static GameManager* GetInstance();
-	static RenderTexture2D& GetActiveRenderTexture();
-	static void SetActiveRenderTexture(RenderTexture2D& renderTexture);
+	// static RenderTexture2D& GetActiveRenderTexture();
+	// static void SetActiveRenderTexture(RenderTexture2D& renderTexture);
 
 	static int GetWindowWidth();
 	static int GetWindowHeight();
 
-	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen);
+	static void SubscribeOnGameClose(const function<void()>& subscriber);
+
+	static Rectangle GetScreenRect();
+	static shared_ptr<RenderPass> GetScenePass();
+
+	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen, bool vsync = true);
+	void StartGameLoop();
 };
 
 #endif //GAMEMANAGER_H

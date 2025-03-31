@@ -7,21 +7,23 @@
 
 class RenderPipeline {
 private:
-	RenderTexture2D sceneTexture;
+	static RenderPipeline* instance;
+	RenderPipeline();
 
-	vector<RenderPass> renderPasses;
+	RenderTexture2D screenRenderTexture;
+
+	vector<shared_ptr<RenderPass>> renderPasses;
 	ActionEvent<> onRenderScene;
-	ActionEvent<> onRenderUI;
 
 public:
-	RenderPipeline();
+	static RenderPipeline* GetInstance();
 
 	void Render();
 
-	void AddSceneRender(function<void()> sceneRender);
-	void AddUIRender(function<void()> uiRender);
-	void AddRenderPass(function<RenderTexture2D&(RenderTexture2D&)> renderPass);
-	void AddRenderPass(RenderPass& renderPass);
+	void AddRenderPass(const shared_ptr<RenderPass>& renderPass);
+	void RemoveRenderPass(RenderPass* pass);
+
+	static void DrawTextureFullScreen(const RenderTexture2D& texture);
 };
 
 #endif //RENDERPIPELINE_H

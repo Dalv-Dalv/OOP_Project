@@ -3,16 +3,25 @@
 #include <iostream>
 
 #include "raylib.h"
+#include "../CoreGameLogic/GameManager.h"
 #include "../CoreGameLogic/GameObject.h"
 
 void PlayerRenderer::Awake() {
-	std::cout << "Player renderer start";
+	renderID = GameManager::GetScenePass()->GetRenderFunctions().AddListener([this](RenderTexture2D& pass) {
+		Render();
+	});
 }
 
-void PlayerRenderer::Update(float deltaTime) {
-	auto pos = gameObject->position;
-	DrawCircle(pos.x, pos.y, size, color);
+void PlayerRenderer::Update(float deltaTime) { }
+
+void PlayerRenderer::Render() const {
+	DrawCircle(gameObject->position.x, gameObject->position.y, size, color);
 }
 
 PlayerRenderer::PlayerRenderer(float size, Color color) : size(size), color(color) {}
+
+PlayerRenderer::~PlayerRenderer() {
+	GameManager::GetScenePass()->GetRenderFunctions().RemoveListener(renderID);
+}
+
 

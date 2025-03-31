@@ -1,5 +1,4 @@
-#ifndef FUNCTIONEVENT_H
-#define FUNCTIONEVENT_H
+#pragma once
 #include <functional>
 #include <optional>
 
@@ -44,5 +43,3 @@ template <typename T, typename R>
 void FunctionEvent<T, R>::Clear() {
 	listeners.clear();
 }
-
-#endif //FUNCTIONEVENT_H
