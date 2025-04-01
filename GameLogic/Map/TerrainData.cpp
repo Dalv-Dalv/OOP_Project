@@ -25,8 +25,6 @@ TerrainData::TerrainData(int width, int height, unsigned char* flattenedValues) 
 TerrainData* TerrainData::ExtractRegion(int startx, int starty, int width, int height) const {
 	unsigned char* regionValues = new unsigned char[width * height];
 
-	cout << "Extracting data for region " << startx << " " << starty << endl;
-
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
 			regionValues[y * width + x] = GetValueAt(startx + x, starty + y);

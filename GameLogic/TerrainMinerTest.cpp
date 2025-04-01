@@ -12,7 +12,6 @@ void TerrainMinerTest::Awake() {
 
 void TerrainMinerTest::Update(float deltaTime) {
 	Vector2 mousePos = GetMousePosition();
-	mousePos.y = GameManager::GetWindowHeight() - mousePos.y;
 
 	if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
 		terrain->MineAt(mousePos, miningRadius, miningPower, deltaTime);

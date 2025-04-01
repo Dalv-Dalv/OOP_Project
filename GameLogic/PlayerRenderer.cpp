@@ -7,7 +7,7 @@
 #include "../CoreGameLogic/GameObject.h"
 
 void PlayerRenderer::Awake() {
-	renderID = GameManager::GetScenePass()->GetRenderFunctions().AddListener([this](RenderTexture2D& pass) {
+	renderID = GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
 		Render();
 	});
 }
@@ -21,7 +21,7 @@ void PlayerRenderer::Render() const {
 PlayerRenderer::PlayerRenderer(float size, Color color) : size(size), color(color) {}
 
 PlayerRenderer::~PlayerRenderer() {
-	GameManager::GetScenePass()->GetRenderFunctions().RemoveListener(renderID);
+	GameManager::GetScenePass()->RemoveFunction(renderID);
 }
 
 

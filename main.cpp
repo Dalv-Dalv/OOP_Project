@@ -1,3 +1,4 @@
+#include <set>
 #include <external/glad.h>
 
 #include "CoreGameLogic/GameManager.h"
@@ -20,28 +21,23 @@
 // TODO: Make mining outline like jj screenshot in square marching post processing shader
 // TODO: Terrain collision
 int main() {
-	GameObject* player = new GameObject({100, 100});
+	GameObject* player = new GameObject({0, 0});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
-	player->AddComponent(new PlayerMovement(600));
+	player->AddComponent(new PlayerMovement(400));
 
+
+	auto map = MapFileReader::ReadMap("GeneratedMaps/Small.png");
+
+	GameObject* terrain = new GameObject({0, 0});
+	terrain->AddComponent(new Terrain(map, 0.5, 0.8, 0, 8));
+
+	GameObject* miner = new GameObject({0, 0});
+	miner->AddComponent(new TerrainMinerTest(3, 3000.0));
 
 	GameManager* gameManager = GameManager::GetInstance();
-	gameManager->Initialize(600, 600, false, true);
+	gameManager->Initialize(1000, 800, false, true);
 
 	gameManager->StartGameLoop();
-
-	// auto map = MapFileReader::ReadMap("GeneratedMaps/Small.png");
-	//
-	// GameObject* terrain = new GameObject({0, 0});
-	// terrain->AddComponent(new Terrain(map, 0.5, 1.4, 0, 8));
-	//
-	// GameObject* miner = new GameObject({0, 0});
-	// miner->AddComponent(new TerrainMinerTest(3, 3000.0));
-
-
-
-
-
 
 	return 0;
 }

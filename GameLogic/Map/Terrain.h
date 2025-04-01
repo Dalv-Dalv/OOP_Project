@@ -3,6 +3,7 @@
 #include "TerrainChunk.h"
 #include "TerrainData.h"
 #include "../../CoreGameLogic/Component.h"
+#include "../../CoreGameLogic/RenderPass.h"
 
 class Terrain : public Component {
 private:
@@ -17,11 +18,14 @@ private:
 
 	const float TerrainScale = 15.0;
 
-	RenderTexture2D terrainRenderTexture, cleanupRenderTexture;
+	shared_ptr<RenderPass> renderPass; unsigned int renderID;
+	shared_ptr<RenderPass> cleanupPass; unsigned int cleanupRenderID;
 	Shader terrainShader; int textureLoc, posLoc;
-	Shader cleanupShader; // Used to clean artificats left from square marching rendering
+	Shader cleanupShader;
 
 	void InitializeChunks();
+	void Render(RenderTexture2D& prev);
+	void CleanupRender(RenderTexture2D& prev);
 
 protected:
 	void Awake() override;

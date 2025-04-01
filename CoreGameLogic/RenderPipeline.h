@@ -1,6 +1,6 @@
-#ifndef RENDERPIPELINE_H
-#define RENDERPIPELINE_H
+#pragma once
 #include <queue>
+#include <set>
 
 #include "RenderPass.h"
 #include "../EventSystem/ActionEvent.h"
@@ -12,7 +12,13 @@ private:
 
 	RenderTexture2D screenRenderTexture;
 
-	vector<shared_ptr<RenderPass>> renderPasses;
+	struct RenderPassComparator {
+		bool operator()(const std::shared_ptr<RenderPass>& a, const std::shared_ptr<RenderPass>& b) const {
+			return a->priority < b->priority;
+		}
+	};
+
+	multiset<shared_ptr<RenderPass>, RenderPassComparator> renderPasses;
 	ActionEvent<> onRenderScene;
 
 public:
@@ -21,9 +27,7 @@ public:
 	void Render();
 
 	void AddRenderPass(const shared_ptr<RenderPass>& renderPass);
-	void RemoveRenderPass(RenderPass* pass);
+	void RemoveRenderPass(const shared_ptr<RenderPass>& pass);
 
 	static void DrawTextureFullScreen(const RenderTexture2D& texture);
 };
-
-#endif //RENDERPIPELINE_H

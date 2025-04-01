@@ -39,9 +39,12 @@ void RenderPipeline::Render() {
 	EndDrawing();
 }
 
-//TODO: Implement a data structure to keep render passes in order
+
 void RenderPipeline::AddRenderPass(const shared_ptr<RenderPass>& renderPass) {
-	renderPasses.push_back(renderPass);
+	renderPasses.insert(renderPass);
+}
+void RenderPipeline::RemoveRenderPass(const shared_ptr<RenderPass>& pass) {
+	renderPasses.erase(pass);
 }
 
 

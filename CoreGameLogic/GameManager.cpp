@@ -27,7 +27,10 @@ GameManager* GameManager::GetInstance() {
 
 void GameManager::InitializeRenderPipeline() {
 	renderPipeline = RenderPipeline::GetInstance();
-	this->scenePass = RenderPass::Create(windowWidth, windowHeight, true);
+	scenePass = RenderPass::Create(windowWidth, windowHeight, 2, true);
+	scenePass->AddFunction([this](RenderTexture2D& prev) {
+		RenderPipeline::DrawTextureFullScreen(prev);
+	});
 }
 
 
@@ -52,7 +55,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 
 	InitializeRenderPipeline();
 
-	RenderPass::Create(windowWidth, windowHeight);
+	RenderPass::Create(windowWidth, windowHeight, 0);
 }
 
 void GameManager::StartGameLoop() {
@@ -61,10 +64,8 @@ void GameManager::StartGameLoop() {
 	while(!WindowShouldClose()) {
 		float deltaTime = GetFrameTime();
 
-		cout << "Updating..." << endl;
 		Update(deltaTime);
 
-		cout << "Render pipeline..." << endl;
 		renderPipeline->Render();
 	}
 

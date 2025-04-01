@@ -68,9 +68,6 @@ void Terrain::InitializeChunks() {
 void Terrain::Awake() {
 	InitializeChunks();
 
-	terrainRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-	cleanupRenderTexture = LoadRenderTexture(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-
 	terrainShader = LoadShader(0, TextFormat("Shaders/squareMarchingShader.frag"));
 	cleanupShader = LoadShader(0, TextFormat("Shaders/squareMarchingPostProcessingShader.frag", 430));
 
@@ -96,35 +93,39 @@ void Terrain::Awake() {
 	float floatChunkSize = chunkSize;
 	SetShaderValue(terrainShader, chunkSizeLoc, &floatChunkSize, SHADER_UNIFORM_FLOAT);
 	SetShaderValue(terrainShader, chunkWorldSizeLoc, &chunkWorldSize, SHADER_UNIFORM_VEC2);
+
+	renderPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 0, true);
+	renderPass->AddFunction([this](RenderTexture2D& prev) {
+		Render(prev);
+	});
+
+	cleanupPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 1, false);
+	cleanupPass->AddFunction([this](RenderTexture2D& prev) {
+		CleanupRender(prev);
+	});
 }
 
 
-void Terrain::Update(float deltaTime) {
-	Vector2 mousePos = GetMousePosition();
-	mousePos.y = GameManager::GetWindowHeight() - mousePos.y;
+void Terrain::Update(float deltaTime) {}
 
-	BeginTextureMode(terrainRenderTexture);
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-	//TODO: RENDER ONLY CHUNKS IN VIEW
-	//TODO:		MAYBE EXTRACT IT TO A FUNCTION AND USE IT IN MineAt TOO
-				chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
-			}
+void Terrain::Render(RenderTexture2D& prev) {
+	RenderPipeline::DrawTextureFullScreen(prev);
+
+	for(int y = 0; y < height; y++) {
+		for(int x = 0; x < width; x++) {
+			//TODO: RENDER ONLY CHUNKS IN VIEW
+			//TODO:	MAYBE EXTRACT IT TO A FUNCTION AND USE IT IN MineAt TOO
+			chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
 		}
-	EndTextureMode();
-
-	// Clean up artifacts left over by square marching shader and make it prettier
-	BeginTextureMode(cleanupRenderTexture);
-		ClearBackground(MAGENTA);
-		BeginShaderMode(cleanupShader);
-			Rectangle screenBounds(0, 0, GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-			DrawTextureRec(terrainRenderTexture.texture,screenBounds,{0, 0},WHITE);
-		EndShaderMode();
-	EndTextureMode();
-
-	//TODO: Fix this
-	// GameManager::SetActiveRenderTexture(cleanupRenderTexture);
+	}
 }
+void Terrain::CleanupRender(RenderTexture2D& prev) {
+	BeginShaderMode(cleanupShader);
+		RenderPipeline::DrawTextureFullScreen(prev);
+	EndShaderMode();
+}
+
+
 
 void Terrain::UpdateSurfaceLevel(float newSurfaceLevel) {
 	int surfaceLevelLoc = GetShaderLocation(terrainShader, "surfaceLevel");
