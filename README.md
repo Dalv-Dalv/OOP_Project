@@ -3,7 +3,7 @@
 C++ Raylib Project for OOP University Class
 
 ## Idea
-  You're a tiny submarine that wants to explore the depths of an underwater cavern system equipped with a tiny mining laser and some rudimentary defense systems. Your goal is to mine for resources, explore the caverns, upgrade your tools and ward off enemies that get more and more scary as you go deeper.
+  YOURE a tiny submarine that wants to explore the depths of an underwater cavern system equipped with a tiny mining laser and some rudimentary defense systems. Your goal is to mine for resources, explore the caverns, upgrade your tools and ward off enemies that get more and more scary as you go deeper.
 
 ## Inspiration
 - Sebastian Lague Cube Marched Submarine Terrain
