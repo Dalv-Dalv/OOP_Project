@@ -31,3 +31,7 @@ void TerrainMinerTest::Update(float deltaTime) {
 TerrainMinerTest::TerrainMinerTest() {}
 TerrainMinerTest::TerrainMinerTest(int miningRadius, float miningPower)
 	: miningRadius(miningRadius), miningPower(miningPower){}
+
+void TerrainMinerTest::Print(std::ostream &os) const {
+	os << "TerrainMinerTest";
+}

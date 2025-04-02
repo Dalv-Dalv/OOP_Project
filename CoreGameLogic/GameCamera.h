@@ -19,4 +19,6 @@ public:
 
 	static GameCamera* GetActiveCamera();
 	static Vector2 ScreenToWorldCoords(Vector2 screenPos);
+
+	void Print(std::ostream &os) const override;
 };

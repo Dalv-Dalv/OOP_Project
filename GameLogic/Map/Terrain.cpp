@@ -18,7 +18,7 @@ Terrain* Terrain::instance = nullptr;
 Terrain::Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize)
 	: data(data), surfaceLevel(surfaceLevel), worldScale(scale), interpolationAmount(interpolationAmount), chunkSize(chunkSize) {
 	if(instance != nullptr) {
-		instance->gameObject->Destroy();
+		delete instance->gameObject;
 	}
 	instance = this;
 }
@@ -165,6 +165,11 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 }
 unsigned char Terrain::GetValueAt(int x, int y) {
 	return 0;
+}
+
+
+void Terrain::Print(std::ostream &os) const {
+	os << "Terrain";
 }
 
 

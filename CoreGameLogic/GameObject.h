@@ -1,23 +1,21 @@
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
+#pragma once
 #include <unordered_set>
+#include <vector>
 #include "raylib.h"
 
 class Component;
 
 class GameObject {
 private:
-	std::unordered_set<Component*> components;
+	std::vector<Component*> components;
+
+	friend class GameManager;
+	inline static std::unordered_set<GameObject*> gameObjects;
 public:
 	Vector2 position;
 	GameObject();
-	~GameObject();
 	explicit GameObject(const Vector2& position);
+	~GameObject();
 
 	void AddComponent(Component* component);
-	void Destroy();
-	//TODO: Add destroy method
 };
-
-
-#endif //GAMEOBJECT_H

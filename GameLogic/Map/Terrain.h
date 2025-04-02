@@ -43,4 +43,6 @@ public:
 	static Terrain* GetActiveTerrain();
 	// Only circle colliders will be supported
 	static CollisionInfo CheckCollisions(Vector2 pos, float radius);
+
+	void Print(std::ostream &os) const override;
 };

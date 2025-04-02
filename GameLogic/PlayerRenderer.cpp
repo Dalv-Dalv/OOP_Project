@@ -24,4 +24,7 @@ PlayerRenderer::~PlayerRenderer() {
 	GameManager::GetScenePass()->RemoveFunction(renderID);
 }
 
+void PlayerRenderer::Print(std::ostream &os) const {
+	os << "PlayerRenderer";
+}
 

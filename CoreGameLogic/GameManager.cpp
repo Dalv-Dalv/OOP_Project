@@ -69,6 +69,12 @@ void GameManager::StartGameLoop() {
 
 	onGameClose();
 
+	cout << "DELETING ALL GAME OBJECTS\n";
+	while (!GameObject::gameObjects.empty()) {
+		delete *GameObject::gameObjects.begin();
+	}
+	GameObject::gameObjects.clear();
+
 	CloseWindow();
 }
 

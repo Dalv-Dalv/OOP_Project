@@ -49,3 +49,7 @@ Vector2 GameCamera::ScreenToWorldCoords(Vector2 screenPos) {
 // Getters
 GameCamera* GameCamera::GetActiveCamera() { return instance; }
 const Camera2D& GameCamera::GetCamera2D() const { return internalCamera; }
+
+void GameCamera::Print(std::ostream &os) const {
+	os << "GameCamera" << std::endl;
+}

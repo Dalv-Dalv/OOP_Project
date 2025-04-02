@@ -15,4 +15,6 @@ protected:
 public:
 	PlayerRenderer(float size = 10.0f, Color color = BLUE);
 	~PlayerRenderer();
+
+	void Print(std::ostream &os) const override;
 };

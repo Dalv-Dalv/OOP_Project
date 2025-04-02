@@ -1,5 +1,5 @@
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#pragma once
+#include <ostream>
 #include <unordered_set>
 
 class GameObject;
@@ -24,6 +24,10 @@ public:
 	GameObject* GetGameObject() const;
 
 	void Destroy();
-};
 
-#endif //COMPONENT_H
+	virtual void Print(std::ostream& os) const = 0;
+	friend std::ostream& operator<<(std::ostream& os, const Component& component) {
+		component.Print(os);
+		return os;
+	}
+};

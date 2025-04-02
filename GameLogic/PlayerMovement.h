@@ -11,4 +11,6 @@ protected:
 	void Update(float deltaTime) override;
 public:
 	PlayerMovement(float speed = 10) : speed(speed) {}
+
+	void Print(std::ostream &os) const override;
 };

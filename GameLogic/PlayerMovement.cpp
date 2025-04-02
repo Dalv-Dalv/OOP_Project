@@ -34,3 +34,7 @@ void PlayerMovement::Update(float deltaTime) {
 
 	prevInput = finalInput;
 }
+
+void PlayerMovement::Print(std::ostream &os) const {
+	os << "PlayerMovement";
+}

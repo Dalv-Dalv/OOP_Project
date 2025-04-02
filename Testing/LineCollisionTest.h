@@ -9,4 +9,6 @@ protected:
 public:
 	// Check against a circle
 	void CheckAgainst(Vector2 pos, float radius);
+
+	void Print(std::ostream &os) const override;
 };

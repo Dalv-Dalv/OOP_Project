@@ -14,4 +14,6 @@ protected:
 public:
 	TerrainMinerTest();
 	TerrainMinerTest(int miningRadius, float miningPower);
+
+	void Print(std::ostream &os) const override;
 };
