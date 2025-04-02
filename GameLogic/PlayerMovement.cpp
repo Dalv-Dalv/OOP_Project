@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "raylib.h"
+#include <raylib.h>
 #include "../CoreGameLogic/GameManager.h"
 #include "../CoreGameLogic/GameObject.h"
 #include "../Utilities/GameUtilities.h"

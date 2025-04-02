@@ -2,18 +2,18 @@
 
 #include <iostream>
 
-#include "../../cmake-build-release/_deps/raylib-src/src/raylib.h"
+#include <raylib.h>
 
 void TerrainData::SetValueAt(int x, int y, unsigned char value) {
-	if(x < 0 || x > width) return;
-	if(y < 0 || y > height) return;
+	if(x < 0 || x >= width) return;
+	if(y < 0 || y >= height) return;
 
 	flattenedValues[y * width + x] = value;
 }
 
 unsigned char TerrainData::GetValueAt(int x, int y) const {
-	if(x < 0 || x > width) return 0;
-	if(y < 0 || y > height) return 0;
+	if(x < 0 || x >= width) return 0;
+	if(y < 0 || y >= height) return 0;
 
 	return flattenedValues[y * width + x];
 }

@@ -25,16 +25,16 @@
 //      CHECK CHATGPT  |  DEBUG flattenedValues AND regionValues USE VECTOR INSTEAD OF RAW POINTERS
 
 int main() {
-	GameObject* player = new GameObject({0, 0});
+	auto* player = new GameObject({0, 0});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
 	player->AddComponent(new PlayerMovement(400));
 
 	auto map = MapFileReader::ReadMap("GeneratedMaps/Small.png");
 
-	GameObject* terrain = new GameObject({0, 0});
+	auto* terrain = new GameObject({0, 0});
 	terrain->AddComponent(new Terrain(map, 0.5, 0.8, 0, 16));
 
-	GameObject* miner = new GameObject({0, 0});
+	auto* miner = new GameObject({0, 0});
 	miner->AddComponent(new TerrainMinerTest(5, 3000.0));
 
 	GameManager* gameManager = GameManager::GetInstance();

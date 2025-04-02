@@ -3,13 +3,11 @@
 #include <iostream>
 #include <external/glad.h>
 
-#include "../../cmake-build-release/_deps/raylib-src/src/raymath.h"
+#include <raymath.h>
 #include "../../Utilities/GameUtilities.h"
 
 void TerrainChunk::UpdateGPUData() {
 	auto& imageData = cpuData->GetFlattenedValues();
-	std::cout << "Updating texture with vector size: " << imageData.size() << std::endl;
-	std::cout << "Texture ID: " << gpuData.id << " | Size: " << gpuData.width << "x" << gpuData.height << std::endl;
 	UpdateTexture(gpuData, imageData.data());
 }
 

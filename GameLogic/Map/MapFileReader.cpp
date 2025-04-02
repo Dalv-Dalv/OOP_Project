@@ -26,5 +26,7 @@ TerrainData* MapFileReader::ReadMap(const char* filepath) {
 		}
 	}
 
+	stbi_image_free(data);
+
 	return new TerrainData(width, height, map);
 }

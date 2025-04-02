@@ -1,5 +1,4 @@
-#ifndef PLAYERRENDERER_H
-#define PLAYERRENDERER_H
+#pragma once
 #include "raylib.h"
 #include "../CoreGameLogic/Component.h"
 
@@ -17,5 +16,3 @@ public:
 	PlayerRenderer(float size = 10.0f, Color color = BLUE);
 	~PlayerRenderer();
 };
-
-#endif //PLAYERRENDERER_H

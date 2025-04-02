@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "raylib.h"
+#include <raylib.h>
 #include "../../Utilities/GameUtilities.h"
 #include "../../Utilities/Vector2Utils.h"
 

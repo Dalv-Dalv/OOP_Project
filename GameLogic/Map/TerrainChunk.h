@@ -1,7 +1,6 @@
-#ifndef TERRAINCHUNK_H
-#define TERRAINCHUNK_H
+#pragma once
 #include "TerrainData.h"
-#include "raylib.h"
+#include <raylib.h>
 
 class TerrainChunk {
 private:
@@ -25,5 +24,3 @@ public:
 
 	const Vector2& GetPosition() const;
 };
-
-#endif //TERRAINCHUNK_H

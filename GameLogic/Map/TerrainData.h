@@ -1,5 +1,4 @@
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -26,5 +25,3 @@ public:
 	vector<unsigned char>& GetFlattenedValues();
 	void SetFlattenedValues(vector<unsigned char>& flattenedValues);
 };
-
-#endif //MAP_H

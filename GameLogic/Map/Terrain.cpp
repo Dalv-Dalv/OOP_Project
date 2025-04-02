@@ -5,8 +5,9 @@
 #include <cmath>
 
 #include "config.h"
-#include "../../cmake-build-debug/_deps/raylib-src/src/rlgl.h"
-#include "../../cmake-build-release/_deps/raylib-src/src/raymath.h"
+
+#include <rlgl.h>
+#include <raymath.h>
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"
