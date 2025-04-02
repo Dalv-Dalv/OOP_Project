@@ -4,6 +4,7 @@
 #include "TerrainData.h"
 #include "../../CoreGameLogic/Component.h"
 #include "../../CoreGameLogic/RenderPass.h"
+#include "../Collisions/CollisionInfo.h"
 
 class Terrain : public Component {
 private:
@@ -38,8 +39,11 @@ public:
 	void UpdateSurfaceLevel(float newSurfaceLevel);
 
 	void MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime);
+	unsigned char GetValueAt(int x, int y);
 
 	static Terrain* GetActiveTerrain();
+	// Only circle colliders will be supported
+	static CollisionInfo CheckCollisions(Vector2 pos, float radius);
 };
 
 #endif //TERRAIN_H

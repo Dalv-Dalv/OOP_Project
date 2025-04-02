@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "../../cmake-build-debug/_deps/raylib-src/src/rlgl.h"
+#include "../../cmake-build-release/_deps/raylib-src/src/raymath.h"
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"
@@ -94,7 +95,7 @@ void Terrain::Awake() {
 	SetShaderValue(terrainShader, chunkSizeLoc, &floatChunkSize, SHADER_UNIFORM_FLOAT);
 	SetShaderValue(terrainShader, chunkWorldSizeLoc, &chunkWorldSize, SHADER_UNIFORM_VEC2);
 
-	renderPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 0, true);
+	renderPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 0, false);
 	renderPass->AddFunction([this](RenderTexture2D& prev) {
 		Render(prev);
 	});
@@ -161,8 +162,17 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 		}
 	}
 }
+unsigned char Terrain::GetValueAt(int x, int y) {
+	return 0;
+}
+
 
 Terrain* Terrain::GetActiveTerrain() {
 	return instance;
 }
+CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
+	CollisionInfo res(false, {0, 0});
+	return res;
+}
+
 

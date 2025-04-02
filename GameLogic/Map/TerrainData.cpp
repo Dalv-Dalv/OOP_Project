@@ -20,10 +20,10 @@ unsigned char TerrainData::GetValueAt(int x, int y) const {
 
 // Constructors
 TerrainData::TerrainData(int width, int height) : width(width), height(height) {}
-TerrainData::TerrainData(int width, int height, unsigned char* flattenedValues) : width(width), height(height), flattenedValues(flattenedValues) {}
+TerrainData::TerrainData(int width, int height, vector<unsigned char>& flattenedValues) : width(width), height(height), flattenedValues(flattenedValues) {}
 
 TerrainData* TerrainData::ExtractRegion(int startx, int starty, int width, int height) const {
-	unsigned char* regionValues = new unsigned char[width * height];
+	vector<unsigned char> regionValues(width * height);
 
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
@@ -40,10 +40,9 @@ TerrainData* TerrainData::ExtractRegion(int startx, int starty, int width, int h
 // Getters
 const int& TerrainData::GetHeight() const { return height; }
 const int& TerrainData::GetWidth() const { return width; }
-unsigned char* TerrainData::GetFlattenedValues() { return flattenedValues; }
+vector<unsigned char>& TerrainData::GetFlattenedValues() { return flattenedValues; }
 
 // Setters
-void TerrainData::SetFlattenedValues(unsigned char* flattenedValues) {
-	delete this->flattenedValues;
+void TerrainData::SetFlattenedValues(vector<unsigned char>& flattenedValues) {
 	this->flattenedValues = flattenedValues;
 }

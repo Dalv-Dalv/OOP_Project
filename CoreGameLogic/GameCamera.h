@@ -18,4 +18,5 @@ public:
 	const Camera2D& GetCamera2D() const;
 
 	static GameCamera* GetActiveCamera();
+	static Vector2 ScreenToWorldCoords(Vector2 screenPos);
 };

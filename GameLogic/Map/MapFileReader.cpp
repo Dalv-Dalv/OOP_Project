@@ -15,7 +15,7 @@ TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
 	assert(data);
 
-	unsigned char* map = new unsigned char[width * height];
+	vector<unsigned char> map(width * height);
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {

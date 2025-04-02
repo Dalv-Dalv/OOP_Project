@@ -12,7 +12,7 @@ private:
 	TerrainData* cpuData; // Used for collisions
 
 	void UpdateGPUData();
-	float MiningFalloff(float radius, float distSqr, float miningPower);
+	float MiningFalloff(float radius, float distSqr);
 public:
 	TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData);
 	~TerrainChunk();

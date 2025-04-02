@@ -9,7 +9,7 @@ using namespace std;
 class TerrainData {
 private:
 	int width, height; // Map width/height
-	unsigned char* flattenedValues; // Actually a 2D map
+	vector<unsigned char> flattenedValues; // Actually a 2D map
 
 public:
 	string id;
@@ -17,14 +17,14 @@ public:
 	unsigned char GetValueAt(int x, int y) const;
 
 	TerrainData(int width, int height);
-	TerrainData(int width, int height, unsigned char* flattenedValues);
+	TerrainData(int width, int height, vector<unsigned char>& flattenedValues);
 
 	TerrainData* ExtractRegion(int startx, int starty, int width, int height) const;
 
 	const int& GetWidth() const;
 	const int& GetHeight() const;
-	unsigned char* GetFlattenedValues();
-	void SetFlattenedValues(unsigned char* flattenedValues);
+	vector<unsigned char>& GetFlattenedValues();
+	void SetFlattenedValues(vector<unsigned char>& flattenedValues);
 };
 
 #endif //MAP_H

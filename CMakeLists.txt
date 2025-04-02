@@ -74,6 +74,7 @@ add_executable(${PROJECT_NAME} main.cpp
         Testing/LineCollisionTest.h
         CoreGameLogic/GameCamera.cpp
         CoreGameLogic/GameCamera.h
+        GameLogic/Collisions/CollisionInfo.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
