@@ -1,5 +1,4 @@
-#ifndef MAPFILEREADER_H
-#define MAPFILEREADER_H
+#pragma once
 #include <string>
 
 #include <vector>
@@ -12,5 +11,3 @@ class MapFileReader {
 public:
 	static TerrainData* ReadMap(const char* filepath);
 };
-
-#endif //MAPFILEREADER_H

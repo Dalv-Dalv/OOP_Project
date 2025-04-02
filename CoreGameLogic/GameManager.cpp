@@ -54,8 +54,6 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	camera->AddComponent(new GameCamera());
 
 	InitializeRenderPipeline();
-
-	RenderPass::Create(windowWidth, windowHeight, 0);
 }
 
 void GameManager::StartGameLoop() {

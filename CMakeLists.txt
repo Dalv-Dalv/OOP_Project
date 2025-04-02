@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.30) # FetchContent is available in 3.11+
 project(ProiectPOO)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -74,6 +76,7 @@ add_executable(${PROJECT_NAME} main.cpp
         Testing/LineCollisionTest.h
         CoreGameLogic/GameCamera.cpp
         CoreGameLogic/GameCamera.h
+        GameLogic/Collisions/CollisionInfo.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

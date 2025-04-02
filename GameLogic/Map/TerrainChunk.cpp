@@ -1,16 +1,17 @@
 #include "TerrainChunk.h"
 
 #include <iostream>
+#include <external/glad.h>
 
-#include "../../cmake-build-release/_deps/raylib-src/src/raymath.h"
+#include <raymath.h>
 #include "../../Utilities/GameUtilities.h"
 
 void TerrainChunk::UpdateGPUData() {
-	auto imageData = cpuData->GetFlattenedValues();
-	UpdateTexture(gpuData, imageData);
+	auto& imageData = cpuData->GetFlattenedValues();
+	UpdateTexture(gpuData, imageData.data());
 }
 
-float TerrainChunk::MiningFalloff(float radius, float distSqr, float miningPower) {
+float TerrainChunk::MiningFalloff(float radius, float distSqr) {
 	if(distSqr > radius * radius || distSqr < 0) return 0;
 
 	distSqr = sqrt(distSqr);
@@ -20,16 +21,16 @@ float TerrainChunk::MiningFalloff(float radius, float distSqr, float miningPower
 
 	// quadratic
 	t = 1 - t * t * t;
-	return t * miningPower;
+	return t;
 }
 
 
 TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData)
 : position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
-	unsigned char* imageData = mapData->GetFlattenedValues();
+	auto& imageData = mapData->GetFlattenedValues();
 
 	Image mapImage {
-		.data = imageData,
+		.data = imageData.data(),
 		.width = mapData->GetWidth(),
 		.height = mapData->GetHeight(),
 		.mipmaps = 1,
@@ -66,7 +67,7 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 
 			float val = cpuData->GetValueAt(x, y);
 			if(miningPower * deltaTime > val) val = 0;
-			else val -= miningPower * deltaTime;
+			else val -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
 			cpuData->SetValueAt(x, y, val);
 		}
 	}

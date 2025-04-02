@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/ProiectPOO.dir/Utilities/GameUtilities.cpp.o",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}

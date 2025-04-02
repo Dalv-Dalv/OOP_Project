@@ -21,7 +21,7 @@ RenderPipeline::RenderPipeline() {
 void RenderPipeline::Render() {
 	RenderTexture2D& crnt = screenRenderTexture;
 	BeginTextureMode(crnt);
-		ClearBackground(MAGENTA);
+		ClearBackground(BLACK);
 	EndTextureMode();
 
 	for(auto& pass : renderPasses) {

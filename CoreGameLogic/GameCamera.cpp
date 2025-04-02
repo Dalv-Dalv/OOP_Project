@@ -1,7 +1,12 @@
 #include "GameCamera.h"
 
+#include <iostream>
+
 #include "GameManager.h"
 #include "GameObject.h"
+#include "../Utilities/Vector2Utils.h"
+
+using namespace GameUtilities;
 
 GameCamera* GameCamera::instance = nullptr;
 
@@ -14,17 +19,33 @@ GameCamera::GameCamera() : internalCamera() {
 }
 
 void GameCamera::Awake() {
-	internalCamera.offset = gameObject->position;
+	internalCamera.target = gameObject->position;
 }
 void GameCamera::Update(float deltaTime) {
-	internalCamera.offset = gameObject->position;
+	internalCamera.target = gameObject->position;
+
+	// float speed = 100;
+	//
+	// if(IsKeyDown(KEY_SPACE)) {
+	// 	internalCamera.offset.y -= deltaTime * speed;
+	// }else if(IsKeyDown(KEY_LEFT_CONTROL)) {
+	// 	internalCamera.offset.y += deltaTime * speed;
+	// }
+	//
+	// if(IsKeyDown(KEY_E)) {
+	// 	internalCamera.offset.x -= deltaTime * speed;
+	// }else if(IsKeyDown(KEY_Q)) {
+	// 	internalCamera.offset.x += deltaTime * speed;
+	// }
 }
 
-
-
-GameCamera* GameCamera::GetActiveCamera() {
-	return instance;
+Vector2 GameCamera::ScreenToWorldCoords(Vector2 screenPos) {
+	auto cam = GetActiveCamera()->internalCamera;
+	Vector2 worldPos = {screenPos.x + cam.target.x - cam.offset.x, screenPos.y - cam.target.y + cam.offset.y};
+	return worldPos;
 }
+
 
 // Getters
+GameCamera* GameCamera::GetActiveCamera() { return instance; }
 const Camera2D& GameCamera::GetCamera2D() const { return internalCamera; }

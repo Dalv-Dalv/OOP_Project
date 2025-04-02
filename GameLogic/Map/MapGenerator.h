@@ -1,9 +1,7 @@
-#ifndef MAPGENERATOR_H
-#define MAPGENERATOR_H
-
+#pragma once
 #include <vector>
 
-#include "raylib.h"
+#include <raylib.h>
 
 using namespace std;
 
@@ -16,5 +14,3 @@ public:
 	static void GenerateMap(const float surfaceLevel, const float interpolationAmount, const vector<vector<float>>& map);
 
 };
-
-#endif //MAPGENERATOR_H

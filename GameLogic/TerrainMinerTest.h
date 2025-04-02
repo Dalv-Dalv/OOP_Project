@@ -1,5 +1,4 @@
-#ifndef TERRAINMINERTEST_H
-#define TERRAINMINERTEST_H
+#pragma once
 #include "../CoreGameLogic/Component.h"
 #include "Map/Terrain.h"
 
@@ -16,5 +15,3 @@ public:
 	TerrainMinerTest();
 	TerrainMinerTest(int miningRadius, float miningPower);
 };
-
-#endif //TERRAINMINERTEST_H

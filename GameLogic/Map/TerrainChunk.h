@@ -1,7 +1,6 @@
-#ifndef TERRAINCHUNK_H
-#define TERRAINCHUNK_H
+#pragma once
 #include "TerrainData.h"
-#include "raylib.h"
+#include <raylib.h>
 
 class TerrainChunk {
 private:
@@ -12,7 +11,7 @@ private:
 	TerrainData* cpuData; // Used for collisions
 
 	void UpdateGPUData();
-	float MiningFalloff(float radius, float distSqr, float miningPower);
+	float MiningFalloff(float radius, float distSqr);
 public:
 	TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData);
 	~TerrainChunk();
@@ -25,5 +24,3 @@ public:
 
 	const Vector2& GetPosition() const;
 };
-
-#endif //TERRAINCHUNK_H

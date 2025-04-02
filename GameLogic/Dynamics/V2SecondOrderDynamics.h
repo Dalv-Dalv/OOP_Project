@@ -1,6 +1,5 @@
-#ifndef SECONDORDERDYNAMICS_H
-#define SECONDORDERDYNAMICS_H
-#include "raylib.h"
+#pragma once
+#include <raylib.h>
 
 class V2SecondOrderDynamics {
 private:
@@ -12,5 +11,3 @@ public:
 
 	Vector2 Update(float T, Vector2 x, Vector2 xd);
 };
-
-#endif //SECONDORDERDYNAMICS_H
