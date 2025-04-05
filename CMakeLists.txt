@@ -3,7 +3,9 @@ project(ProiectPOO)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # Debug-specific flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+    if(UNIX AND NOT APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+    endif ()
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Release-specific flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
@@ -82,11 +84,10 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/RenderPass.h
         GameLogic/TerrainMinerTest.cpp
         GameLogic/TerrainMinerTest.h
-        Testing/LineCollisionTest.cpp
-        Testing/LineCollisionTest.h
         CoreGameLogic/GameCamera.cpp
         CoreGameLogic/GameCamera.h
         GameLogic/Collisions/CollisionInfo.h
+        config.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

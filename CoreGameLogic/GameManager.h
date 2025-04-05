@@ -1,5 +1,4 @@
-#ifndef GAMEMANAGER_H
-#define GAMEMANAGER_H
+#pragma once
 #include "raylib.h"
 #include "RenderPipeline.h"
 
@@ -12,7 +11,7 @@ private:
 	Rectangle screenRect;
 
 	RenderPipeline* renderPipeline;
-	shared_ptr<RenderPass> scenePass;
+	shared_ptr<RenderPass> scenePass, uiPass;
 
 	static ActionEvent<> onGameClose;
 
@@ -32,9 +31,8 @@ public:
 
 	static Rectangle GetScreenRect();
 	static shared_ptr<RenderPass> GetScenePass();
+	static shared_ptr<RenderPass> GetUIPass();
 
 	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen, bool vsync = true);
 	void StartGameLoop();
 };
-
-#endif //GAMEMANAGER_H

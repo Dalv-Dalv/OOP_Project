@@ -41,15 +41,22 @@ void GameCamera::Update(float deltaTime) {
 
 Vector2 GameCamera::ScreenToWorldCoords(Vector2 screenPos) {
 	auto cam = GetActiveCamera()->internalCamera;
-	Vector2 worldPos = {screenPos.x + cam.target.x - cam.offset.x, screenPos.y - cam.target.y + cam.offset.y};
+	Vector2 worldPos = {screenPos.x + cam.target.x - cam.offset.x, screenPos.y + cam.target.y - cam.offset.y};
 	return worldPos;
 }
-
-
-// Getters
-GameCamera* GameCamera::GetActiveCamera() { return instance; }
-const Camera2D& GameCamera::GetCamera2D() const { return internalCamera; }
 
 void GameCamera::Print(std::ostream &os) const {
 	os << "GameCamera" << std::endl;
 }
+
+// Getters
+GameCamera* GameCamera::GetActiveCamera() { return instance; }
+float GameCamera::GetZoom() { return instance->internalCamera.zoom; }
+
+Vector2 GameCamera::GetOffsetPos() const { return internalCamera.offset; }
+const Camera2D& GameCamera::GetCamera2D() const { return internalCamera; }
+Rectangle GameCamera::GetWorldSpaceScreenRect() const {
+	return {gameObject->position.x - internalCamera.offset.x, gameObject->position.y - internalCamera.offset.y, static_cast<float>(GameManager::GetWindowWidth()), static_cast<float>(GameManager::GetWindowHeight())};
+}
+
+

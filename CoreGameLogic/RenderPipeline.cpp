@@ -30,12 +30,9 @@ void RenderPipeline::Render() {
 
 	int width = GameManager::GetWindowWidth();
 	int height = GameManager::GetWindowHeight();
-	Rectangle screenBounds = Rectangle(0, 0, width, height);
+	Rectangle screenBounds = Rectangle(0, 0, width, -height);
 	BeginDrawing();
 		DrawTextureRec(crnt.texture, screenBounds, {0, 0}, WHITE);
-
-		float fps = GetFPS();
-		DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
 	EndDrawing();
 }
 
@@ -49,5 +46,8 @@ void RenderPipeline::RemoveRenderPass(const shared_ptr<RenderPass>& pass) {
 
 
 void RenderPipeline::DrawTextureFullScreen(const RenderTexture2D& texture) {
-	DrawTextureRec(texture.texture,GameManager::GetScreenRect(),{0, 0},WHITE);
+	auto rect = GameManager::GetScreenRect();
+	rect.y = rect.height;
+	rect.height *= -1;
+	DrawTextureRec(texture.texture,rect,{0, 0},WHITE);
 }

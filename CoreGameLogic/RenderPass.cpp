@@ -30,6 +30,7 @@ void RenderPass::RemoveFunction(unsigned int functionID) {
 
 RenderTexture2D& RenderPass::Execute(RenderTexture2D& prev) {
 	BeginTextureMode(this->renderTexture);
+		if(useCamera) RenderPipeline::DrawTextureFullScreen(prev);
 		if(useCamera) BeginMode2D(GameCamera::GetActiveCamera()->GetCamera2D());
 		renderFunctions(prev);
 		if(useCamera) EndMode2D();

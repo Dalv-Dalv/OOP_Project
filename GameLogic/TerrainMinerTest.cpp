@@ -18,13 +18,13 @@ void TerrainMinerTest::Update(float deltaTime) {
 		terrain->MineAt(worldPos, miningRadius, miningPower, deltaTime);
 	}
 
-	// if(IsKeyDown(KEY_E)) {
-	// 	surfaceLevel = Clamp(surfaceLevel + deltaTime * 0.5, 0, 1);
-	// 	terrain->UpdateSurfaceLevel(surfaceLevel);
-	// }else if(IsKeyDown(KEY_Q)) {
-	// 	surfaceLevel = Clamp(surfaceLevel - deltaTime * 0.5, 0, 1);
-	// 	terrain->UpdateSurfaceLevel(surfaceLevel);
-	// }
+	if(IsKeyDown(KEY_E)) {
+		surfaceLevel = Clamp(surfaceLevel + deltaTime * 0.5, 0, 1);
+		terrain->UpdateSurfaceLevel(surfaceLevel);
+	}else if(IsKeyDown(KEY_Q)) {
+		surfaceLevel = Clamp(surfaceLevel - deltaTime * 0.5, 0, 1);
+		terrain->UpdateSurfaceLevel(surfaceLevel);
+	}
 }
 
 

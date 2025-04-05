@@ -50,7 +50,6 @@ void main() {
     coord = coord - correctedPos;
     coord /= chunkWorldSize;
     coord = mod(coord, 1.0); // Coordinates within the chunk 0-1
-
 //    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
 
     if(coord.x < 0 || coord.x > 1 || coord.y < 0 || coord.y > 1){

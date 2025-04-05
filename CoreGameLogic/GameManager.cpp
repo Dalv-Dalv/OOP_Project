@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "GameCamera.h"
 #include "GameObject.h"
-#include "raylib.h"
+#include <raylib.h>
 
 GameManager* GameManager::instance = nullptr;
 ActionEvent<> GameManager::onGameClose = ActionEvent<>();
@@ -28,8 +28,11 @@ GameManager* GameManager::GetInstance() {
 void GameManager::InitializeRenderPipeline() {
 	renderPipeline = RenderPipeline::GetInstance();
 	scenePass = RenderPass::Create(windowWidth, windowHeight, 2, true);
-	scenePass->AddFunction([this](RenderTexture2D& prev) {
+	uiPass = RenderPass::Create(windowWidth, windowHeight, 100, false);
+	uiPass->AddFunction([](RenderTexture2D& prev){
 		RenderPipeline::DrawTextureFullScreen(prev);
+		float fps = GetFPS();
+		DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
 	});
 }
 
@@ -100,3 +103,4 @@ int GameManager::GetWindowWidth() { return instance->windowWidth; }
 int GameManager::GetWindowHeight() { return instance->windowHeight; }
 Rectangle GameManager::GetScreenRect() { return instance->screenRect; }
 shared_ptr<RenderPass> GameManager::GetScenePass() { return instance->scenePass; }
+shared_ptr<RenderPass> GameManager::GetUIPass() { return instance->uiPass; }

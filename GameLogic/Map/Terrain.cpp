@@ -8,6 +8,8 @@
 
 #include <rlgl.h>
 #include <raymath.h>
+
+#include "../PlayerMovement.h"
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"
@@ -111,12 +113,31 @@ void Terrain::Awake() {
 void Terrain::Update(float deltaTime) {}
 
 void Terrain::Render(RenderTexture2D& prev) {
+	// Render only the chunks in view
+	auto rect = GameCamera::GetActiveCamera()->GetWorldSpaceScreenRect();
+	float unit = TerrainScale * worldScale;
+
+	int pixelX = floor(rect.x / unit);
+	int pixelY = floor(rect.y / unit);
+
+	// Get the chunk indices within the rectangle determined by the rectangle bounds
+	int bound_lx = pixelX;
+	int bound_rx = pixelX + (rect.width + unit - 1) / unit;
+	int bound_ly = pixelY;
+	int bound_ry = pixelY + (rect.height + unit - 1) / unit;
+
+	bound_lx /= chunkSize; bound_rx /= chunkSize;
+	bound_ly /= chunkSize; bound_ry /= chunkSize;
+
+	bound_lx = max(0, bound_lx);
+	bound_ly = max(0, bound_ly);
+	bound_rx = min(bound_rx, width - 1);
+	bound_ry = min(bound_ry, height - 1);
+
 	RenderPipeline::DrawTextureFullScreen(prev);
 
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
-			//TODO: RENDER ONLY CHUNKS IN VIEW
-			//TODO:	MAYBE EXTRACT IT TO A FUNCTION AND USE IT IN MineAt TOO
+	for(int y = bound_ly; y <= bound_ry; y++) {
+		for(int x = bound_lx; x <= bound_rx; x++) {
 			chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
 		}
 	}
@@ -163,9 +184,6 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 		}
 	}
 }
-unsigned char Terrain::GetValueAt(int x, int y) {
-	return 0;
-}
 
 
 void Terrain::Print(std::ostream &os) const {
@@ -177,7 +195,49 @@ Terrain* Terrain::GetActiveTerrain() {
 	return instance;
 }
 CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
-	CollisionInfo res(false, {0, 0});
+	float unit = instance->TerrainScale * instance->worldScale;
+
+	radius = 200;
+
+	radius /= unit;
+
+	// Snap mouse position to nearest pixel
+	int pixelX = round(pos.x / unit);
+	int pixelY = round(pos.y / unit);
+
+	DrawCircle(pixelX * unit, pixelY * unit, 10, RED);
+
+	// Get the chunk indices within the rectangle determined by the mining radius
+	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
+	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
+
+	DrawCircle(bound_lx * unit, bound_ly * unit, 10, PURPLE);
+	DrawCircle(bound_lx * unit, bound_ry * unit, 10, PURPLE);
+	DrawCircle(bound_rx * unit, bound_ry * unit, 10, PURPLE);
+	DrawCircle(bound_rx * unit, bound_ly * unit, 10, PURPLE);
+
+	bound_lx /= instance->chunkSize; bound_rx /= instance->chunkSize;
+	bound_ly /= instance->chunkSize; bound_ry /= instance->chunkSize;
+
+	bound_lx = max(0, bound_lx); bound_ly = max(0, bound_ly);
+	bound_rx = min(bound_rx, instance->width - 1); bound_ry = min(bound_ry, instance->height - 1);
+
+
+	CollisionInfo res(1000000000, {0, 0}, pos);
+	for(int y = bound_ly; y <= bound_ry; y++) {
+		for(int x = bound_lx; x <= bound_rx; x++) {
+			// Calculate the local pixel coordinates for the chunk to use
+			int localX = pixelX - x * instance->chunkSize;
+			int localY = pixelY - y * instance->chunkSize;
+			localY = (instance->chunkSize + 2) - localY;
+
+			res = min(res, instance->chunks[y][x]->CheckCollisions(pos, localX, localY, radius, instance->surfaceLevel, unit));
+		}
+	}
+
+	DrawLineEx(pos, res.closestPoint, 3, GREEN);
+	DrawCircle(res.closestPoint.x, res.closestPoint.y, 7, GREEN);
+
 	return res;
 }
 
