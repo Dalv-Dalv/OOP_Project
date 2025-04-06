@@ -8,7 +8,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif ()
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Release-specific flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -o3")
 endif()
 
 set(CMAKE_CXX_STANDARD 23)

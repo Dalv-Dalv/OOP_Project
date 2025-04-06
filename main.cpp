@@ -14,16 +14,19 @@
 #include "GameLogic/Map/MapGenerator.h"
 #include "GameLogic/Map/Terrain.h"
 
-//TODO: !!!!!!!IMPORTANT!!!!!!! Figure out RENDERING! (Render Scene vs Render into Textures)
 
-// TODO: Implement a UI class
-// TODO: Optimize square marching post processing shader
-// TODO: Make square marching color depend on the actual weights
-// TODO: Make mining outline like jj screenshot in square marching post processing shader
-// TODO: Terrain collision
-
-//TODO: CRITICALLLLLLLLLL:::::::::!!!!!!!!!!!!!!!!!!!!!!
-//      CHECK CHATGPT  |  DEBUG flattenedValues AND regionValues USE VECTOR INSTEAD OF RAW POINTERS
+/*----------------------------------------------------------------------
+	TODO: Make square marching color depend on the actual weights
+------------------------------------------------------------------------
+	WIP: Handle object destruction
+------------------------------------------------------------------------
+	QOL: Make mining outline in square marching post processing shader
+------------------------------------------------------------------------
+	Optimize Square marching post processing shader
+	Optimize Collision detection
+------------------------------------------------------------------------
+	Finished: Terrain collision
+----------------------------------------------------------------------*/
 
 int main() {
 	auto* player = new GameObject({0, 0});
