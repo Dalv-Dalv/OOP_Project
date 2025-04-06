@@ -30,7 +30,7 @@ int main() {
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
 	player->AddComponent(new PlayerMovement(400));
 
-	auto map = MapFileReader::ReadMap("GeneratedMaps/Second.png");
+	auto map = MapFileReader::ReadMap("GeneratedMaps/Fourth.png");
 
 	auto* terrain = new GameObject({0, 0});
 	terrain->AddComponent(new Terrain(map, 0.5, 1.5, TERRAIN_INTERPOLATION_AMOUNT, 128));

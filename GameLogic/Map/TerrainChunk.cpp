@@ -80,7 +80,7 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 	if(cornerWeights[3] >= surfaceLevel) caseIndex |= 8;
 	if(caseIndex == 0) return;
 	if(caseIndex == 15) {
-		prevMin = min(prevMin, {-100000, {0, 0}, pos});
+		prevMin = min(prevMin, {100000, {0, 0}, pos});
 		return;
 	}
 
