@@ -80,7 +80,7 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 	if(cornerWeights[3] >= surfaceLevel) caseIndex |= 8;
 	if(caseIndex == 0) return;
 	if(caseIndex == 15) {
-		prevMin = min(prevMin, {100000, {0, 0}, pos});
+		prevMin = min(prevMin, {-100000, {0, 0}, pos});
 		return;
 	}
 
@@ -182,11 +182,11 @@ CollisionInfo TerrainChunk::CheckCollisions(Vector2 pos, int posx, int posy, flo
 	CollisionInfo res(1000000000, {0, 0}, pos);
 	Highlight();
 	for(int x = posx - radius; x < posx + radius; x++) {
-		if(x < 0) continue;
+		if(x < 1) continue;
 		if(x > chunkWidth - 2) break;
 
 		for(int y = posy - radius; y < posy + radius; y++) {
-			if(y < 0) continue;
+			if(y < 1) continue;
 			if(y > chunkHeight - 2) break;
 
 			CheckMinCollisionAt(pos, x, y, res, surfaceLevel, unit);
