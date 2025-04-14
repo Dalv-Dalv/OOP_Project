@@ -50,6 +50,6 @@ C++ Raylib Project for OOP University Class
 #### Cerinte Tema 2
 - [X] Mosteniri: de la `Component`
 - [X] Functii virtuale: in `Component`
-- [ ] Exceptii (si handling)
+- [X] Exceptii (si handling)
 - [ ] Utilizarea `dynamic_cast` sau `static_cast`
 - [X] Bonus: O clasa abstracta: `Component`
