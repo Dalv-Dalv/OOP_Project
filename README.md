@@ -12,11 +12,11 @@ C++ Raylib Project for OOP University Class
   The project uses Raylib framework for rendering and makes extensive use of the gpu for rendering the terrain with a custom shader.
 
 ## Milestones
-- [ ] Terrain
+- [X] Terrain
   - [X] Rendering
   - [X] Chunking
   - [X] Mining
-  - [ ] Collisions
+  - [X] Collisions
 - [ ] Player
   - [X] Movement
   - [ ] Game feel
