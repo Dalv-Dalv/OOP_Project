@@ -68,8 +68,6 @@ add_executable(${PROJECT_NAME} main.cpp
         Libraries/stb_image.h
         GameLogic/Map/MapFileReader.cpp
         GameLogic/Map/MapFileReader.h
-        GameLogic/Map/MapGenerator.cpp
-        GameLogic/Map/MapGenerator.h
         GameLogic/Map/Terrain.cpp
         GameLogic/Map/Terrain.h
         GameLogic/Map/TerrainData.cpp
@@ -88,6 +86,10 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/GameCamera.h
         GameLogic/Collisions/CollisionInfo.h
         config.h
+        GameLogic/Testing/PulsingOrb.cpp
+        GameLogic/Testing/PulsingOrb.h
+        GameLogic/Testing/OrbDeployer.cpp
+        GameLogic/Testing/OrbDeployer.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

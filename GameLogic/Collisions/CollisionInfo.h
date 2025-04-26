@@ -3,7 +3,7 @@
 
 struct CollisionInfo {
 	float signedDist;
-	Vector2 normal; // With distance included
+	Vector2 normal; // Normalized
 	Vector2 closestPoint; //FOR DEBUG TODO: REMOVE LATER
 
 	CollisionInfo(float signedDist = 1000000000, const Vector2 normal = {0, 0}, const Vector2 closestPoint = {0, 0}) : signedDist(signedDist), normal(normal), closestPoint(closestPoint) {}

@@ -67,6 +67,9 @@ void GameManager::StartGameLoop() {
 
 		Update(deltaTime);
 
+		// If any object was marked for deletion this frame, delete it
+		GameObject::DeleteAllMarked();
+
 		renderPipeline->Render();
 	}
 

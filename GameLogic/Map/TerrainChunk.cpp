@@ -10,6 +10,7 @@
 #include "../../CoreGameLogic/GameCamera.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/GameUtilities.h"
+#include "../../Utilities/Vector2Utils.h"
 
 const vector<vector<int>> TerrainChunk::squareMarchingTable = {
 	{},			 // Case 0 // 0 Bottom
@@ -95,23 +96,23 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 		const Vector2& p1 = edgePoints[squareMarchingTable[caseIndex][i]];
 		const Vector2& p2 = edgePoints[squareMarchingTable[caseIndex][i + 1]];
 
-		DrawLineEx(p1, p2, 4, RED);
+		// DrawLineEx(p1, p2, 4, RED);
 
 		float dist = 0;
 		const Vector2 seg = p2 - p1;
 		const Vector2 toPoint = pos - p1;
-		Vector2 normal = {0, 0};
-		Vector2 projection = pos;
-
 		const float lenSqr = seg.x * seg.x + seg.y * seg.y;
+
+		Vector2 normal = { -seg.y, seg.x};
+		normal *= GameUtilities::fastInverseSqrt(lenSqr);
+
+		Vector2 projection = pos;
 		if(lenSqr == 0.0) dist = 0;
 		else {
 			const float t = max(0.0f, min(1.0f, Vector2DotProduct(toPoint, seg) / lenSqr));
 			projection = p1 + seg * t;
 
-			normal = pos - projection;
-
-			DrawLineEx(pos, projection, 2, Color(0, 255, 0, 100));
+			// DrawLineEx(pos, projection, 2, Color(0, 255, 0, 100));
 
 			dist = Vector2Distance(pos, projection);
 		}
@@ -180,12 +181,12 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 
 CollisionInfo TerrainChunk::CheckCollisions(Vector2 pos, int posx, int posy, float radius, float surfaceLevel, float unit) {
 	CollisionInfo res(1000000000, {0, 0}, pos);
-	Highlight();
-	for(int x = posx - radius; x < posx + radius; x++) {
+	// Highlight();
+	for(int x = posx - radius + 1; x < posx + radius + 1; x++) {
 		if(x < 1) continue;
 		if(x > chunkWidth - 2) break;
 
-		for(int y = posy - radius; y < posy + radius; y++) {
+		for(int y = posy - radius - 1; y < posy + radius - 1; y++) {
 			if(y < 1) continue;
 			if(y > chunkHeight - 2) break;
 

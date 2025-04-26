@@ -11,6 +11,12 @@ private:
 
 	friend class GameManager;
 	inline static std::unordered_set<GameObject*> gameObjects;
+	inline static std::vector<GameObject*> deleteMarkedObjects;
+
+	static void DeleteAllMarked();
+protected:
+	bool markedForDestruction;
+
 public:
 	Vector2 position;
 	GameObject();
@@ -18,4 +24,5 @@ public:
 	~GameObject();
 
 	void AddComponent(Component* component);
+	void Destroy();
 };

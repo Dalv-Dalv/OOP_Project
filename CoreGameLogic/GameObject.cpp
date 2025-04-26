@@ -27,3 +27,16 @@ void GameObject::AddComponent(Component* component) {
 	component->SetGameObject(this);
 	components.push_back(component);
 }
+
+void GameObject::Destroy() {
+	if(markedForDestruction) return;
+	markedForDestruction = true;
+	deleteMarkedObjects.push_back(this);
+}
+
+void GameObject::DeleteAllMarked() {
+	for(auto gameObject : deleteMarkedObjects) {
+		delete gameObject;
+	}
+	deleteMarkedObjects.clear();
+}

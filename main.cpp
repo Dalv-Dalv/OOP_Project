@@ -11,29 +11,37 @@
 #include "CoreGameLogic/RenderPipeline.h"
 #include "GameLogic/TerrainMinerTest.h"
 #include "GameLogic/Map/MapFileReader.h"
-#include "GameLogic/Map/MapGenerator.h"
 #include "GameLogic/Map/Terrain.h"
+#include "GameLogic/Testing/OrbDeployer.h"
 
 
 /*----------------------------------------------------------------------
+	WIP: Collision resolution
+------------------------------------------------------------------------
 	TODO: Make square marching color depend on the actual weights
 ------------------------------------------------------------------------
-	WIP: Handle object destruction
+	QOL: Make mining outline in square marching post processing shaderdsssswa
 ------------------------------------------------------------------------
-	QOL: Make mining outline in square marching post processing shader
+	OPTIMIZE: Square marching post processing shader
+	OPTIMIZE: Collision detection
 ------------------------------------------------------------------------
-	Optimize Square marching post processing shader
-	Optimize Collision detection
-------------------------------------------------------------------------
-	Finished: Terrain collision
+	FINISHED: Terrain collision
+	FINISHED: Handle object destruction
 ----------------------------------------------------------------------*/
 
 int main() {
 	auto* player = new GameObject({0, 0});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
-	player->AddComponent(new PlayerMovement(400));
+	player->AddComponent(new PlayerMovement(400, 0.9, 22.0f));
+	player->AddComponent(new OrbDeployer());
 
-	auto map = MapFileReader::ReadMap("GeneratedMaps/Fourth.png");
+	TerrainData* map = nullptr;
+	try {
+		map = MapFileReader::ReadMap("GeneratedMaps/Fourth.png");
+	}catch(const exception e) {
+		cout << e.what() << endl;
+		map = new TerrainData(0, 0);
+	}
 
 	auto* terrain = new GameObject({0, 0});
 	terrain->AddComponent(new Terrain(map, 0.5, 1.5, TERRAIN_INTERPOLATION_AMOUNT, 128));

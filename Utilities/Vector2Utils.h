@@ -27,12 +27,13 @@ namespace GameUtilities {
 	void operator-=(Vector2& lhs, const Vector2& rhs);
 
 
-
 	std::ostream& operator<<(std::ostream& os, const Vector2& v);
 
 	float V2Length(const Vector2& v);
 
 	Vector2 V2Normalized(const Vector2& v);
+
+	Vector2 Reflect(Vector2 direction, Vector2 normal);
 }
 
 

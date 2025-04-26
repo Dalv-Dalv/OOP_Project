@@ -13,7 +13,9 @@ using namespace std;
 TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	int width, height, channels;
 	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
-	assert(data);
+	if(!data) {
+		throw runtime_error("Map file could not be read");
+	}
 
 	vector<unsigned char> map(width * height);
 

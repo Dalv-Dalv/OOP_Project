@@ -197,24 +197,22 @@ Terrain* Terrain::GetActiveTerrain() {
 CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
 	float unit = instance->TerrainScale * instance->worldScale;
 
-	radius = 200;
-
 	radius /= unit;
 
 	// Snap mouse position to nearest pixel
 	int pixelX = round(pos.x / unit);
 	int pixelY = round(pos.y / unit);
 
-	DrawCircle(pixelX * unit, pixelY * unit, 10, RED);
+	// DrawCircle(pixelX * unit, pixelY * unit, 10, RED);
 
 	// Get the chunk indices within the rectangle determined by the mining radius
 	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
 	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
 
-	DrawCircle(bound_lx * unit, bound_ly * unit, 10, PURPLE);
-	DrawCircle(bound_lx * unit, bound_ry * unit, 10, PURPLE);
-	DrawCircle(bound_rx * unit, bound_ry * unit, 10, PURPLE);
-	DrawCircle(bound_rx * unit, bound_ly * unit, 10, PURPLE);
+	// DrawCircle(bound_lx * unit, bound_ly * unit, 10, PURPLE);
+	// DrawCircle(bound_lx * unit, bound_ry * unit, 10, PURPLE);
+	// DrawCircle(bound_rx * unit, bound_ry * unit, 10, PURPLE);
+	// DrawCircle(bound_rx * unit, bound_ly * unit, 10, PURPLE);
 
 	bound_lx /= instance->chunkSize; bound_rx /= instance->chunkSize;
 	bound_ly /= instance->chunkSize; bound_ry /= instance->chunkSize;
@@ -235,8 +233,8 @@ CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
 		}
 	}
 
-	DrawLineEx(pos, res.closestPoint, 3, GREEN);
-	DrawCircle(res.closestPoint.x, res.closestPoint.y, 7, GREEN);
+	// DrawLineEx(pos, res.closestPoint, 3, GREEN);
+	// DrawCircle(res.closestPoint.x, res.closestPoint.y, 7, GREEN);
 
 	return res;
 }

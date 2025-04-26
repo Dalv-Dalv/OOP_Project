@@ -50,32 +50,40 @@ void main() {
     coord = coord - correctedPos;
     coord /= chunkWorldSize;
     coord = mod(coord, 1.0); // Coordinates within the chunk 0-1
-//    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
+    //    coord = coord * 1.5 - vec2(0.25); // Centering coordinates within chunk for debug
 
-    if(coord.x < 0 || coord.x > 1 || coord.y < 0 || coord.y > 1){
-        finalColor = vec4(0,0,0,1);
-        return;
-    }
+    // if(coord.x < 0 || coord.x > 1 || coord.y < 0 || coord.y > 1){
+    //     finalColor = vec4(0,0,0,1);
+    //     return;
+    // }
 
     vec2 texUnits = 1.0 / textureSize(mapTexture, 0);
 
-// Discard 1 pixel border
-     coord *= chunkSize / (chunkSize + 2) + 0.0001;
-     coord += vec2(texUnits.x, texUnits.y);
+    // Discard 1 pixel border
+    coord *= chunkSize / (chunkSize + 2) + 0.0001;
+    coord += vec2(texUnits.x, texUnits.y);
 
-//    float tes = texture(mapTexture, coord, 0).r;
-//    finalColor = vec4(tes, tes, tes, 1.0);
-//
-//    return;
+    //    float tes = texture(mapTexture, coord, 0).r;
+    //    finalColor = vec4(tes, tes, tes, 1.0);
+    //
+    //    return;
 
     vec2 texCoords = coord / texUnits;
 
     vec3 corners[4] = {
         vec3(floor(texCoords) + vec2(0, 1), texture(mapTexture, coord + vec2(0, texUnits.y), 0).r),  // Bottom left
-        vec3(floor(texCoords) + vec2(1, 1), texture(mapTexture, coord + texUnits, 0).r),                        // Bottom right
+        vec3(floor(texCoords) + vec2(1, 1), texture(mapTexture, coord + texUnits, 0).r),             // Bottom right
         vec3(floor(texCoords) + vec2(1, 0), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).r),  // Top right
-        vec3(floor(texCoords), texture(mapTexture, coord, 0).r)                                               // Top left
+        vec3(floor(texCoords), texture(mapTexture, coord, 0).r)                                      // Top left
     };
+
+    // Bilinear filtering for the color
+    vec2 bilinearT = mod(texCoords, 1.0);
+    float avg = lerp(lerp(corners[0].z, corners[1].z, bilinearT.x), lerp(corners[3].z, corners[2].z, bilinearT.x), 1.0 - bilinearT.y);
+    // Remap avg from (0 to 1) range to (surfaceLevel to 1) range
+    avg = max(avg, surfaceLevel);
+    avg = (avg - surfaceLevel) / (1 - surfaceLevel);
+    avg = 0.2 + (1.0 - 0.2) * avg;
 
     int caseIndex = 0;
     if(corners[0].z >= surfaceLevel) caseIndex |= 1;
@@ -89,7 +97,7 @@ void main() {
     }
 
     if(caseIndex == 15){
-        finalColor = vec4(1.0,1.0,1.0,1.0);
+        finalColor = vec4(avg, avg, avg,1.0);
         return;
     }
 
@@ -119,5 +127,5 @@ void main() {
 
     if(dist > 0) dist = 1.0;
 
-    finalColor = vec4(dist, dist, dist, 1.0);
+    finalColor = vec4(dist * avg, dist * avg, dist * avg, 1.0);
 }

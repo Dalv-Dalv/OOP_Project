@@ -88,4 +88,10 @@ namespace GameUtilities {
 	Vector2 V2Normalized(const Vector2& v) {
 		return v * fastInverseSqrt(v.x * v.x + v.y * v.y);
 	}
+
+	Vector2 Reflect(Vector2 direction, Vector2 normal) {
+		float dp = direction.x * normal.x + direction.y * normal.y;
+		return direction - 2 * dp * normal;
+	}
+
 }
