@@ -12,11 +12,11 @@ C++ Raylib Project for OOP University Class
   The project uses Raylib framework for rendering and makes extensive use of the gpu for rendering the terrain with a custom shader.
 
 ## Milestones
-- [ ] Terrain
+- [X] Terrain
   - [X] Rendering
   - [X] Chunking
   - [X] Mining
-  - [ ] Collisions
+  - [X] Collisions
 - [ ] Player
   - [X] Movement
   - [ ] Game feel
@@ -35,4 +35,21 @@ C++ Raylib Project for OOP University Class
   - [ ] Goal?
 
 ## Administrative details
-[WIP]
+#### Cerinte generale
+- [X] Folosirea coerenta și motivată a specificatorilor de acces (`private`, `protected`, `public`)
+- [X] Folosirea coerentă și motivată a `const` și referință `&`
+- [X] Teste
+- [X] Fara memory leakuri
+
+#### Cerinte Tema 1
+- [X] Campuri + Metode Publice/Private
+- [X] Constructori
+- [X] Destructori
+- [X] Supraincarcare de operatori: in `Component` si `CollisionInfo`
+
+#### Cerinte Tema 2
+- [X] Mosteniri: de la `Component`
+- [X] Functii virtuale: in `Component`
+- [X] Exceptii (si handling)
+- [ ] Utilizarea `dynamic_cast` sau `static_cast`
+- [X] Bonus: O clasa abstracta: `Component`
