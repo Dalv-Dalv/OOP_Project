@@ -17,9 +17,6 @@
 
 /*----------------------------------------------------------------------
 	WIP: Ores
-	WIP TODO: In blender, make ore atlas black and white and make separate texture for colors and use it in terrain marching
-------------------------------------------------------------------------
-	TODO: Make square marching color depend on the actual weights
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders
 ------------------------------------------------------------------------
@@ -28,6 +25,7 @@
 ------------------------------------------------------------------------
 	FINISHED: Terrain collision
 	FINISHED: Handle object destruction
+	FINISHED: Make square marching color depend on the actual weights
 ----------------------------------------------------------------------*/
 
 int main() {
@@ -57,66 +55,3 @@ int main() {
 
 	return 0;
 }
-
-
-/*
-LineCollisionTest* LineCollisionTest::instance = nullptr;
-CollisionInfo* LineCollisionTest::collisionInfo = new CollisionInfo(false, {0, 0});
-
-LineCollisionTest::LineCollisionTest(Vector2 p1, Vector2 p2) : p1(p1), p2(p2), midP(0, 0) {}
-
-void LineCollisionTest::Awake() {
-    instance = this;
-    GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
-        DrawLineEx(p1, p2, 8, PURPLE);
-        DrawLineEx(obP, midP, 4, DARKPURPLE);
-    });
-    GameManager::GetUIPass()->AddFunction([this](RenderTexture2D& prev) {
-        DrawText(TextFormat("%.1f", dist), 0, 100, 25, PURPLE);
-    });
-}
-
-
-void LineCollisionTest::Update(float deltaTime) {
-    CheckAgainst(PlayerMovement::instance->GetGameObject()->position, 25.0f);
-    p1.x = -100 - cos(GetTime()) * 50;
-    p1.y = -100 - sin(GetTime()) * 50;
-    p2.x = -100 + cos(GetTime()) * 50;
-    p2.y = -100 + sin(GetTime()) * 50;
-}
-
-
-CollisionInfo LineCollisionTest::CheckAgainst(Vector2 pos, float radius) {
-    Vector2 seg = p2 - p1;
-    Vector2 toPoint = pos - p1;
-    Vector2 normal = {0, 0};
-
-    //https://stackoverflow.com/a/1501725
-    const float l2 = seg.x * seg.x + seg.y * seg.y;
-    if (l2 == 0.0) dist = 0;
-    else {
-        const float t = max(0.0f, min(1.0f, Vector2DotProduct(toPoint, seg) / l2));
-        const Vector2 projection = p1 + seg * t;
-
-        normal = pos - projection;
-
-        midP = projection;
-        dist = Vector2Distance(pos, projection);
-    }
-
-    obP = pos;
-
-    // Signed distance
-    float cross = seg.x * toPoint.y - seg.y * toPoint.x;
-    dist *= (cross >= 0 ? 1 : -1);
-
-    delete collisionInfo;
-    collisionInfo = new CollisionInfo(abs(dist) < radius, {0, dist});
-    return {abs(dist) < radius, normal};
-}
-
-void LineCollisionTest::Print(std::ostream &os) const {
-    os << "LineCollisionTest";
-}
-
-*/

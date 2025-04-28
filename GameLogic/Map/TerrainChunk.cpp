@@ -32,21 +32,8 @@ const vector<vector<int>> TerrainChunk::squareMarchingTable = {
 };
 
 void TerrainChunk::UpdateGPUData() {
-	auto& imageData = cpuData->GetFlattenedValues();
+	auto& imageData = cpuData->GetTerrainValues();
 	UpdateTexture(gpuData, imageData.data());
-}
-
-float TerrainChunk::MiningFalloff(float radius, float distSqr) {
-	if(distSqr > radius * radius || distSqr < 0) return 0;
-
-	distSqr = sqrt(distSqr);
-
-	// linear
-	float t = GameUtilities::inverseLerp(0, radius, distSqr);
-
-	// quadratic
-	t = 1 - t * t * t;
-	return t;
 }
 
 Vector2 TerrainChunk::CalculateEdgePoint(Vector2 v1, float w1, Vector2 v2, float w2, float surfaceLevel) const {
@@ -127,7 +114,7 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 
 TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData)
 : position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
-	auto& imageData = mapData->GetFlattenedValues();
+	auto& imageData = mapData->GetTerrainValues();
 
 	Image mapImage {
 		.data = imageData.data(),
@@ -163,6 +150,19 @@ void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasL
 	EndShaderMode();
 }
 
+
+float TerrainChunk::MiningFalloff(float radius, float distSqr) {
+	if(distSqr > radius * radius || distSqr < 0) return 0;
+
+	distSqr = sqrt(distSqr);
+
+	// linear
+	float t = GameUtilities::inverseLerp(0, radius, distSqr);
+
+	// quadratic
+	t = 1 - t * t * t;
+	return t;
+}
 void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
 	float surfaceLevel = Terrain::GetActiveTerrain()->GetSurfaceLevel();
 
@@ -176,18 +176,18 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 
 			// Distance squared
 			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
+			float falloff = MiningFalloff(radius, distSqr);
 
-			auto val = cpuData->GetValueAt(x, y);
+			auto val = cpuData->GetFValueAt(x, y);
 
-
-			if(miningPower * deltaTime > val.oreValue || val.oreValue <= 0) {
-				if(val.surfaceValue / 255.0f > surfaceLevel) {
-					if(miningPower * deltaTime > val.surfaceValue) val.surfaceValue = 0;
-					else val.surfaceValue -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
+			if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
+				if(val.surfaceValue > surfaceLevel) {
+					if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel;
+					else val.surfaceValue -= miningPower * deltaTime * falloff;
 				}
-			} else val.oreValue -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
+			} else val.oreValue -= miningPower * deltaTime * falloff;
 
-			cpuData->SetValueAt(x, y, val);
+			cpuData->SetFValueAt(x, y, val);
 		}
 	}
 
