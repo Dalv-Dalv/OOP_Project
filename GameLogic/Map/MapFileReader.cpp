@@ -16,15 +16,20 @@ TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	if(!data) {
 		throw runtime_error("Map file could not be read");
 	}
+	if(channels != 3) {
+		throw runtime_error("Invalid map");
+	}
 
-	vector<unsigned char> map(width * height);
+	vector<TerrainPoint> map(width * height);
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			int index = (y * width + x) * channels;
-			unsigned char r = data[index];
+			unsigned char r = data[index + 0];
+			unsigned char g = data[index + 1];
+			unsigned char b = data[index + 2];
 
-			map[y * width + x] = r;
+			map[y * width + x] = {r, g, b};
 		}
 	}
 

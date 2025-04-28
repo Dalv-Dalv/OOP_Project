@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "PulsingOrb.h"
-#include "../../cmake-build-debug/_deps/raylib-src/src/raylib.h"
+#include <raylib.h>
 #include "../../CoreGameLogic/GameCamera.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"

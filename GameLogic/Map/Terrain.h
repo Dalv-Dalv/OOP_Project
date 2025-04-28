@@ -20,8 +20,10 @@ private:
 
 	shared_ptr<RenderPass> renderPass; unsigned int renderID;
 	shared_ptr<RenderPass> cleanupPass; unsigned int cleanupRenderID;
-	Shader terrainShader; int textureLoc, posLoc;
+	Shader terrainShader; int textureLoc, posLoc, atlasLoc, oreColorsLoc;
 	Shader cleanupShader;
+
+	Texture2D oreAtlas, oreColors;
 
 	void InitializeChunks();
 	void Render(RenderTexture2D& prev);
@@ -38,6 +40,8 @@ public:
 	void UpdateSurfaceLevel(float newSurfaceLevel);
 
 	void MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime);
+
+	float GetSurfaceLevel() const;
 
 	static Terrain* GetActiveTerrain();
 	// Only circle colliders will be supported

@@ -4,26 +4,26 @@
 
 #include <raylib.h>
 
-void TerrainData::SetValueAt(int x, int y, unsigned char value) {
+void TerrainData::SetValueAt(int x, int y, TerrainPoint value) {
 	if(x < 0 || x >= width) return;
 	if(y < 0 || y >= height) return;
 
 	flattenedValues[y * width + x] = value;
 }
 
-unsigned char TerrainData::GetValueAt(int x, int y) const {
-	if(x < 0 || x >= width) return 0;
-	if(y < 0 || y >= height) return 0;
+TerrainPoint TerrainData::GetValueAt(int x, int y) const {
+	if(x < 0 || x >= width) return {0, 0, 0};
+	if(y < 0 || y >= height) return {0, 0, 0};
 
 	return flattenedValues[y * width + x];
 }
 
 // Constructors
 TerrainData::TerrainData(int width, int height) : width(width), height(height) {}
-TerrainData::TerrainData(int width, int height, vector<unsigned char>& flattenedValues) : width(width), height(height), flattenedValues(flattenedValues) {}
+TerrainData::TerrainData(int width, int height, vector<TerrainPoint>& flattenedValues) : width(width), height(height), flattenedValues(flattenedValues) {}
 
 TerrainData* TerrainData::ExtractRegion(int startx, int starty, int width, int height) const {
-	vector<unsigned char> regionValues(width * height);
+	vector<TerrainPoint> regionValues(width * height);
 
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
@@ -40,9 +40,9 @@ TerrainData* TerrainData::ExtractRegion(int startx, int starty, int width, int h
 // Getters
 const int& TerrainData::GetHeight() const { return height; }
 const int& TerrainData::GetWidth() const { return width; }
-vector<unsigned char>& TerrainData::GetFlattenedValues() { return flattenedValues; }
+vector<TerrainPoint>& TerrainData::GetFlattenedValues() { return flattenedValues; }
 
 // Setters
-void TerrainData::SetFlattenedValues(vector<unsigned char>& flattenedValues) {
+void TerrainData::SetFlattenedValues(vector<TerrainPoint>& flattenedValues) {
 	this->flattenedValues = flattenedValues;
 }

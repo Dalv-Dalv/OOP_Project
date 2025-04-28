@@ -16,11 +16,12 @@
 
 
 /*----------------------------------------------------------------------
-	WIP: Collision resolution
+	WIP: Ores
+	WIP TODO: In blender, make ore atlas black and white and make separate texture for colors and use it in terrain marching
 ------------------------------------------------------------------------
 	TODO: Make square marching color depend on the actual weights
 ------------------------------------------------------------------------
-	QOL: Make mining outline in square marching post processing shaderdsssswa
+	QOL: Make mining outline in square marching post processing shaders
 ------------------------------------------------------------------------
 	OPTIMIZE: Square marching post processing shader
 	OPTIMIZE: Collision detection
@@ -37,7 +38,7 @@ int main() {
 
 	TerrainData* map = nullptr;
 	try {
-		map = MapFileReader::ReadMap("GeneratedMaps/Fourth.png");
+		map = MapFileReader::ReadMap("GeneratedMaps/MapWithOres.png");
 	}catch(const exception e) {
 		cout << e.what() << endl;
 		map = new TerrainData(0, 0);

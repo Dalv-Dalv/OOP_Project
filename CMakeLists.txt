@@ -90,6 +90,7 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Testing/PulsingOrb.h
         GameLogic/Testing/OrbDeployer.cpp
         GameLogic/Testing/OrbDeployer.h
+        GameLogic/Map/TerrainPoint.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
@@ -108,8 +109,6 @@ endif()
 
 set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 
-#TODO: FIX CMAKE WITH Stefan STUFF
-
-#copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 copy_files(DIRECTORY GeneratedMaps COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
 copy_files(DIRECTORY Shaders COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
+copy_files(DIRECTORY OreTextures COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})

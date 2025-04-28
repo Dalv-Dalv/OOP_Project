@@ -5,8 +5,8 @@
 
 #include <raymath.h>
 
+#include "Terrain.h"
 #include "../../config.h"
-#include "../../cmake-build-release/_deps/raylib-src/src/external/tinyobj_loader_c.h"
 #include "../../CoreGameLogic/GameCamera.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/GameUtilities.h"
@@ -68,10 +68,10 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 	};
 
 	float cornerWeights[4] = {
-		cpuData->GetValueAt(posx    , posy + 1) / 255.0f,
-		cpuData->GetValueAt(posx + 1, posy + 1) / 255.0f,
-		cpuData->GetValueAt(posx + 1, posy    ) / 255.0f,
-		cpuData->GetValueAt(posx    , posy    ) / 255.0f
+		cpuData->GetValueAt(posx    , posy + 1).surfaceValue / 255.0f,
+		cpuData->GetValueAt(posx + 1, posy + 1).surfaceValue / 255.0f,
+		cpuData->GetValueAt(posx + 1, posy    ).surfaceValue / 255.0f,
+		cpuData->GetValueAt(posx    , posy    ).surfaceValue / 255.0f
 	};
 
 	int caseIndex = 0;
@@ -134,7 +134,7 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 		.width = mapData->GetWidth(),
 		.height = mapData->GetHeight(),
 		.mipmaps = 1,
-		.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
+		.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8
 	};
 
 	gpuData = LoadTextureFromImage(mapImage);
@@ -144,20 +144,28 @@ TerrainChunk::~TerrainChunk() {
 }
 
 
-void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc) {
+void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D oreAtlas, int oreColorsLoc, const Texture2D oreColors) {
 	Vector2 newPos(position);
 	auto camPos = GameCamera::GetActiveCamera()->GetGameObject()->position * GameCamera::GetActiveCamera()->GetZoom();
 	auto offset = GameCamera::GetActiveCamera()->GetOffsetPos();
 	newPos.x -= camPos.x - offset.x;
 	newPos.y -= camPos.y - offset.y;
+
+	float time = GetTime();
+
 	BeginShaderMode(shader);
 		SetShaderValueTexture(shader, textureLoc, gpuData);
+		SetShaderValueTexture(shader, atlasLoc, oreAtlas);
+		SetShaderValueTexture(shader, oreColorsLoc, oreColors);
+		SetShaderValue(shader, GetShaderLocation(shader, "time"), &time, SHADER_UNIFORM_FLOAT);
 		SetShaderValue(shader, posLoc, &newPos, SHADER_UNIFORM_VEC2);
 		DrawRectangle(newPos.x, newPos.y, width + 1, height + 1, WHITE);
 	EndShaderMode();
 }
 
 void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
+	float surfaceLevel = Terrain::GetActiveTerrain()->GetSurfaceLevel();
+
 	for(int x = posx - radius; x < posx + radius; x++) {
 		if(x < 0) continue;
 		if(x > chunkWidth) break;
@@ -169,9 +177,16 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			// Distance squared
 			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
 
-			float val = cpuData->GetValueAt(x, y);
-			if(miningPower * deltaTime > val) val = 0;
-			else val -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
+			auto val = cpuData->GetValueAt(x, y);
+
+
+			if(miningPower * deltaTime > val.oreValue || val.oreValue <= 0) {
+				if(val.surfaceValue / 255.0f > surfaceLevel) {
+					if(miningPower * deltaTime > val.surfaceValue) val.surfaceValue = 0;
+					else val.surfaceValue -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
+				}
+			} else val.oreValue -= miningPower * deltaTime * MiningFalloff(radius, distSqr);
+
 			cpuData->SetValueAt(x, y, val);
 		}
 	}

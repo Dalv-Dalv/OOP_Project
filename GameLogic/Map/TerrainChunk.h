@@ -25,7 +25,7 @@ public:
 	~TerrainChunk();
 
 	// TODO: Possible Optimization (MUST MEASURE FIRST): each chunk with its own shader instance
-	void Render(Shader& shader, int textureLoc, int posLoc);
+	void Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D oreAtlas, int oreColorsLoc, const Texture2D oreColors);
 	void MineAt(int posx, int posy, float radius, float miningPower, float deltaTime);
 
 	CollisionInfo CheckCollisions(Vector2 pos, int posx, int posy, float radius, float surfaceLevel, float unit);

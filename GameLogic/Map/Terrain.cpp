@@ -39,6 +39,8 @@ Terrain::~Terrain() {
 
 	// In case InitializeChunks() hasnt been called
 	if(data != nullptr) delete data;
+
+	UnloadTexture(oreAtlas);
 }
 
 
@@ -74,6 +76,10 @@ void Terrain::Awake() {
 
 	terrainShader = LoadShader(0, TextFormat("Shaders/squareMarchingShader.frag"));
 	cleanupShader = LoadShader(0, TextFormat("Shaders/squareMarchingPostProcessingShader.frag", 430));
+	oreAtlas = LoadTexture("OreTextures/OreAtlas.png");
+	oreColors = LoadTexture("OreTextures/OreColors.png");
+	SetTextureWrap(oreAtlas, TEXTURE_WRAP_CLAMP);
+	SetTextureWrap(oreColors, TEXTURE_WRAP_CLAMP);
 
 	int screenSizeLoc = GetShaderLocation(cleanupShader, "screenSize");
 	Vector2 screenSize(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
@@ -87,6 +93,8 @@ void Terrain::Awake() {
 	int interpolationAmountLoc = GetShaderLocation(terrainShader, "interpolationAmount");
 	int chunkSizeLoc = GetShaderLocation(terrainShader, "chunkSize");
 	int chunkWorldSizeLoc = GetShaderLocation(terrainShader, "chunkWorldSize");
+	atlasLoc = GetShaderLocation(terrainShader, "oreAtlas");
+	oreColorsLoc = GetShaderLocation(terrainShader, "oreColors");
 
 	SetShaderValue(terrainShader, screenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
 	SetShaderValue(terrainShader, surfaceLevelLoc, &surfaceLevel, SHADER_UNIFORM_FLOAT);
@@ -138,14 +146,14 @@ void Terrain::Render(RenderTexture2D& prev) {
 
 	for(int y = bound_ly; y <= bound_ry; y++) {
 		for(int x = bound_lx; x <= bound_rx; x++) {
-			chunks[y][x]->Render(terrainShader, textureLoc, posLoc);
+			chunks[y][x]->Render(terrainShader, textureLoc, posLoc, atlasLoc, oreAtlas, oreColorsLoc, oreColors);
 		}
 	}
 }
 void Terrain::CleanupRender(RenderTexture2D& prev) {
-	BeginShaderMode(cleanupShader);
+	// BeginShaderMode(cleanupShader);
 		RenderPipeline::DrawTextureFullScreen(prev);
-	EndShaderMode();
+	// EndShaderMode();
 }
 
 
@@ -188,6 +196,11 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 
 void Terrain::Print(std::ostream &os) const {
 	os << "Terrain";
+}
+
+
+float Terrain::GetSurfaceLevel() const {
+	return surfaceLevel;
 }
 
 
