@@ -46,12 +46,15 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 		.width = mapData->GetWidth(),
 		.height = mapData->GetHeight(),
 		.mipmaps = 1,
-		.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8
+		.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32
 	};
+
+	orePickupSound = LoadSound("Sounds/Ore_Pickup.wav");
 
 	gpuData = LoadTextureFromImage(mapImage);
 }
 TerrainChunk::~TerrainChunk() {
+	UnloadSound(orePickupSound);
 	delete cpuData;
 }
 
@@ -104,16 +107,34 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
 			float falloff = MiningFalloff(radius, distSqr);
 
-			auto val = cpuData->GetFValueAt(x, y);
+			auto val = cpuData->GetValueAt(x, y);
+			// cout << val.surfaceValue << endl;
 
-			if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
-				if(val.surfaceValue > surfaceLevel) {
-					if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel;
-					else val.surfaceValue -= miningPower * deltaTime * falloff;
+			if(val.surfaceValue < 0.1) continue;
+
+			if(val.oreValue <= 0 || val.oreType < 0.05) {
+				val.surfaceValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
+			} else {
+				val.oreValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
+				if(val.oreValue <= 0) {
+					PlaySound(orePickupSound);
 				}
-			} else val.oreValue -= miningPower * deltaTime * falloff;
+			}
 
-			cpuData->SetFValueAt(x, y, val);
+			// if(val.surfaceValue > surfaceLevel) {
+			//
+			// }else {
+			// 	// cout << "hello?" << endl;
+			// }
+
+			cpuData->SetValueAt(x, y, val);
+
+			// if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
+			// 	if(val.surfaceValue > surfaceLevel) {
+			// 		if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel - 0.01;
+			// 		else val.surfaceValue -= miningPower * deltaTime * falloff;
+			// 	}
+			// } else val.oreValue -= miningPower * deltaTime * falloff;
 		}
 	}
 
@@ -139,10 +160,10 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 	};
 
 	float cornerWeights[4] = {
-		cpuData->GetValueAt(posx    , posy + 1).surfaceValue / 255.0f,
-		cpuData->GetValueAt(posx + 1, posy + 1).surfaceValue / 255.0f,
-		cpuData->GetValueAt(posx + 1, posy    ).surfaceValue / 255.0f,
-		cpuData->GetValueAt(posx    , posy    ).surfaceValue / 255.0f
+		cpuData->GetValueAt(posx    , posy + 1).surfaceValue,
+		cpuData->GetValueAt(posx + 1, posy + 1).surfaceValue,
+		cpuData->GetValueAt(posx + 1, posy    ).surfaceValue,
+		cpuData->GetValueAt(posx    , posy    ).surfaceValue
 	};
 
 	int caseIndex = 0;
@@ -257,10 +278,10 @@ void TerrainChunk::CheckRay(Vector2 entryPos, Vector2 dir, int cellX, int cellY,
 	};
 
 	float cornerWeights[4] = {
-		cpuData->GetValueAt(cellX    , cellY + 1).surfaceValue / 255.0f,
-		cpuData->GetValueAt(cellX + 1, cellY + 1).surfaceValue / 255.0f,
-		cpuData->GetValueAt(cellX + 1, cellY    ).surfaceValue / 255.0f,
-		cpuData->GetValueAt(cellX    , cellY    ).surfaceValue / 255.0f
+		cpuData->GetValueAt(cellX    , cellY + 1).surfaceValue,
+		cpuData->GetValueAt(cellX + 1, cellY + 1).surfaceValue,
+		cpuData->GetValueAt(cellX + 1, cellY    ).surfaceValue,
+		cpuData->GetValueAt(cellX    , cellY    ).surfaceValue
 	};
 
 	int caseIndex = 0;

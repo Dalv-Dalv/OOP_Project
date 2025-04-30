@@ -41,7 +41,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	if(vsync)SetTargetFPS(144);
 	else SetTargetFPS(0);
 
-	SetConfigFlags(FLAG_MSAA_4X_HINT);
+	SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT);
 	if(!vsync) SetConfigFlags(FLAG_VSYNC_HINT);
 	if(startInFullscreen) SetConfigFlags(FLAG_FULLSCREEN_MODE);
 
@@ -50,6 +50,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	this->screenRect = Rectangle(0, 0, GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 
 	InitWindow(windowWidth, windowHeight, "Proiect POO");
+	InitAudioDevice();
 	if(!vsync) ClearWindowState(FLAG_VSYNC_HINT); // After InitWindow
 
 

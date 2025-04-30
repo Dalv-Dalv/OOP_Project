@@ -38,7 +38,7 @@ int main() {
 	player->AddComponent(new PlayerMovement(400, 0.9, 22.0f));
 	player->AddComponent(new OrbDeployer());
 	player->AddComponent(new TerrainRaycasterTest());
-	player->AddComponent(new TerrainMinerTest(2, 0.5));
+	// player->AddComponent(new TerrainMinerTest(5, 0.1));
 
 	TerrainData* map = nullptr;
 	try {

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+#define STBI_NO_STDIO //No writing, just reading
+
 TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	int width, height, channels;
 	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
@@ -25,9 +27,9 @@ TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			int index = (y * width + x) * channels;
-			unsigned char r = data[index + 0];
-			unsigned char g = data[index + 1];
-			unsigned char b = data[index + 2];
+			float r = data[index + 0] / 255.0f;
+			float g = data[index + 1] / 255.0f;
+			float b = data[index + 2] / 255.0f;
 
 			map[y * width + x] = {r, g, b};
 		}

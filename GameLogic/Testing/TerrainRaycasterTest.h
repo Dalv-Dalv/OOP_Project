@@ -9,7 +9,7 @@ private:
 
 	unsigned int renderID = 0;
 
-	RaycastHitInfo lastHitInfo;
+	RaycastHitInfo hitInfo;
 protected:
 	void Awake() override;
 	void Update(float deltaTime) override;

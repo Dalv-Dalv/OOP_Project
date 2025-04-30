@@ -16,53 +16,56 @@ void TerrainRaycasterTest::Awake() {
 
 
 void TerrainRaycasterTest::Update(float deltaTime) {
-	// Vector2 worldPos = GameCamera::ScreenToWorldCoords(GetMousePosition());
+	Vector2 worldPos = GameCamera::ScreenToWorldCoords(GetMousePosition());
+
+	if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+		Vector2 dir = worldPos - gameObject->position;
+		float dist = Vector2Length(dir);
+		dir = dir / dist;
+		hitInfo = terrain->Raycast(gameObject->position, dir, dist);
+		if(hitInfo.hasHit)
+			terrain->MineAt(hitInfo.hitPoint, 3, 0.4, deltaTime);
+	}
+
 	//
 	// if(IsMouseButtonDown(MOUSE_MIDDLE_BUTTON)) {
 	// 	Vector2 dir = worldPos - gameObject->position;
 	// 	float dist = Vector2Length(dir);
 	// 	dir = dir / dist;
-	// 	lastHitInfo = terrain->Raycast(gameObject->position, dir, dist);
+	// 	hitInfo = terrain->Raycast(gameObject->position, dir, dist);
 	// }
 }
 
 void TerrainRaycasterTest::Render() {
+	if(!IsKeyDown(KEY_R)) return;
+
 	Vector2 worldPos = GameCamera::ScreenToWorldCoords(GetMousePosition());
 
-	int i = 400;
-	float angleStep = 3.14159265f / i * 2.0f;
+	int i = 20;
+	float angleStep = 3.14159265f / (i - 1) * 0.5f;
 	Vector2 pointingDir = worldPos - gameObject->position;
-	float angle = atan2(pointingDir.y, pointingDir.x);
-	angle = 0;
+	float angle = atan2(pointingDir.y, pointingDir.x) - 3.14159265f * 0.25;
 	float dist = 500;
 	Vector2 prevHitPoint = {-1, -1};
 	while(i > 0) {
 		Vector2 dir = {cos(angle), sin(angle)};
 
-		lastHitInfo = terrain->Raycast(gameObject->position, dir, dist);
-		DrawLineEx(lastHitInfo.origin, lastHitInfo.hitPoint, 3, lastHitInfo.hasHit ? GREEN : RED);
-		DrawCircle(lastHitInfo.hitPoint.x, lastHitInfo.hitPoint.y, 8, ORANGE);
-		DrawLineEx(lastHitInfo.hitPoint, lastHitInfo.hitPoint + lastHitInfo.normal * 20, 1, RED);
+		hitInfo = terrain->Raycast(gameObject->position, dir, dist);
+		DrawLineEx(hitInfo.origin, hitInfo.hitPoint, 3, hitInfo.hasHit ? GREEN : RED);
+		DrawCircle(hitInfo.hitPoint.x, hitInfo.hitPoint.y, 8, ORANGE);
+		DrawLineEx(hitInfo.hitPoint, hitInfo.hitPoint + hitInfo.normal * 20, 1, RED);
 
 		if(prevHitPoint.x > 0) {
-			DrawLineEx(prevHitPoint, lastHitInfo.hitPoint, 5, BLUE);
+			DrawLineEx(prevHitPoint, hitInfo.hitPoint, 5, BLUE);
 		}
 
-		prevHitPoint = lastHitInfo.hitPoint;
+		prevHitPoint = hitInfo.hitPoint;
 
 		i--;
 		angle += angleStep;
 	}
 
-	if(IsKeyDown(KEY_R)) {
-		Vector2 dir = worldPos - gameObject->position;
-		float dist = Vector2Length(dir);
-		dir = dir / dist;
-		lastHitInfo = terrain->Raycast(gameObject->position, dir, dist);
-		DrawCircle(lastHitInfo.hitPoint.x, lastHitInfo.hitPoint.y, 5, ORANGE);
-		DrawLineEx(gameObject->position, lastHitInfo.hitPoint, 3, RED);
-		terrain->MineAt(lastHitInfo.hitPoint, 3, 0.2, 1.0f/144);
-	}
+
 }
 
 TerrainRaycasterTest::TerrainRaycasterTest() = default;
