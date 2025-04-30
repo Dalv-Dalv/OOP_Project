@@ -53,3 +53,9 @@ C++ Raylib Project for OOP University Class
 - [X] Exceptii (si handling)
 - [ ] Utilizarea `dynamic_cast` sau `static_cast`
 - [X] Bonus: O clasa abstracta: `Component`
+
+
+#### Cerinte Tema 3
+- [ ] Mostenire diamant
+- [X] Template: in `ActionEvent`
+- [X] Design patterns: Singleton `GameManager`, Observer with `ActionEvent` and `RenderPipelines`
