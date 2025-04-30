@@ -57,5 +57,5 @@ C++ Raylib Project for OOP University Class
 
 #### Cerinte Tema 3
 - [ ] Mostenire diamant
-- [ ] Template: in `ActionEvent`
-- [ ] Design pattern: in `ActionEvent` WIP
+- [X] Template: in `ActionEvent`
+- [X] Design patterns: Singleton `GameManager`, Observer with `ActionEvent` and `RenderPipelines`
