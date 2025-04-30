@@ -24,5 +24,6 @@ public:
 	~GameObject();
 
 	void AddComponent(Component* component);
+
 	void Destroy();
 };

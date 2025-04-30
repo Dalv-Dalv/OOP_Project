@@ -4,6 +4,7 @@
 #include "../../CoreGameLogic/Component.h"
 #include "../../CoreGameLogic/RenderPass.h"
 #include "../Collisions/CollisionInfo.h"
+#include "../Collisions/RaycastHitInfo.h"
 
 class Terrain : public Component {
 private:
@@ -46,6 +47,9 @@ public:
 	static Terrain* GetActiveTerrain();
 	// Only circle colliders will be supported
 	static CollisionInfo CheckCollisions(Vector2 pos, float radius);
+
+	static void CheckChunkRaycast(Vector2 entryPos, Vector2 dir, float maxDistance, int cellX, int cellY, float unit, RaycastHitInfo& hitInfo);
+	static RaycastHitInfo Raycast(Vector2 origin, Vector2 dir, float maxDistance);
 
 	void Print(std::ostream &os) const override;
 };

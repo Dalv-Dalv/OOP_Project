@@ -41,8 +41,9 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	if(vsync)SetTargetFPS(144);
 	else SetTargetFPS(0);
 
-	if(!vsync) SetConfigFlags(FLAG_VSYNC_HINT); // Before InitWindow
-	SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
+	SetConfigFlags(FLAG_MSAA_4X_HINT);
+	if(!vsync) SetConfigFlags(FLAG_VSYNC_HINT);
+	if(startInFullscreen) SetConfigFlags(FLAG_FULLSCREEN_MODE);
 
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
@@ -51,7 +52,6 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	InitWindow(windowWidth, windowHeight, "Proiect POO");
 	if(!vsync) ClearWindowState(FLAG_VSYNC_HINT); // After InitWindow
 
-	if(startInFullscreen) ToggleFullscreen();
 
 	GameObject* camera = new GameObject({0, 0});
 	camera->AddComponent(new GameCamera());

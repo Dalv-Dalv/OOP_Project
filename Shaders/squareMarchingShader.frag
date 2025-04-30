@@ -130,10 +130,10 @@ void main() {
     vec3(floor(texCoords), texture(mapTexture, coord, 0).r)                                      // Top left
     };
     vec3 cornerColors[4] = {
-    lerp(vec3(stylizeTerrainColor(corners[0].z)), sampleOreColor(coord + vec2(0, texUnits.y)), texture(mapTexture, coord + vec2(0, texUnits.y), 0).g),
-    lerp(vec3(stylizeTerrainColor(corners[1].z)), sampleOreColor(coord + texUnits),            texture(mapTexture, coord + texUnits, 0).g),
-    lerp(vec3(stylizeTerrainColor(corners[2].z)), sampleOreColor(coord + vec2(texUnits.x, 0)), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).g),
-    lerp(vec3(stylizeTerrainColor(corners[3].z)), sampleOreColor(coord),                       texture(mapTexture, coord, 0).g)
+        lerp(vec3(stylizeTerrainColor(corners[0].z)), sampleOreColor(coord + vec2(0, texUnits.y)), texture(mapTexture, coord + vec2(0, texUnits.y), 0).g),
+        lerp(vec3(stylizeTerrainColor(corners[1].z)), sampleOreColor(coord + texUnits),            texture(mapTexture, coord + texUnits, 0).g),
+        lerp(vec3(stylizeTerrainColor(corners[2].z)), sampleOreColor(coord + vec2(texUnits.x, 0)), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).g),
+        lerp(vec3(stylizeTerrainColor(corners[3].z)), sampleOreColor(coord),                       texture(mapTexture, coord, 0).g)
     };
 
     // Bilinear filtering for the color

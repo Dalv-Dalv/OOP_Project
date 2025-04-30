@@ -7,7 +7,6 @@
 #include "config.h"
 
 #include <rlgl.h>
-#include <raymath.h>
 
 #include "../PlayerMovement.h"
 #include "../../CoreGameLogic/GameManager.h"
@@ -193,6 +192,119 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 	}
 }
 
+//CRITICAL REMOVE LATER
+void Terrain::CheckChunkRaycast(Vector2 entryPos, Vector2 dir, float maxDistance, int cellX, int cellY, float unit, RaycastHitInfo& hitInfo) {
+	// DrawCircle(entryPos.x, entryPos.y, 5, GREEN);
+	if(cellX < 0) {
+		hitInfo.hitPoint = entryPos;
+		hitInfo.normal = {1, 0};
+		hitInfo.hasHit = true;
+		return;
+	}
+	if(cellX > instance->width) {
+		hitInfo.hitPoint = entryPos;
+		hitInfo.normal = {-1, 0};
+		hitInfo.hasHit = true;
+		return;
+	}
+	if(cellY < 0) {
+		hitInfo.hitPoint = entryPos;
+		hitInfo.normal = {0, 1};
+		hitInfo.hasHit = true;
+		return;
+	}
+	if(cellY > instance->height) {
+		hitInfo.hitPoint = entryPos;
+		hitInfo.normal = {0, -1};
+		hitInfo.hasHit = true;
+		return;
+	}
+
+	instance->chunks[cellY][cellX]->CheckRaycast(entryPos, dir, maxDistance, unit, instance->surfaceLevel, hitInfo);
+}
+
+/// @param dir - Normalized direction
+RaycastHitInfo Terrain::Raycast(Vector2 origin, Vector2 dir, float maxDistance) {
+	const float unit = instance->TerrainScale * instance->worldScale;
+	int cellSize = instance->chunkSize * unit;
+	float dist = 0;
+
+	RaycastHitInfo res(0, false, origin, {0, 0}, {0, 0});
+
+	// Amanatides-Woo fast voxel traversal algorithm
+	int cellX = floor(origin.x / cellSize);
+	int cellY = floor(origin.y / cellSize);
+
+	int stepX, stepY;
+	float mx, my;
+	float dx, dy;
+
+	if(dir.x > 0.0f) {
+		stepX = 1;
+		mx = ((cellX + 1) * cellSize - origin.x) / dir.x;
+		dx = cellSize / dir.x;
+	} else if(dir.x < 0.0f) {
+		stepX = -1;
+		mx = (origin.x - cellX * cellSize) / (-dir.x);
+		dx = cellSize / (-dir.x);
+	} else {
+		stepX = 0;
+		mx = numeric_limits<float>::infinity();
+		dx = numeric_limits<float>::infinity();
+	}
+
+	if(dir.y > 0.0f) {
+		stepY = 1;
+		my = ((cellY + 1) * cellSize - origin.y) / dir.y;
+		dy = cellSize / dir.y;
+	} else if(dir.y < 0.0f) {
+		stepY = -1;
+		my = (origin.y - cellY * cellSize) / (-dir.y);
+		dy = cellSize / (-dir.y);
+	} else {
+		stepY = 0;
+		my = numeric_limits<float>::infinity();
+		dy = numeric_limits<float>::infinity();
+	}
+
+	Vector2 entryPos = origin;
+	CheckChunkRaycast(entryPos, dir, maxDistance, cellX, cellY, unit, res);
+	if(res.hasHit) {
+		if(res.hitDistance > maxDistance) {
+			res.hasHit = false;
+			res.hitPoint = origin + dir * maxDistance;
+			res.normal = {0, 0};
+		}
+		return res;
+	}
+
+	while(res.hitDistance <= maxDistance) {
+		if(mx < my) {
+			res.hitDistance = mx;
+			if(res.hitDistance > maxDistance) break;
+			cellX += stepX;
+			mx += dx;
+		} else {
+			res.hitDistance = my;
+			if(res.hitDistance > maxDistance) break;
+			cellY += stepY;
+			my += dy;
+		}
+		entryPos = origin + dir * res.hitDistance;
+
+		CheckChunkRaycast(entryPos, dir, maxDistance - res.hitDistance, cellX, cellY, unit, res);
+		if(res.hasHit) {
+			if(res.hitDistance > maxDistance) {
+				res.hasHit = false;
+				res.hitPoint = origin + dir * maxDistance;
+				res.normal = {0, 0};
+			}
+			return res;
+		}
+	}
+
+	return {-1, false, origin, {0, 0}, origin + dir * maxDistance};
+}
 
 void Terrain::Print(std::ostream &os) const {
 	os << "Terrain";
@@ -216,16 +328,9 @@ CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
 	int pixelX = round(pos.x / unit);
 	int pixelY = round(pos.y / unit);
 
-	// DrawCircle(pixelX * unit, pixelY * unit, 10, RED);
-
 	// Get the chunk indices within the rectangle determined by the mining radius
 	int bound_lx = pixelX - radius - 1, bound_rx = pixelX + radius;
 	int bound_ly = pixelY - radius - 1, bound_ry = pixelY + radius;
-
-	// DrawCircle(bound_lx * unit, bound_ly * unit, 10, PURPLE);
-	// DrawCircle(bound_lx * unit, bound_ry * unit, 10, PURPLE);
-	// DrawCircle(bound_rx * unit, bound_ry * unit, 10, PURPLE);
-	// DrawCircle(bound_rx * unit, bound_ly * unit, 10, PURPLE);
 
 	bound_lx /= instance->chunkSize; bound_rx /= instance->chunkSize;
 	bound_ly /= instance->chunkSize; bound_ry /= instance->chunkSize;
@@ -245,9 +350,6 @@ CollisionInfo Terrain::CheckCollisions(Vector2 pos, float radius) {
 			res = min(res, instance->chunks[y][x]->CheckCollisions(pos, localX, localY, radius, instance->surfaceLevel, unit));
 		}
 	}
-
-	// DrawLineEx(pos, res.closestPoint, 3, GREEN);
-	// DrawCircle(res.closestPoint.x, res.closestPoint.y, 7, GREEN);
 
 	return res;
 }

@@ -1,6 +1,7 @@
 #include "TerrainChunk.h"
 
 #include <iostream>
+#include <optional>
 #include <external/glad.h>
 
 #include <raymath.h>
@@ -34,6 +35,89 @@ const vector<vector<int>> TerrainChunk::squareMarchingTable = {
 void TerrainChunk::UpdateGPUData() {
 	auto& imageData = cpuData->GetTerrainValues();
 	UpdateTexture(gpuData, imageData.data());
+}
+
+TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData)
+: position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
+	auto& imageData = mapData->GetTerrainValues();
+
+	Image mapImage {
+		.data = imageData.data(),
+		.width = mapData->GetWidth(),
+		.height = mapData->GetHeight(),
+		.mipmaps = 1,
+		.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8
+	};
+
+	gpuData = LoadTextureFromImage(mapImage);
+}
+TerrainChunk::~TerrainChunk() {
+	delete cpuData;
+}
+
+
+void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D oreAtlas, int oreColorsLoc, const Texture2D oreColors) {
+	Vector2 newPos(position);
+	auto camPos = GameCamera::GetActiveCamera()->GetGameObject()->position * GameCamera::GetActiveCamera()->GetZoom();
+	auto offset = GameCamera::GetActiveCamera()->GetOffsetPos();
+	newPos.x -= camPos.x - offset.x;
+	newPos.y -= camPos.y - offset.y;
+
+	float time = GetTime();
+
+	BeginShaderMode(shader);
+		SetShaderValueTexture(shader, textureLoc, gpuData);
+		SetShaderValueTexture(shader, atlasLoc, oreAtlas);
+		SetShaderValueTexture(shader, oreColorsLoc, oreColors);
+		SetShaderValue(shader, GetShaderLocation(shader, "time"), &time, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(shader, posLoc, &newPos, SHADER_UNIFORM_VEC2);
+		DrawRectangle(newPos.x, newPos.y, width + 1, height + 1, WHITE);
+	EndShaderMode();
+}
+
+
+float TerrainChunk::MiningFalloff(float radius, float distSqr) {
+	if(distSqr > radius * radius || distSqr < 0) return 0;
+
+	distSqr = sqrt(distSqr);
+
+	// linear
+	float t = GameUtilities::inverseLerp(0, radius, distSqr);
+
+	// quadratic
+	t = 1 - t * t * t;
+	return t;
+}
+void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
+	float surfaceLevel = Terrain::GetActiveTerrain()->GetSurfaceLevel();
+	posy -= 1;
+
+	for(int x = posx - radius; x < posx + radius; x++) {
+		if(x < 0) continue;
+		if(x > chunkWidth) break;
+
+		for(int y = posy - radius; y < posy + radius; y++) {
+			if(y < 0) continue;
+			if(y > chunkHeight) break;
+
+			// Distance squared
+			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
+			float falloff = MiningFalloff(radius, distSqr);
+
+			auto val = cpuData->GetFValueAt(x, y);
+
+			if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
+				if(val.surfaceValue > surfaceLevel) {
+					if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel;
+					else val.surfaceValue -= miningPower * deltaTime * falloff;
+				}
+			} else val.oreValue -= miningPower * deltaTime * falloff;
+
+			cpuData->SetFValueAt(x, y, val);
+		}
+	}
+
+	UpdateGPUData();
 }
 
 Vector2 TerrainChunk::CalculateEdgePoint(Vector2 v1, float w1, Vector2 v2, float w2, float surfaceLevel) const {
@@ -112,88 +196,6 @@ void TerrainChunk::CheckMinCollisionAt(Vector2 pos, int posx, int posy, Collisio
 	}
 }
 
-TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWidth, int chunkHeight, TerrainData* mapData)
-: position(position), width(width), height(height), chunkWidth(chunkWidth), chunkHeight(chunkHeight), cpuData(mapData){
-	auto& imageData = mapData->GetTerrainValues();
-
-	Image mapImage {
-		.data = imageData.data(),
-		.width = mapData->GetWidth(),
-		.height = mapData->GetHeight(),
-		.mipmaps = 1,
-		.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8
-	};
-
-	gpuData = LoadTextureFromImage(mapImage);
-}
-TerrainChunk::~TerrainChunk() {
-	delete cpuData;
-}
-
-
-void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D oreAtlas, int oreColorsLoc, const Texture2D oreColors) {
-	Vector2 newPos(position);
-	auto camPos = GameCamera::GetActiveCamera()->GetGameObject()->position * GameCamera::GetActiveCamera()->GetZoom();
-	auto offset = GameCamera::GetActiveCamera()->GetOffsetPos();
-	newPos.x -= camPos.x - offset.x;
-	newPos.y -= camPos.y - offset.y;
-
-	float time = GetTime();
-
-	BeginShaderMode(shader);
-		SetShaderValueTexture(shader, textureLoc, gpuData);
-		SetShaderValueTexture(shader, atlasLoc, oreAtlas);
-		SetShaderValueTexture(shader, oreColorsLoc, oreColors);
-		SetShaderValue(shader, GetShaderLocation(shader, "time"), &time, SHADER_UNIFORM_FLOAT);
-		SetShaderValue(shader, posLoc, &newPos, SHADER_UNIFORM_VEC2);
-		DrawRectangle(newPos.x, newPos.y, width + 1, height + 1, WHITE);
-	EndShaderMode();
-}
-
-
-float TerrainChunk::MiningFalloff(float radius, float distSqr) {
-	if(distSqr > radius * radius || distSqr < 0) return 0;
-
-	distSqr = sqrt(distSqr);
-
-	// linear
-	float t = GameUtilities::inverseLerp(0, radius, distSqr);
-
-	// quadratic
-	t = 1 - t * t * t;
-	return t;
-}
-void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
-	float surfaceLevel = Terrain::GetActiveTerrain()->GetSurfaceLevel();
-
-	for(int x = posx - radius; x < posx + radius; x++) {
-		if(x < 0) continue;
-		if(x > chunkWidth) break;
-
-		for(int y = posy - radius; y < posy + radius; y++) {
-			if(y < 0) continue;
-			if(y > chunkHeight) break;
-
-			// Distance squared
-			float distSqr = (posx - x) * (posx - x) + (posy - y) * (posy - y);
-			float falloff = MiningFalloff(radius, distSqr);
-
-			auto val = cpuData->GetFValueAt(x, y);
-
-			if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
-				if(val.surfaceValue > surfaceLevel) {
-					if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel;
-					else val.surfaceValue -= miningPower * deltaTime * falloff;
-				}
-			} else val.oreValue -= miningPower * deltaTime * falloff;
-
-			cpuData->SetFValueAt(x, y, val);
-		}
-	}
-
-	UpdateGPUData();
-}
-
 CollisionInfo TerrainChunk::CheckCollisions(Vector2 pos, int posx, int posy, float radius, float surfaceLevel, float unit) {
 	CollisionInfo res(1000000000, {0, 0}, pos);
 	// Highlight();
@@ -210,6 +212,154 @@ CollisionInfo TerrainChunk::CheckCollisions(Vector2 pos, int posx, int posy, flo
 	}
 	return res;
 }
+
+void TerrainChunk::RaySegmentIntersection(Vector2 rOrigin, Vector2 rDir, Vector2 p1, Vector2 p2, RaycastHitInfo& hitInfo) {
+	Vector2 seg = p2 - p1;
+	float denominator = seg.x * rDir.y - seg.y * rDir.x;
+		// Lines are close to parallel
+	if(abs(denominator) < 0.000001) { return; }
+
+	Vector2 diff = rOrigin - p1;
+	float t = (diff.x * rDir.y - diff.y * rDir.x) / denominator;
+	float u = (diff.x * seg.y - diff.y * seg.x) / denominator;
+
+	if(t >= 0.0f && t <= 1.0f && u >= 0.0f) {
+		RaycastHitInfo minRay = hitInfo;
+		minRay.normal = { seg.y, -seg.x};
+		minRay.normal *= GameUtilities::fastInverseSqrt(seg.x * seg.x + seg.y * seg.y);
+		minRay.hitPoint = p1 + seg * t;
+		minRay.hitDistance = GameUtilities::Distance(hitInfo.origin, minRay.hitPoint);
+		// DrawCircle(minRay.hitPoint.x, minRay.hitPoint.y, 7, RED);
+		// DrawLineEx(minRay.hitPoint, minRay.hitPoint + minRay.normal * 200, 3, MAGENTA);
+		minRay.hasHit = true;
+		hitInfo = min(minRay, hitInfo);
+	}
+}
+
+void TerrainChunk::CheckRay(Vector2 entryPos, Vector2 dir, int cellX, int cellY, float unit, float surfaceLevel, RaycastHitInfo& hitInfo) {
+	cellX = cellX + 1;
+	cellY = chunkHeight - cellY - 2;
+	if(cellX < 1 || cellX > chunkWidth - 2) return;
+	if(cellY < 1 || cellY > chunkHeight - 2) return;
+
+	// DrawCircle(entryPos.x, entryPos.y, 3, RED);
+	// DrawRectangle(position.x + unit * (cellX - 1), position.y + unit * (chunkHeight - cellY - 2), unit, unit, {255, 0, 0, 100});
+
+
+	float offsX = position.x + (cellX - 1) * unit;
+	float offsY = position.y + (chunkHeight - cellY - 1) * unit;
+
+	Vector2 corners[4] ={
+		Vector2(offsX       , offsY - unit),
+		Vector2(offsX + unit, offsY - unit),
+		Vector2(offsX + unit, offsY       ),
+		Vector2(offsX       , offsY       )
+	};
+
+	float cornerWeights[4] = {
+		cpuData->GetValueAt(cellX    , cellY + 1).surfaceValue / 255.0f,
+		cpuData->GetValueAt(cellX + 1, cellY + 1).surfaceValue / 255.0f,
+		cpuData->GetValueAt(cellX + 1, cellY    ).surfaceValue / 255.0f,
+		cpuData->GetValueAt(cellX    , cellY    ).surfaceValue / 255.0f
+	};
+
+	int caseIndex = 0;
+	if(cornerWeights[0] >= surfaceLevel) caseIndex |= 1;
+	if(cornerWeights[1] >= surfaceLevel) caseIndex |= 2;
+	if(cornerWeights[2] >= surfaceLevel) caseIndex |= 4;
+	if(cornerWeights[3] >= surfaceLevel) caseIndex |= 8;
+	if(caseIndex == 0) return;
+
+	if(caseIndex == 15) {
+		hitInfo.hitPoint = entryPos;
+		hitInfo.hasHit = true;
+		hitInfo.normal = {-dir.x, -dir.y};
+		return;
+	}
+
+	Vector2 edgePoints[4] = {
+		CalculateEdgePoint(corners[0], cornerWeights[0], corners[1], cornerWeights[1], surfaceLevel),
+		CalculateEdgePoint(corners[1], cornerWeights[1], corners[2], cornerWeights[2], surfaceLevel),
+		CalculateEdgePoint(corners[2], cornerWeights[2], corners[3], cornerWeights[3], surfaceLevel),
+		CalculateEdgePoint(corners[3], cornerWeights[3], corners[0], cornerWeights[0], surfaceLevel)
+	};
+
+	for(int i = 0; i < squareMarchingTable[caseIndex].size(); i += 2) {
+		const Vector2& p1 = edgePoints[squareMarchingTable[caseIndex][i]];
+		const Vector2& p2 = edgePoints[squareMarchingTable[caseIndex][i + 1]];
+
+		// DrawLineEx(p1, p2, 4, RED);
+
+		RaySegmentIntersection(entryPos, dir, p1, p2, hitInfo);
+	}
+}
+
+/// @param dir - Normalized direction
+/// @param hitInfo
+void TerrainChunk::CheckRaycast(Vector2 origin, Vector2 dir, float maxDistance, float unit, float surfaceLevel, RaycastHitInfo& hitInfo) {
+	// Amanatides-Woo fast voxel traversal algorithm
+	Vector2 localOrigin = origin - position;
+	// Highlight();
+
+
+	int cellX = floor(localOrigin.x / unit);
+	int cellY = floor(localOrigin.y / unit);
+
+	int stepX, stepY;
+	float mx, my;
+	float dx, dy;
+
+	if(dir.x > 0.0f) {
+		stepX = 1;
+		mx = ((cellX + 1) * unit - localOrigin.x) / dir.x;
+		dx = unit / dir.x;
+	} else if(dir.x < 0.0f) {
+		stepX = -1;
+		mx = (localOrigin.x - cellX * unit) / (-dir.x);
+		dx = unit / (-dir.x);
+	} else {
+		stepX = 0;
+		mx = numeric_limits<float>::infinity();
+		dx = numeric_limits<float>::infinity();
+	}
+
+	if(dir.y > 0.0f) {
+		stepY = 1;
+		my = ((cellY + 1) * unit - localOrigin.y) / dir.y;
+		dy = unit / dir.y;
+	} else if(dir.y < 0.0f) {
+		stepY = -1;
+		my = (localOrigin.y - cellY * unit) / (-dir.y);
+		dy = unit / (-dir.y);
+	} else {
+		stepY = 0;
+		my = numeric_limits<float>::infinity();
+		dy = numeric_limits<float>::infinity();
+	}
+
+	Vector2 entryPos = localOrigin;
+	CheckRay(origin, dir, cellX, cellY, unit, surfaceLevel, hitInfo);
+
+	float traveled = 0;
+	while(traveled <= maxDistance) {
+		if(mx < my) {
+			traveled = mx;
+			if(traveled > maxDistance) break;
+			cellX += stepX;
+			mx += dx;
+		} else {
+			traveled = my;
+			if(traveled > maxDistance) break;
+			cellY += stepY;
+			my += dy;
+		}
+		entryPos = localOrigin + dir * traveled;
+
+		CheckRay(origin, dir, cellX, cellY, unit, surfaceLevel, hitInfo);
+		if(hitInfo.hasHit) return;
+	}
+}
+
 
 void TerrainChunk::Highlight() {
 	DrawRectangle(position.x, position.y, width + 1, height + 1, Color(100, 100, 255, 40));

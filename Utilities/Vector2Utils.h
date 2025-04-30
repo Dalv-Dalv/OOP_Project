@@ -30,6 +30,7 @@ namespace GameUtilities {
 	std::ostream& operator<<(std::ostream& os, const Vector2& v);
 
 	float V2Length(const Vector2& v);
+	float Distance(const Vector2& a, const Vector2& b);
 
 	Vector2 V2Normalized(const Vector2& v);
 

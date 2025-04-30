@@ -9,16 +9,20 @@
 #include "Libraries/stb_image.h"
 #include "iostream"
 #include "CoreGameLogic/RenderPipeline.h"
-#include "GameLogic/TerrainMinerTest.h"
+#include "GameLogic/Testing/TerrainMinerTest.h"
 #include "GameLogic/Map/MapFileReader.h"
 #include "GameLogic/Map/Terrain.h"
 #include "GameLogic/Testing/OrbDeployer.h"
+#include "GameLogic/Testing/TerrainRaycasterTest.h"
 
 
 /*----------------------------------------------------------------------
+	CRITICAL: Read the image using unsigned char, use an internal RGB16F texture
+------------------------------------------------------------------------
 	WIP: Ores
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders
+	QOL: void(Args...) pt idamageable
 ------------------------------------------------------------------------
 	OPTIMIZE: Square marching post processing shader
 	OPTIMIZE: Collision detection
@@ -33,10 +37,12 @@ int main() {
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
 	player->AddComponent(new PlayerMovement(400, 0.9, 22.0f));
 	player->AddComponent(new OrbDeployer());
+	player->AddComponent(new TerrainRaycasterTest());
+	player->AddComponent(new TerrainMinerTest(2, 0.5));
 
 	TerrainData* map = nullptr;
 	try {
-		map = MapFileReader::ReadMap("GeneratedMaps/MapWithOres.png");
+		map = MapFileReader::ReadMap("GeneratedMaps/MapWithOresS300.png");
 	}catch(const exception e) {
 		cout << e.what() << endl;
 		map = new TerrainData(0, 0);
@@ -44,9 +50,6 @@ int main() {
 
 	auto* terrain = new GameObject({0, 0});
 	terrain->AddComponent(new Terrain(map, 0.5, 1.5, TERRAIN_INTERPOLATION_AMOUNT, 128));
-
-	auto* miner = new GameObject({0, 0});
-	miner->AddComponent(new TerrainMinerTest(5, 0.5));
 
 	GameManager* gameManager = GameManager::GetInstance();
 	gameManager->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, USE_FULLSCREEN, USE_VSYNC);

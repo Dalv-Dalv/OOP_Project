@@ -1,9 +1,12 @@
 #pragma once
 
+#include <optional>
+
 #include "TerrainData.h"
 #include <raylib.h>
 
 #include "../Collisions/CollisionInfo.h"
+#include "../Collisions/RaycastHitInfo.h"
 
 class TerrainChunk {
 private:
@@ -29,6 +32,9 @@ public:
 	void MineAt(int posx, int posy, float radius, float miningPower, float deltaTime);
 
 	CollisionInfo CheckCollisions(Vector2 pos, int posx, int posy, float radius, float surfaceLevel, float unit);
+	void RaySegmentIntersection(Vector2 rOrigin, Vector2 rDir, Vector2 p1, Vector2 p2, RaycastHitInfo& hitInfo);
+	void CheckRay(Vector2 entryPos, Vector2 dir, int cellX, int cellY, float unit, float surfaceLevel, RaycastHitInfo& hitInfo);
+	void CheckRaycast(Vector2 origin, Vector2 dir, float maxDistance, float unit, float surfaceLevel, RaycastHitInfo& hitInfo);
 
 	void Highlight();
 

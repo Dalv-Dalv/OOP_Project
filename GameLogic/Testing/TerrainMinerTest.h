@@ -1,6 +1,6 @@
 #pragma once
-#include "../CoreGameLogic/Component.h"
-#include "Map/Terrain.h"
+#include "../../CoreGameLogic/Component.h"
+#include "../Map/Terrain.h"
 
 class TerrainMinerTest : public Component {
 private:

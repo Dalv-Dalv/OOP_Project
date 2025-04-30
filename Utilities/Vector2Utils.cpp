@@ -84,6 +84,10 @@ namespace GameUtilities {
 	float V2Length(const Vector2& v) {
 		return std::sqrt(v.x * v.x + v.y * v.y);
 	}
+	float Distance(const Vector2& a, const Vector2& b) {
+		return V2Length(b - a);
+	}
+
 
 	Vector2 V2Normalized(const Vector2& v) {
 		return v * fastInverseSqrt(v.x * v.x + v.y * v.y);

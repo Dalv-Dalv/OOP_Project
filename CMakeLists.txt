@@ -80,8 +80,8 @@ add_executable(${PROJECT_NAME} main.cpp
         EventSystem/FunctionEvent.h
         CoreGameLogic/RenderPass.cpp
         CoreGameLogic/RenderPass.h
-        GameLogic/TerrainMinerTest.cpp
-        GameLogic/TerrainMinerTest.h
+        GameLogic/Testing/TerrainMinerTest.cpp
+        GameLogic/Testing/TerrainMinerTest.h
         CoreGameLogic/GameCamera.cpp
         CoreGameLogic/GameCamera.h
         GameLogic/Collisions/CollisionInfo.h
@@ -91,6 +91,9 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Testing/OrbDeployer.cpp
         GameLogic/Testing/OrbDeployer.h
         GameLogic/Map/TerrainPoint.h
+        GameLogic/Collisions/RaycastHitInfo.h
+        GameLogic/Testing/TerrainRaycasterTest.cpp
+        GameLogic/Testing/TerrainRaycasterTest.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
