@@ -94,6 +94,8 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Collisions/RaycastHitInfo.h
         GameLogic/Testing/TerrainRaycasterTest.cpp
         GameLogic/Testing/TerrainRaycasterTest.h
+        GameLogic/UI/UIManager.cpp
+        GameLogic/UI/UIManager.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 
@@ -115,4 +117,4 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 copy_files(DIRECTORY GeneratedMaps COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
 copy_files(DIRECTORY Shaders COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
 copy_files(DIRECTORY Sounds COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
-copy_files(DIRECTORY OreTextures COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})
+copy_files(DIRECTORY Textures COPY_TO_DESTINATION TARGET_NAME ${PROJECT_NAME})

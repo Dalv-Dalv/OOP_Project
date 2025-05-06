@@ -11,6 +11,7 @@ RenderPass::RenderPass(int width, int height, int priority) : priority(priority)
 }
 RenderPass::~RenderPass() {
 	UnloadRenderTexture(renderTexture);
+	renderFunctions.Clear();
 }
 
 shared_ptr<RenderPass> RenderPass::Create(int width, int height, int priority, bool useCamera) {
@@ -19,6 +20,13 @@ shared_ptr<RenderPass> RenderPass::Create(int width, int height, int priority, b
 	ptr->useCamera = useCamera;
 	return ptr;
 }
+shared_ptr<RenderPass> RenderPass::Create(int priority, bool useCamera) {
+	auto ptr = make_shared<RenderPass>(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), priority);
+	RenderPipeline::GetInstance()->AddRenderPass(ptr);
+	ptr->useCamera = useCamera;
+	return ptr;
+}
+
 
 
 unsigned int RenderPass::AddFunction(const function<void(RenderTexture2D&)>& function) {

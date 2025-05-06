@@ -16,8 +16,6 @@ private:
 	Texture2D gpuData; // Used for rendering
 	TerrainData* cpuData; // Used for collisions
 
-	Sound orePickupSound; //TODO: REMOVE LATER
-
 	static const vector<vector<int>> squareMarchingTable;
 
 	void UpdateGPUData();

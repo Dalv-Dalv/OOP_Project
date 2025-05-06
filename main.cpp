@@ -17,8 +17,9 @@
 
 
 /*----------------------------------------------------------------------
-	CRITICAL: Read the image using unsigned char, use an internal RGB16F texture
-------------------------------------------------------------------------
+	CRITICAL: Make HARDNESS (alpha channel)
+	WIP: UI
+	WIP: Ores UI
 	WIP: Ores
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders

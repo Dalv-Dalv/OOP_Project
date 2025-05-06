@@ -37,16 +37,14 @@ void PulsingOrb::Render() const {
 
 PulsingOrb::PulsingOrb(float startV, float sizeIncrease, Vector2 startVelocity, Color color) : startV(startV), sizeIncrease(sizeIncrease), velocity(startVelocity), color(color) {
 	if(GameManager::GetScenePass() == nullptr) return;
-	renderID = GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
+	GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
 		Render();
 	});
 
 	startTime = GetTime();
 }
 
-PulsingOrb::~PulsingOrb() {
-	GameManager::GetScenePass()->RemoveFunction(renderID);
-}
+PulsingOrb::~PulsingOrb() { }
 
 void PulsingOrb::Print(std::ostream& os) const {
 	os << "Pulsing Orb Renderer";

@@ -5,13 +5,13 @@
 class GameManager {
 private:
 	static GameManager* instance;
-	GameManager() {}
+	GameManager() = default;
 
 	int windowWidth, windowHeight;
 	Rectangle screenRect;
 
 	RenderPipeline* renderPipeline;
-	shared_ptr<RenderPass> scenePass, uiPass;
+	shared_ptr<RenderPass> scenePass;
 
 	static ActionEvent<> onGameClose;
 
@@ -31,7 +31,6 @@ public:
 
 	static Rectangle GetScreenRect();
 	static shared_ptr<RenderPass> GetScenePass();
-	static shared_ptr<RenderPass> GetUIPass();
 
 	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen, bool vsync = true);
 	void StartGameLoop();

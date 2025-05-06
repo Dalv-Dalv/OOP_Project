@@ -19,7 +19,11 @@ private:
 public:
 	RenderPass(int width, int height, int priority);
 	~RenderPass();
+
+	/// @param priority - Used in render order; priority of 0 means it will render first
 	static shared_ptr<RenderPass> Create(int width, int height, int priority, bool useCamera = false);
+	/// @param priority - Used in render order; priority of 0 means it will render first
+	static shared_ptr<RenderPass> Create(int priority, bool useCamera = false);
 
 	unsigned int AddFunction(const function<void(RenderTexture2D&)>& function);
 	void RemoveFunction(unsigned int functionID);

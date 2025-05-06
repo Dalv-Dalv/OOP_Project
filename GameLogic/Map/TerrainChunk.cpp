@@ -49,12 +49,9 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 		.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32
 	};
 
-	orePickupSound = LoadSound("Sounds/Ore_Pickup.wav");
-
 	gpuData = LoadTextureFromImage(mapImage);
 }
 TerrainChunk::~TerrainChunk() {
-	UnloadSound(orePickupSound);
 	delete cpuData;
 }
 
@@ -117,7 +114,7 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			} else {
 				val.oreValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
 				if(val.oreValue <= 0) {
-					PlaySound(orePickupSound);
+					// PlaySound(orePickupSound);
 				}
 			}
 

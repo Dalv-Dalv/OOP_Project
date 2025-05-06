@@ -73,10 +73,10 @@ void Terrain::InitializeChunks() {
 void Terrain::Awake() {
 	InitializeChunks();
 
-	terrainShader = LoadShader(0, TextFormat("Shaders/squareMarchingShader.frag"));
-	cleanupShader = LoadShader(0, TextFormat("Shaders/squareMarchingPostProcessingShader.frag", 430));
-	oreAtlas = LoadTexture("OreTextures/OreAtlas.png");
-	oreColors = LoadTexture("OreTextures/OreColors.png");
+	terrainShader = LoadShader(0, "Shaders/squareMarchingShader.frag");
+	cleanupShader = LoadShader(0, "Shaders/squareMarchingPostProcessingShader.frag");
+	oreAtlas = LoadTexture("Textures/OreAtlas.png");
+	oreColors = LoadTexture("Textures/OreColors.png");
 	SetTextureWrap(oreAtlas, TEXTURE_WRAP_CLAMP);
 	SetTextureWrap(oreColors, TEXTURE_WRAP_CLAMP);
 
@@ -105,14 +105,9 @@ void Terrain::Awake() {
 	SetShaderValue(terrainShader, chunkSizeLoc, &floatChunkSize, SHADER_UNIFORM_FLOAT);
 	SetShaderValue(terrainShader, chunkWorldSizeLoc, &chunkWorldSize, SHADER_UNIFORM_VEC2);
 
-	renderPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 0, false);
+	renderPass = RenderPass::Create(0, false);
 	renderPass->AddFunction([this](RenderTexture2D& prev) {
 		Render(prev);
-	});
-
-	cleanupPass = RenderPass::Create(GameManager::GetWindowWidth(), GameManager::GetWindowHeight(), 1, false);
-	cleanupPass->AddFunction([this](RenderTexture2D& prev) {
-		CleanupRender(prev);
 	});
 }
 
@@ -148,11 +143,6 @@ void Terrain::Render(RenderTexture2D& prev) {
 			chunks[y][x]->Render(terrainShader, textureLoc, posLoc, atlasLoc, oreAtlas, oreColorsLoc, oreColors);
 		}
 	}
-}
-void Terrain::CleanupRender(RenderTexture2D& prev) {
-	// BeginShaderMode(cleanupShader);
-		RenderPipeline::DrawTextureFullScreen(prev);
-	// EndShaderMode();
 }
 
 
@@ -192,7 +182,6 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 	}
 }
 
-//CRITICAL REMOVE LATER
 void Terrain::CheckChunkRaycast(Vector2 entryPos, Vector2 dir, float maxDistance, int cellX, int cellY, float unit, RaycastHitInfo& hitInfo) {
 	// DrawCircle(entryPos.x, entryPos.y, 5, GREEN);
 	if(cellX < 0) {

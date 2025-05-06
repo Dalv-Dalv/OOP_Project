@@ -19,8 +19,7 @@ private:
 
 	const float TerrainScale = 15.0;
 
-	shared_ptr<RenderPass> renderPass; unsigned int renderID;
-	shared_ptr<RenderPass> cleanupPass; unsigned int cleanupRenderID;
+	shared_ptr<RenderPass> renderPass;
 	Shader terrainShader; int textureLoc, posLoc, atlasLoc, oreColorsLoc;
 	Shader cleanupShader;
 
@@ -28,7 +27,6 @@ private:
 
 	void InitializeChunks();
 	void Render(RenderTexture2D& prev);
-	void CleanupRender(RenderTexture2D& prev);
 
 protected:
 	void Awake() override;

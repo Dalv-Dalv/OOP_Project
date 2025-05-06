@@ -9,7 +9,7 @@
 #include "Map/Terrain.h"
 
 void PlayerRenderer::Awake() {
-	renderID = GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
+	GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
 		Render();
 	});
 }
@@ -22,9 +22,7 @@ void PlayerRenderer::Render() const {
 
 PlayerRenderer::PlayerRenderer(float size, Color color) : size(size), color(color) {}
 
-PlayerRenderer::~PlayerRenderer() {
-	GameManager::GetScenePass()->RemoveFunction(renderID);
-}
+PlayerRenderer::~PlayerRenderer() { }
 
 void PlayerRenderer::Print(std::ostream &os) const {
 	os << "PlayerRenderer";

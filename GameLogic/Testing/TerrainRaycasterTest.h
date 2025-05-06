@@ -7,8 +7,6 @@ class TerrainRaycasterTest : public Component {
 private:
 	Terrain* terrain = nullptr;
 
-	unsigned int renderID = 0;
-
 	RaycastHitInfo hitInfo;
 protected:
 	void Awake() override;

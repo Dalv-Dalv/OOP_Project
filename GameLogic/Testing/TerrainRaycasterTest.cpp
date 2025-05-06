@@ -9,7 +9,7 @@
 void TerrainRaycasterTest::Awake() {
 	terrain = Terrain::GetActiveTerrain();
 
-	renderID = GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
+	GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {
 		Render();
 	});
 }
@@ -69,9 +69,7 @@ void TerrainRaycasterTest::Render() {
 }
 
 TerrainRaycasterTest::TerrainRaycasterTest() = default;
-TerrainRaycasterTest::~TerrainRaycasterTest() {
-	GameManager::GetScenePass()->RemoveFunction(renderID);
-}
+TerrainRaycasterTest::~TerrainRaycasterTest() { }
 
 void TerrainRaycasterTest::Print(std::ostream &os) const {
 	os << "TerrainRaycasterTest";

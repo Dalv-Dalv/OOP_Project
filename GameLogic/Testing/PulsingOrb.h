@@ -4,7 +4,6 @@
 
 class PulsingOrb : public Component {
 private:
-	unsigned int renderID = 0;
 	float startTime = 0;
 	float startV, sizeIncrease;
 	Color color;

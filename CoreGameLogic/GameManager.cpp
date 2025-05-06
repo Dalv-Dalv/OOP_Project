@@ -7,6 +7,8 @@
 #include "GameObject.h"
 #include <raylib.h>
 
+#include "../GameLogic/UI/UIManager.h"
+
 GameManager* GameManager::instance = nullptr;
 ActionEvent<> GameManager::onGameClose = ActionEvent<>();
 
@@ -17,23 +19,11 @@ GameManager* GameManager::GetInstance() {
 	return instance;
 }
 
-//TODO: CLEAN THIS UP
-// RenderTexture2D& GameManager::GetActiveRenderTexture() {
-// 	return instance->renderTexture;
-// }
-// void GameManager::SetActiveRenderTexture(RenderTexture2D& renderTexture) {
-// 	instance->renderTexture = renderTexture;
-// }
-
 void GameManager::InitializeRenderPipeline() {
 	renderPipeline = RenderPipeline::GetInstance();
 	scenePass = RenderPass::Create(windowWidth, windowHeight, 2, true);
-	uiPass = RenderPass::Create(windowWidth, windowHeight, 100, false);
-	uiPass->AddFunction([](RenderTexture2D& prev){
-		RenderPipeline::DrawTextureFullScreen(prev);
-		float fps = GetFPS();
-		DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
-	});
+
+	UIManager::Initialize();
 }
 
 
@@ -107,4 +97,3 @@ int GameManager::GetWindowWidth() { return instance->windowWidth; }
 int GameManager::GetWindowHeight() { return instance->windowHeight; }
 Rectangle GameManager::GetScreenRect() { return instance->screenRect; }
 shared_ptr<RenderPass> GameManager::GetScenePass() { return instance->scenePass; }
-shared_ptr<RenderPass> GameManager::GetUIPass() { return instance->uiPass; }

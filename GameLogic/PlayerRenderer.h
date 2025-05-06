@@ -4,7 +4,6 @@
 
 class PlayerRenderer : public Component {
 private:
-	unsigned int renderID = 0;
 	float size;
 	Color color;
 protected:
