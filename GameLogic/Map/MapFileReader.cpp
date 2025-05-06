@@ -14,11 +14,11 @@ using namespace std;
 
 TerrainData* MapFileReader::ReadMap(const char* filepath) {
 	int width, height, channels;
-	unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
+	unsigned char* data = stbi_load(filepath, &width, &height, &channels, STBI_rgb_alpha);
 	if(!data) {
 		throw runtime_error("Map file could not be read");
 	}
-	if(channels != 3) {
+	if(channels < 3) {
 		throw runtime_error("Invalid map");
 	}
 
@@ -30,8 +30,9 @@ TerrainData* MapFileReader::ReadMap(const char* filepath) {
 			float r = data[index + 0] / 255.0f;
 			float g = data[index + 1] / 255.0f;
 			float b = data[index + 2] / 255.0f;
+			float a = data[index + 3] / 255.0f;
 
-			map[y * width + x] = {r, g, b};
+			map[(height - y - 1) * width + x] = {r, g, b, a};
 		}
 	}
 

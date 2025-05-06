@@ -13,8 +13,8 @@ void TerrainData::SetValueAt(int x, int y, TerrainPoint value) {
 
 
 TerrainPoint TerrainData::GetValueAt(int x, int y) const {
-	if(x < 0 || x >= width) return {0, 0, 0};
-	if(y < 0 || y >= height) return {0, 0, 0};
+	if(x < 0 || x >= width) return {0, 0, 0, 0};
+	if(y < 0 || y >= height) return {0, 0, 0, 0};
 
 	return terrainValues[y * width + x];
 }

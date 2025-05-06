@@ -85,17 +85,24 @@ vec3 sampleOreColor(vec2 coord){
     colorAtlasCoord.x /= 4.0;
     return texture(oreColors, colorAtlasCoord, 0).rgb;
 }
-vec3 stylizeTerrainColor(float terrainVal){
+
+vec3 stylizeTerrainColor(float terrainVal, float hardness){
+    vec3 col, hardCol;
     if(terrainVal > surfaceLevel){
         // Map [surfaceLevel, 1] to [0, 1]
         terrainVal = (terrainVal - surfaceLevel) / (1 - surfaceLevel);
         //        terrainVal = 0.2 + (1.0 - 0.2) * terrainVal;
-        return lerp(vec3(0.109803922, 0.364705882, 0.364705882), vec3(0.192156863, 0.301960784, 0.388235294) * 0.5, terrainVal);
+        col = lerp(vec3(0.109803922, 0.364705882, 0.364705882), vec3(0.192156863, 0.301960784, 0.388235294) * 0.5, terrainVal);
+        hardCol = lerp(vec3(0.209803922, 0.364705882, 0.764705882), vec3(0.109803922, 0.364705882, 0.564705882) * 0.5, terrainVal);
     }else{
         // Map [0, surfaceLevel] to [0, 1]
         terrainVal = terrainVal / surfaceLevel;
-        return lerp(vec3(0.0431372549, 0.11372549, 0.149019608) * 0.5, vec3(0.0745098039, 0.180392157, 0.211764706) * 2, terrainVal);
+        col = lerp(vec3(0.0431372549, 0.11372549, 0.149019608) * 0.5, vec3(0.0745098039, 0.180392157, 0.211764706) * 2, terrainVal);
+        hardCol = vec3(0.2431372549, 0.11372549, 0.749019608) * 0.2;
     }
+
+    col = lerp(hardCol, col, hardness);
+    return col;
 }
 
 void main() {
@@ -123,17 +130,17 @@ void main() {
         return;
     }
 
-    vec3 corners[4] = {
-    vec3(floor(texCoords) + vec2(0, 1), texture(mapTexture, coord + vec2(0, texUnits.y), 0).r),  // Bottom left
-    vec3(floor(texCoords) + vec2(1, 1), texture(mapTexture, coord + texUnits, 0).r),             // Bottom right
-    vec3(floor(texCoords) + vec2(1, 0), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).r),  // Top right
-    vec3(floor(texCoords), texture(mapTexture, coord, 0).r)                                      // Top left
+    vec4 corners[4] = {
+    vec4(floor(texCoords) + vec2(0, 1), texture(mapTexture, coord + vec2(0, texUnits.y), 0).ra),  // Bottom left
+    vec4(floor(texCoords) + vec2(1, 1), texture(mapTexture, coord + texUnits, 0).ra),             // Bottom right
+    vec4(floor(texCoords) + vec2(1, 0), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).ra),  // Top right
+    vec4(floor(texCoords), texture(mapTexture, coord, 0).ra)                                      // Top left
     };
     vec3 cornerColors[4] = {
-        lerp(vec3(stylizeTerrainColor(corners[0].z)), sampleOreColor(coord + vec2(0, texUnits.y)), texture(mapTexture, coord + vec2(0, texUnits.y), 0).g),
-        lerp(vec3(stylizeTerrainColor(corners[1].z)), sampleOreColor(coord + texUnits),            texture(mapTexture, coord + texUnits, 0).g),
-        lerp(vec3(stylizeTerrainColor(corners[2].z)), sampleOreColor(coord + vec2(texUnits.x, 0)), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).g),
-        lerp(vec3(stylizeTerrainColor(corners[3].z)), sampleOreColor(coord),                       texture(mapTexture, coord, 0).g)
+    lerp(vec3(stylizeTerrainColor(corners[0].z, corners[0].a)), sampleOreColor(coord + vec2(0, texUnits.y)), texture(mapTexture, coord + vec2(0, texUnits.y), 0).g),
+    lerp(vec3(stylizeTerrainColor(corners[1].z, corners[1].a)), sampleOreColor(coord + texUnits),            texture(mapTexture, coord + texUnits, 0).g),
+    lerp(vec3(stylizeTerrainColor(corners[2].z, corners[2].a)), sampleOreColor(coord + vec2(texUnits.x, 0)), texture(mapTexture, coord + vec2(texUnits.x, 0), 0).g),
+    lerp(vec3(stylizeTerrainColor(corners[3].z, corners[3].a)), sampleOreColor(coord),                       texture(mapTexture, coord, 0).g)
     };
 
     // Bilinear filtering for the color
@@ -164,10 +171,10 @@ void main() {
     }
 
     vec2 edgePoints[4] = {
-    calculateEdgePoint(corners[0], corners[1]), // 0 Bottom
-    calculateEdgePoint(corners[1], corners[2]), // 1 Right
-    calculateEdgePoint(corners[2], corners[3]), // 2 Top
-    calculateEdgePoint(corners[3], corners[0]), // 3 Left
+    calculateEdgePoint(corners[0].rgb, corners[1].rgb), // 0 Bottom
+    calculateEdgePoint(corners[1].rgb, corners[2].rgb), // 1 Right
+    calculateEdgePoint(corners[2].rgb, corners[3].rgb), // 2 Top
+    calculateEdgePoint(corners[3].rgb, corners[0].rgb), // 3 Left
     };
     float dist = 1.0;
     int i = 0;

@@ -37,7 +37,7 @@ void PlayerMovement::Update(float deltaTime) {
 
 		Vector2 newPos = gameObject->position + velocity * deltaTime;
 		auto collision = Terrain::CheckCollisions(newPos, colliderSize);
-		if(collision.signedDist < colliderSize) {
+		if(collision.signedDist < colliderSize && false) {
 			auto dir = collision.closestPoint - gameObject->position;
 			dir = dir * fastInverseSqrt(dir.x*dir.x + dir.y*dir.y);
 			dir *= dir.x * collision.normal.x + dir.y * collision.normal.y;

@@ -34,16 +34,16 @@
 ----------------------------------------------------------------------*/
 
 int main() {
-	auto* player = new GameObject({0, 0});
+	auto* player = new GameObject({15901.1, 1202.34});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
-	player->AddComponent(new PlayerMovement(400, 0.9, 22.0f));
+	player->AddComponent(new PlayerMovement(4000, 1.9, 22.0f));
 	player->AddComponent(new OrbDeployer());
 	player->AddComponent(new TerrainRaycasterTest());
 	// player->AddComponent(new TerrainMinerTest(5, 0.1));
 
 	TerrainData* map = nullptr;
 	try {
-		map = MapFileReader::ReadMap("GeneratedMaps/MapWithOresS300.png");
+		map = MapFileReader::ReadMap("GeneratedMaps/MapTest.png");
 	}catch(const exception e) {
 		cout << e.what() << endl;
 		map = new TerrainData(0, 0);

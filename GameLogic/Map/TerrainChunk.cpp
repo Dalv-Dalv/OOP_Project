@@ -46,7 +46,7 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 		.width = mapData->GetWidth(),
 		.height = mapData->GetHeight(),
 		.mipmaps = 1,
-		.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32
+		.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
 	};
 
 	gpuData = LoadTextureFromImage(mapImage);
@@ -110,7 +110,7 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			if(val.surfaceValue < 0.1) continue;
 
 			if(val.oreValue <= 0 || val.oreType < 0.05) {
-				val.surfaceValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
+				val.surfaceValue -= Clamp(miningPower * deltaTime * falloff * val.hardness, 0, 1);
 			} else {
 				val.oreValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
 				if(val.oreValue <= 0) {
