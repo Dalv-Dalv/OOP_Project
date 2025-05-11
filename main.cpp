@@ -17,7 +17,7 @@
 
 
 /*----------------------------------------------------------------------
-	CRITICAL: Make HARDNESS (alpha channel)
+	CRITICAL: DEBUG WHY ORES ARE BROKEN VISUALLY
 	WIP: UI
 	WIP: Ores UI
 	WIP: Ores
@@ -54,6 +54,7 @@ int main() {
 
 	GameManager* gameManager = GameManager::GetInstance();
 	gameManager->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, USE_FULLSCREEN, USE_VSYNC);
+
 
 	gameManager->StartGameLoop();
 
