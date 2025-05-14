@@ -13,7 +13,7 @@ private:
 	vector<TerrainPoint> terrainValues; // Actually a 2D map
 
 public:
-	string id;
+	string id; // CRITICAL: Make private
 	void SetValueAt(int x, int y, TerrainPoint value);
 	TerrainPoint GetValueAt(int x, int y) const;
 

@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include <raylib.h>
 
+#include "InputManager.h"
 #include "../GameLogic/UI/UIManager.h"
 
 GameManager* GameManager::instance = nullptr;
@@ -22,8 +23,6 @@ GameManager* GameManager::GetInstance() {
 void GameManager::InitializeRenderPipeline() {
 	renderPipeline = RenderPipeline::GetInstance();
 	scenePass = RenderPass::Create(windowWidth, windowHeight, 2, true);
-
-	UIManager::Initialize();
 }
 
 
@@ -40,7 +39,6 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	this->screenRect = Rectangle(0, 0, GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 
 	InitWindow(windowWidth, windowHeight, "Proiect POO");
-	InitAudioDevice();
 	if(!vsync) ClearWindowState(FLAG_VSYNC_HINT); // After InitWindow
 
 
@@ -48,6 +46,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	camera->AddComponent(new GameCamera());
 
 	InitializeRenderPipeline();
+	UIManager::Initialize();
 }
 
 void GameManager::StartGameLoop() {
@@ -57,6 +56,7 @@ void GameManager::StartGameLoop() {
 		float deltaTime = GetFrameTime();
 
 		Update(deltaTime);
+		InputManager::ResetCapture();
 
 		// If any object was marked for deletion this frame, delete it
 		GameObject::DeleteAllMarked();
@@ -71,6 +71,8 @@ void GameManager::StartGameLoop() {
 		delete *GameObject::gameObjects.begin();
 	}
 	GameObject::gameObjects.clear();
+
+	UIManager::Dispose();
 
 	CloseWindow();
 }
@@ -91,6 +93,11 @@ void GameManager::Update(float deltaTime) {
 		element->Update(deltaTime);
 	}
 }
+
+void GameManager::Dispose() {
+	delete instance;
+}
+
 
 // Getters
 int GameManager::GetWindowWidth() { return instance->windowWidth; }

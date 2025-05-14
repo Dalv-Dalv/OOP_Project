@@ -1,9 +1,18 @@
 #include "UIManager.h"
+#include <algorithm>
+#include <iostream>
 
 #include "../../CoreGameLogic/GameManager.h"
+#include "../../CoreGameLogic/InputManager.h"
 #include "../../CoreGameLogic/RenderPipeline.h"
 
 UIManager* UIManager::instance = nullptr;
+UIManager::~UIManager() {
+	for(UIElement* element : elements) {
+		delete element;
+	}
+}
+
 
 void UIManager::Initialize() {
 	if(instance != nullptr) return;
@@ -11,17 +20,6 @@ void UIManager::Initialize() {
 
 	instance->renderPass = RenderPass::Create(100);
 	instance->renderPass->AddFunction(Render);
-
-	instance->whiteTex = LoadTexture("Textures/White.png");
-
-	instance->oreMeterShader = LoadShader(0, "Shaders/oreMeterShader.frag");
-
-	int screenSizeLoc = GetShaderLocation(instance->oreMeterShader, "screenSize");
-	Vector2 screenSize(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-	SetShaderValue(instance->oreMeterShader, screenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
-
-	instance->timeLoc = GetShaderLocation(instance->oreMeterShader, "time");
-	instance->meterSizeLoc = GetShaderLocation(instance->oreMeterShader, "meterSize");
 }
 
 void UIManager::Render(RenderTexture2D& prev) {
@@ -29,16 +27,69 @@ void UIManager::Render(RenderTexture2D& prev) {
 	float fps = GetFPS();
 	DrawText(TextFormat("%.1f", fps), 0, 0, 25, GREEN);
 
-	float time = GetTime();
-	Vector2 meterSize(100, 300);
+	UIElement::DeleteAllMarked();
 
-	BeginShaderMode(instance->oreMeterShader);
-		SetShaderValue(instance->oreMeterShader, instance->timeLoc, &time, SHADER_UNIFORM_FLOAT);
-		SetShaderValue(instance->oreMeterShader, instance->meterSizeLoc, &meterSize, SHADER_UNIFORM_VEC2);
-		DrawTexturePro(instance->whiteTex,
-			Rectangle(0, 0, 1, 1),
-			Rectangle(100, 400, meterSize.x, meterSize.y),
-			Vector2(0, 0), 0, WHITE);
-	EndShaderMode();
+	instance->CheckEvents();
+	for(UIElement* element : instance->elements) {
+		if(!element->IsActive()) continue;
+		element->Draw();
+	}
 }
+
+void UIManager::CheckEvents() {
+	if(reorderingQueued) {
+		std::sort(elements.begin(), elements.end(), [](UIElement* a, UIElement* b) {
+			return a->GetZIndex() < b->GetZIndex();
+		});
+		reorderingQueued = false;
+	}
+
+	Vector2 mousePos = InputManager::GetMousePosition();
+	bool mousePressed = InputManager::IsMouseDown(MOUSE_LEFT_BUTTON);
+
+	for(UIElement* element : elements) {
+		if(!element->IsActive()) continue;
+		if(!element->ContainsPoint(mousePos)) continue;
+
+		element->OnHover();
+		if(mousePressed) element->OnMouseDown();
+
+		if(element->DoesStopPropagation()) {
+			InputManager::CaptureMouse();
+			break;
+		}
+	}
+}
+
+void UIManager::RecalculateOrdering() {
+	instance->reorderingQueued = true;
+}
+
+
+void UIManager::Register(UIElement* element) {
+	instance->elements.push_back(element);
+	std::sort(instance->elements.begin(), instance->elements.end(), [](UIElement* a, UIElement* b) {
+		return a->GetZIndex() < b->GetZIndex();
+	});
+}
+void UIManager::RemoveElement(UIElement* element) {
+	auto& elems = instance->elements;
+
+	elems.erase(std::remove(elems.begin(), elems.end(), element), elems.end());
+}
+
+
+
+void UIManager::Dispose() {
+	if(instance == nullptr) return;
+
+	while (!instance->elements.empty()) {
+		delete *instance->elements.begin();
+	}
+	instance->elements.clear();
+
+	delete instance;
+}
+
+
 

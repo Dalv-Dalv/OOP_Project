@@ -7,6 +7,7 @@
 #include "../CoreGameLogic/GameObject.h"
 #include "../Utilities/GameUtilities.h"
 #include "../Utilities/Vector2Utils.h"
+#include <cmath>
 #include "Map/Terrain.h"
 using namespace GameUtilities;
 

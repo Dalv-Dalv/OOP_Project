@@ -14,10 +14,12 @@
 #include "GameLogic/Map/Terrain.h"
 #include "GameLogic/Testing/OrbDeployer.h"
 #include "GameLogic/Testing/TerrainRaycasterTest.h"
+#include "GameLogic/UI/UIOreMeter.h"
 
 
 /*----------------------------------------------------------------------
 	CRITICAL: DEBUG WHY ORES ARE BROKEN VISUALLY
+	WIP: Input manager and event passthrough
 	WIP: UI
 	WIP: Ores UI
 	WIP: Ores
@@ -54,6 +56,10 @@ int main() {
 
 	GameManager* gameManager = GameManager::GetInstance();
 	gameManager->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, USE_FULLSCREEN, USE_VSYNC);
+
+
+	// UI Stuff
+	new UIOreMeter(3);
 
 
 	gameManager->StartGameLoop();

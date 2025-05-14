@@ -5,6 +5,7 @@
 #include <raymath.h>
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
+#include "../../CoreGameLogic/InputManager.h"
 
 void TerrainRaycasterTest::Awake() {
 	terrain = Terrain::GetActiveTerrain();
@@ -16,9 +17,10 @@ void TerrainRaycasterTest::Awake() {
 
 
 void TerrainRaycasterTest::Update(float deltaTime) {
-	Vector2 worldPos = GameCamera::ScreenToWorldCoords(GetMousePosition());
+	Vector2 worldPos = GameCamera::ScreenToWorldCoords(InputManager::GetMousePosition());
 
-	if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+	bool isMouseDown;
+	if(InputManager::TryGetIsMouseDown(MOUSE_BUTTON_LEFT, isMouseDown) && isMouseDown) {
 		Vector2 dir = worldPos - gameObject->position;
 		float dist = Vector2Length(dir);
 		dir = dir / dist;

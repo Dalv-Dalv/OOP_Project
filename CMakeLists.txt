@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.30) # FetchContent is available in 3.11+
 project(ProiectPOO)
 
+# For sanitizers
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # Debug-specific flags
     if(UNIX AND NOT APPLE)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
     endif ()
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Release-specific flags
@@ -96,6 +99,14 @@ add_executable(${PROJECT_NAME} main.cpp
         GameLogic/Testing/TerrainRaycasterTest.h
         GameLogic/UI/UIManager.cpp
         GameLogic/UI/UIManager.h
+        GameLogic/UI/UIElement.cpp
+        GameLogic/UI/UIElement.h
+        CoreGameLogic/InputManager.cpp
+        CoreGameLogic/InputManager.h
+        CoreGameLogic/InputManager.cpp
+        CoreGameLogic/InputManager.h
+        GameLogic/UI/UIOreMeter.cpp
+        GameLogic/UI/UIOreMeter.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

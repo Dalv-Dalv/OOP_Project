@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "Vector2Utils.h"
+#include <cstdint>
 #include "raylib.h"
 
 namespace GameUtilities {

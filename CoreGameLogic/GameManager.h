@@ -34,4 +34,6 @@ public:
 
 	void Initialize(int windowWidth, int windowHeight, bool startInFullscreen, bool vsync = true);
 	void StartGameLoop();
+
+	static void Dispose();
 };

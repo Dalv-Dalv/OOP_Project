@@ -18,7 +18,7 @@ protected:
 	bool markedForDestruction;
 
 public:
-	Vector2 position;
+	Vector2 position; //CRITICAL: Make private
 	GameObject();
 	explicit GameObject(const Vector2& position);
 	~GameObject();
