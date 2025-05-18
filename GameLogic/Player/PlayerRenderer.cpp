@@ -3,10 +3,10 @@
 #include <iostream>
 
 #include "raylib.h"
-#include "../CoreGameLogic/GameManager.h"
-#include "../CoreGameLogic/GameObject.h"
-#include "Collisions/CollisionInfo.h"
-#include "Map/Terrain.h"
+#include "../../CoreGameLogic/GameManager.h"
+#include "../../CoreGameLogic/GameObject.h"
+#include "../Collisions/CollisionInfo.h"
+#include "../Map/Terrain.h"
 
 void PlayerRenderer::Awake() {
 	GameManager::GetScenePass()->AddFunction([this](RenderTexture2D& prev) {

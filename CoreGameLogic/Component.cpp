@@ -21,8 +21,3 @@ GameObject* Component::GetGameObject() const {
 }
 
 
-void Component::Destroy() {
-	delete this;
-}
-
-

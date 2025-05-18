@@ -46,6 +46,7 @@ void UIManager::CheckEvents() {
 
 	Vector2 mousePos = InputManager::GetMousePosition();
 	bool mousePressed = InputManager::IsMouseDown(MOUSE_LEFT_BUTTON);
+	bool mouseUp = InputManager::IsMouseUp(MOUSE_LEFT_BUTTON);
 
 	for(UIElement* element : elements) {
 		if(!element->IsActive()) continue;
@@ -53,6 +54,7 @@ void UIManager::CheckEvents() {
 
 		element->OnHover();
 		if(mousePressed) element->OnMouseDown();
+		if(mouseUp) element->OnMouseUp();
 
 		if(element->DoesStopPropagation()) {
 			InputManager::CaptureMouse();

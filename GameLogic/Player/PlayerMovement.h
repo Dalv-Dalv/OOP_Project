@@ -1,6 +1,6 @@
 #pragma once
 #include <raylib.h>
-#include "../CoreGameLogic/Component.h"
+#include "../../CoreGameLogic/Component.h"
 
 class PlayerMovement : public Component {
 private:

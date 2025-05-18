@@ -18,6 +18,7 @@ private:
 
 public:
 	UIOreMeter(int capacity);
+	~UIOreMeter();
 
 	void Draw() override;
 	void OnMouseDown() override;

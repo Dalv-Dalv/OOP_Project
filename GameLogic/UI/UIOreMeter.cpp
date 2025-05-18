@@ -24,28 +24,32 @@ UIOreMeter::UIOreMeter(int capacity) : UIElement(true) {
 	}
 
 	meterSize = Vector2(40, capacity * 100);
-	rect = Rectangle( 30 + metersAvailable * 60, 400, 40, meterSize.y);
+	rect = Rectangle( 30 + metersAvailable * 60, 800 - meterSize.y, 40, meterSize.y);
 
 	metersAvailable++;
 }
+UIOreMeter::~UIOreMeter() {
+	metersAvailable--;
+}
+
 
 void UIOreMeter::Draw() {
 	float time = GetTime();
 
-	// BeginShaderMode(oreMeterShader.value());
-	// 	SetShaderValue(oreMeterShader.value(), timeLoc, &time, SHADER_UNIFORM_FLOAT);
-	// 	SetShaderValue(oreMeterShader.value(), meterSizeLoc, &meterSize, SHADER_UNIFORM_FLOAT);
-	// 	DrawTexturePro(whiteTex.value(), Rectangle(0,0,1,1), rect, Vector2(0,0), 0, WHITE);
-	// EndShaderMode();
+	BeginShaderMode(oreMeterShader.value());
+		SetShaderValue(oreMeterShader.value(), timeLoc, &time, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(oreMeterShader.value(), meterSizeLoc, &meterSize, SHADER_UNIFORM_VEC2);
+		DrawTexturePro(whiteTex.value(), Rectangle(0,0,1,1), rect, Vector2(0,0), 0, WHITE);
+	EndShaderMode();
 
-	DrawRectanglePro(rect, {0,0}, 0, testState);
+	// DrawRectanglePro(rect, {0,0}, 0, testState);
 
 	testState = Color(255, 255, 255, 255);
 }
 
 void UIOreMeter::ChangeCapacity(int newCapacity) {
 	meterSize.y = newCapacity * 100;
-	rect.height = meterSize.y;
+	rect.height = 800 - meterSize.y;
 }
 
 void UIOreMeter::OnMouseDown() {

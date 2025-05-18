@@ -8,6 +8,7 @@
 #include <raylib.h>
 
 #include "InputManager.h"
+#include "../GameLogic/Player/Inventory/InventoryManager.h"
 #include "../GameLogic/UI/UIManager.h"
 
 GameManager* GameManager::instance = nullptr;
@@ -47,6 +48,7 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 
 	InitializeRenderPipeline();
 	UIManager::Initialize();
+	InventoryManager::Initialize();
 }
 
 void GameManager::StartGameLoop() {

@@ -8,7 +8,6 @@
 
 #include <rlgl.h>
 
-#include "../PlayerMovement.h"
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"

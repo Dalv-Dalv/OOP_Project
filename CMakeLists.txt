@@ -60,10 +60,10 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/GameObject.h
         CoreGameLogic/Component.cpp
         CoreGameLogic/Component.h
-        GameLogic/PlayerRenderer.cpp
-        GameLogic/PlayerRenderer.h
-        GameLogic/PlayerMovement.cpp
-        GameLogic/PlayerMovement.h
+        GameLogic/Player/PlayerRenderer.cpp
+        GameLogic/Player/PlayerRenderer.h
+        GameLogic/Player/PlayerMovement.cpp
+        GameLogic/Player/PlayerMovement.h
         GameLogic/Dynamics/V2SecondOrderDynamics.cpp
         GameLogic/Dynamics/V2SecondOrderDynamics.h
         Utilities/GameUtilities.cpp
@@ -107,6 +107,18 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/InputManager.h
         GameLogic/UI/UIOreMeter.cpp
         GameLogic/UI/UIOreMeter.h
+        GameLogic/UI/UIInventory.cpp
+        GameLogic/UI/UIInventory.h
+        GameLogic/Player/Inventory/InventoryManager.cpp
+        GameLogic/Player/Inventory/InventoryManager.h
+        GameLogic/Player/Inventory/InventorySlot.h
+        GameLogic/Player/Inventory/IItem.h
+        GameLogic/Player/Inventory/ItemInfo.h
+        GameLogic/Player/Tools/MiningTool.cpp
+        GameLogic/Player/Tools/MiningTool.h
+        GameLogic/Player/Inventory/PlayerInventory.cpp
+        GameLogic/Player/Inventory/PlayerInventory.h
+        GameLogic/Player/Inventory/IItem.cpp
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

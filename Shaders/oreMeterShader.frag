@@ -33,15 +33,15 @@ void main() {
 
     vec3 col = vec3(237, 242, 244) / 255;
 
-    float fill = pingPong(time, 0, 1);
+    float fill = pingPong(time * 0.1, 0, 1);
 
     if(dist < 0.2){
         finalColor = vec4(col, alpha);
     }else{
-        if(uv.y - sin(time + uv.x * 0.02) * 4 < meterSize.y * fill){
-            float gr = (uv.y - sin(time + uv.x * 0.02) * 4) / (meterSize.y * fill);
+        if(uv.y - sin(time * 3 + uv.x * 0.05) * 5 < meterSize.y * fill){
+            float gr = (uv.y - sin(time * 3 + uv.x * 0.05) * 5) / (meterSize.y * fill);
             finalColor = vec4(mix(vec3(0.8, 0.1, 0.3), vec3(1,0,0), gr), alpha);
-        }else if(uv.y - cos(-time + uv.x * 0.02) * 4 < meterSize.y * fill){
+        }else if(uv.y - cos(-time * 3 + uv.x * 0.05) * 5 < meterSize.y * fill){
             finalColor = vec4(0.6, 0, 0, alpha);
         }else{
             finalColor = mix(vec4(col, 0.4), vec4(col * 0.8, 0.3), dist);

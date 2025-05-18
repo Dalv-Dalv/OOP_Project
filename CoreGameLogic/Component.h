@@ -23,8 +23,6 @@ public:
 
 	GameObject* GetGameObject() const;
 
-	void Destroy();
-
 	virtual void Print(std::ostream& os) const = 0;
 	friend std::ostream& operator<<(std::ostream& os, const Component& component) {
 		component.Print(os);

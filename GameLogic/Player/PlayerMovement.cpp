@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-#include <raylib.h>
-#include "../CoreGameLogic/GameManager.h"
-#include "../CoreGameLogic/GameObject.h"
-#include "../Utilities/GameUtilities.h"
-#include "../Utilities/Vector2Utils.h"
 #include <cmath>
-#include "Map/Terrain.h"
+#include <raylib.h>
+#include "../../CoreGameLogic/GameManager.h"
+#include "../../CoreGameLogic/GameObject.h"
+#include "../../Utilities/GameUtilities.h"
+#include "../../Utilities/Vector2Utils.h"
+#include "../Map/Terrain.h"
 using namespace GameUtilities;
 
 PlayerMovement* PlayerMovement::instance = nullptr;
@@ -38,7 +38,7 @@ void PlayerMovement::Update(float deltaTime) {
 
 		Vector2 newPos = gameObject->position + velocity * deltaTime;
 		auto collision = Terrain::CheckCollisions(newPos, colliderSize);
-		if(collision.signedDist < colliderSize && false) {
+		if(collision.signedDist < colliderSize) {
 			auto dir = collision.closestPoint - gameObject->position;
 			dir = dir * fastInverseSqrt(dir.x*dir.x + dir.y*dir.y);
 			dir *= dir.x * collision.normal.x + dir.y * collision.normal.y;
