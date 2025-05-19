@@ -28,6 +28,8 @@
 	CRITICAL: MEMORY LEAK
 	WIP: Ores UI
 	WIP: Ores
+
+	CRITICAL: BUG WITH INVENTORY, SWAP ITEMS REPEATEDLY
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders
 	QOL: void(Args...) pt idamageable
@@ -64,7 +66,7 @@ int main() {
 
 	auto* player = new GameObject({15901.1, 1202.34});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
-	player->AddComponent(new PlayerMovement(1400, 1.9, 22.0f));
+	player->AddComponent(new PlayerMovement(500, 1.9, 22.0f));
 	player->AddComponent(new PlayerInventory());
 
 	InventoryManager::UnlockSlots(3);

@@ -1,5 +1,6 @@
 #include "UIInventory.h"
 
+#include "raymath.h"
 #include "../../../CoreGameLogic/GameManager.h"
 #include "../../../CoreGameLogic/InputManager.h"
 #include "../../Player/Inventory/InventoryManager.h"
@@ -68,14 +69,9 @@ void UIInventory::HandleNrOfLockedSlotsChanged(int nrOfLockedSlots) {
 
 
 void UIInventory::Draw() {
-    if(isBeingClickedOn && !isHoveredOver && clickIndex >= 0) {
-        if(slots[clickIndex].item != nullptr) {
-            isDragging = true;
-        }else {
-            isBeingClickedOn = false;
-            isDragging = false;
-            clickTime = -1.0f;
-        }
+    Vector2 mousePos = InputManager::GetMousePosition();
+    if(!isDragging && isBeingClickedOn && clickIndex >= 0 && Vector2Distance(clickPos, mousePos) > 20 && slots[clickIndex].item != nullptr) {
+        isDragging = true;
     }
 
     int posX = rect.x, posY = rect.y;
@@ -114,8 +110,7 @@ void UIInventory::Draw() {
     }
 
     if(isDragging) {
-        Vector2 pos = InputManager::GetMousePosition();
-        Rectangle drawRect(pos.x, pos.y, slotSize, slotSize);
+        Rectangle drawRect(mousePos.x, mousePos.y, slotSize, slotSize);
         const Texture2D& icon = slots[clickIndex].item->GetIcon();
         DrawTexturePro(icon, Rectangle(0,0,icon.width,icon.height), drawRect, Vector2(drawRect.width / 2, drawRect.height / 2), 0, WHITE);
     }
@@ -132,21 +127,32 @@ int UIInventory::GetSlotIndexFromPos(Vector2 pos) const {
 }
 
 void UIInventory::HandleClickOrDrag() {
-    if(!isBeingClickedOn && !isDragging) return;
+    if(!isBeingClickedOn && !isDragging) { ResetClickOrDrag(); return; }
+
+    Vector2 pos = InputManager::GetMousePosition();
+
+    if(!ContainsPoint(pos)) { ResetClickOrDrag(); return; }
 
     if(isDragging) {
-        Vector2 pos = InputManager::GetMousePosition();
+        isDragging = false;
+
         int i2 = GetSlotIndexFromPos(pos);
-        if(i2 < 0) return;
+        if(i2 < 0) { ResetClickOrDrag(); return; }
+
         InventoryManager::SwapItems(clickIndex, i2);
     } else {
         InventoryManager::EquipItem(clickIndex);
     }
 
-    isBeingClickedOn = false;
-    isDragging = false;
-    clickTime = -1.0f;
+    ResetClickOrDrag();
 }
+void UIInventory::ResetClickOrDrag() {
+    isBeingClickedOn = false;
+    clickPos = Vector2(0,0);
+    clickIndex = -1;
+    isDragging = false;
+}
+
 
 
 void UIInventory::OnClicked() {
@@ -156,7 +162,7 @@ void UIInventory::OnClicked() {
     if(i < 0) return;
 
     isBeingClickedOn = true;
-    clickTime = GetTime();
+    clickPos = InputManager::GetMousePosition();
     clickIndex = i;
 }
 void UIInventory::OnMouseUp() {

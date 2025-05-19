@@ -75,5 +75,5 @@ void main() {
     col = vec3(col.r, col.gb * (1 - highlight));
 
     vec4 texCol = texture(icon, uv * 2 - vec2(0.5), 0).rgba;
-    finalColor = vec4(mix(col, texCol.rgb, texCol.a), alpha);
+    finalColor = mix(vec4(col, alpha), vec4(texCol.rgb, 1), texCol.a);
 }

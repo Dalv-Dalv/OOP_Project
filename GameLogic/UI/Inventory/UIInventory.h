@@ -15,11 +15,14 @@ private:
 	bool isHoveredOver = false;
 	int prevHoverIndex = -1;
 
-	bool isBeingClickedOn = false; float clickTime = -1.0f;
+	bool isBeingClickedOn = false;
+	Vector2 clickPos = Vector2(0, 0);
 	bool isDragging = false; int clickIndex = -1;
 
 	int GetSlotIndexFromPos(Vector2 pos) const;
 	void HandleClickOrDrag();
+
+	void ResetClickOrDrag();
 
 public:
 	UIInventory(float slotSize, float spacing);
