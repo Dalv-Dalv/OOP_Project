@@ -22,7 +22,8 @@ void GameCamera::Awake() {
 	internalCamera.target = gameObject->position;
 }
 void GameCamera::Update(float deltaTime) {
-	internalCamera.target = gameObject->position;
+	internalCamera.target.x = roundf(gameObject->position.x);
+	internalCamera.target.y = roundf(gameObject->position.y);
 
 	// float speed = 100;
 	//

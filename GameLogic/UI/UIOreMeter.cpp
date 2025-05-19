@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "../../CoreGameLogic/AssetManager.h"
 #include "../../CoreGameLogic/GameManager.h"
 
 std::optional<Shader> UIOreMeter::oreMeterShader = std::nullopt;
@@ -11,7 +12,7 @@ int UIOreMeter::metersAvailable = 0;
 
 UIOreMeter::UIOreMeter(int capacity) : UIElement(true) {
 	if(oreMeterShader == std::nullopt) {
-		oreMeterShader = LoadShader(0, "Shaders/oreMeterShader.frag");
+		oreMeterShader = AssetManager::LoadShader("Shaders/oreMeterShader.frag");
 		timeLoc = GetShaderLocation(oreMeterShader.value(), "time");
 		meterSizeLoc = GetShaderLocation(oreMeterShader.value(), "meterSize");
 
@@ -20,7 +21,7 @@ UIOreMeter::UIOreMeter(int capacity) : UIElement(true) {
 		SetShaderValue(oreMeterShader.value(), screenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
 	}
 	if(whiteTex == std::nullopt) {
-		whiteTex = LoadTexture("Textures/White.png");
+		whiteTex = AssetManager::LoadTexture("Textures/White.png");
 	}
 
 	meterSize = Vector2(40, capacity * 100);

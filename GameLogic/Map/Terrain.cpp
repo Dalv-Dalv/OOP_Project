@@ -8,6 +8,7 @@
 
 #include <rlgl.h>
 
+#include "../../CoreGameLogic/AssetManager.h"
 #include "../../CoreGameLogic/GameManager.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/Vector2Utils.h"
@@ -24,9 +25,6 @@ Terrain::Terrain(const TerrainData* data, float surfaceLevel, float scale, float
 }
 
 Terrain::~Terrain() {
-	UnloadShader(terrainShader);
-	UnloadShader(cleanupShader);
-
 	for(int y = 0; y < height; y++){
 		for(int x = 0; x < width; x++){
 			delete chunks[y][x];
@@ -37,8 +35,6 @@ Terrain::~Terrain() {
 
 	// In case InitializeChunks() hasnt been called
 	if(data != nullptr) delete data;
-
-	UnloadTexture(oreAtlas);
 }
 
 
@@ -72,20 +68,17 @@ void Terrain::InitializeChunks() {
 void Terrain::Awake() {
 	InitializeChunks();
 
-	terrainShader = LoadShader(0, "Shaders/squareMarchingShader.frag");
-	cleanupShader = LoadShader(0, "Shaders/squareMarchingPostProcessingShader.frag");
-	oreAtlas = LoadTexture("Textures/OreAtlas.png");
-	oreColors = LoadTexture("Textures/OreColors.png");
+	terrainShader = AssetManager::LoadShader("Shaders/squareMarchingShader.frag");
+	oreAtlas = AssetManager::LoadTexture("Textures/OreAtlas.png");
+	oreColors = AssetManager::LoadTexture("Textures/OreColors.png");
 	SetTextureWrap(oreAtlas, TEXTURE_WRAP_CLAMP);
 	SetTextureWrap(oreColors, TEXTURE_WRAP_CLAMP);
 
-	int screenSizeLoc = GetShaderLocation(cleanupShader, "screenSize");
 	Vector2 screenSize(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
-	SetShaderValue(cleanupShader, screenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
 
-	screenSizeLoc = GetShaderLocation(terrainShader, "screenSize");
 	textureLoc = GetShaderLocation(terrainShader, "mapTexture");
 	posLoc = GetShaderLocation(terrainShader, "position");
+	int screenSizeLoc = GetShaderLocation(terrainShader, "screenSize");
 	int surfaceLevelLoc = GetShaderLocation(terrainShader, "surfaceLevel");
 	int terrainScaleLoc = GetShaderLocation(terrainShader, "terrainScale");
 	int interpolationAmountLoc = GetShaderLocation(terrainShader, "interpolationAmount");

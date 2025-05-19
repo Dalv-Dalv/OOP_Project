@@ -21,7 +21,6 @@ private:
 
 	shared_ptr<RenderPass> renderPass;
 	Shader terrainShader; int textureLoc, posLoc, atlasLoc, oreColorsLoc;
-	Shader cleanupShader;
 
 	Texture2D oreAtlas, oreColors;
 

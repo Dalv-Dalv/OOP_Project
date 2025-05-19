@@ -6,7 +6,7 @@
 #include "../../../CoreGameLogic/Component.h"
 #include "../../Collisions/RaycastHitInfo.h"
 
-class MiningTool : public IItem, public Component {
+class BallSpawnerTool : public IItem, public Component {
 private:
 	std::string name;
 	ItemInfo info;
@@ -15,14 +15,10 @@ private:
 	bool isHoldingClick = false;
 	RaycastHitInfo hitInfo;
 
-	float miningPower;
-	int miningRadius;
-	Color rayColor;
-
-	void Render();
+	Color ballColor;
 
 public:
-	MiningTool(std::string name, float miningPower, int miningRadius, Color rayColor, std::string iconPath);
+	BallSpawnerTool(std::string name, Color ballColor, std::string iconPath);
 
 	void Equip() override;
 	void UnEquip() override;

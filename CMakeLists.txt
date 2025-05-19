@@ -52,6 +52,7 @@ endif()
 
 # Our Project
 add_executable(${PROJECT_NAME} main.cpp
+        config.h
         Utilities/Vector2Utils.cpp
         Utilities/Vector2Utils.h
         CoreGameLogic/GameManager.cpp
@@ -88,7 +89,6 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/GameCamera.cpp
         CoreGameLogic/GameCamera.h
         GameLogic/Collisions/CollisionInfo.h
-        config.h
         GameLogic/Testing/PulsingOrb.cpp
         GameLogic/Testing/PulsingOrb.h
         GameLogic/Testing/OrbDeployer.cpp
@@ -107,18 +107,23 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/InputManager.h
         GameLogic/UI/UIOreMeter.cpp
         GameLogic/UI/UIOreMeter.h
-        GameLogic/UI/UIInventory.cpp
-        GameLogic/UI/UIInventory.h
+        GameLogic/UI/Inventory/UIInventory.cpp
+        GameLogic/UI/Inventory/UIInventory.h
         GameLogic/Player/Inventory/InventoryManager.cpp
         GameLogic/Player/Inventory/InventoryManager.h
         GameLogic/Player/Inventory/InventorySlot.h
+        GameLogic/Player/Inventory/IItem.cpp
         GameLogic/Player/Inventory/IItem.h
         GameLogic/Player/Inventory/ItemInfo.h
         GameLogic/Player/Tools/MiningTool.cpp
         GameLogic/Player/Tools/MiningTool.h
         GameLogic/Player/Inventory/PlayerInventory.cpp
         GameLogic/Player/Inventory/PlayerInventory.h
-        GameLogic/Player/Inventory/IItem.cpp
+        GameLogic/UI/Inventory/UIInventorySlot.h
+        CoreGameLogic/AssetManager.cpp
+        CoreGameLogic/AssetManager.h
+        GameLogic/Player/Tools/BallSpawnerTool.cpp
+        GameLogic/Player/Tools/BallSpawnerTool.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

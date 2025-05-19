@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <optional>
 
 #include "UIElement.h"
 #include "../../CoreGameLogic/RenderPass.h"

@@ -53,7 +53,9 @@ void UIManager::CheckEvents() {
 		if(!element->ContainsPoint(mousePos)) continue;
 
 		element->OnHover();
-		if(mousePressed) element->OnMouseDown();
+		if(mousePressed) {
+			element->OnMouseDown();
+		}
 		if(mouseUp) element->OnMouseUp();
 
 		if(element->DoesStopPropagation()) {
