@@ -51,7 +51,7 @@ C++ Raylib Project for OOP University Class
 - [X] Mosteniri: de la `Component`
 - [X] Functii virtuale: in `Component`
 - [X] Exceptii (si handling)
-- [ ] Utilizarea `dynamic_cast` sau `static_cast`
+- [X] Utilizarea `dynamic_cast` sau `static_cast`
 - [X] Bonus: O clasa abstracta: `Component`
 
 
