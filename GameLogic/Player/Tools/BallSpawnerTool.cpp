@@ -17,31 +17,31 @@ using namespace GameUtilities;
 BallSpawnerTool::BallSpawnerTool(std::string name, Color ballColor, std::string iconPath)
 	: name(name), ballColor(ballColor), IItem(iconPath) {
 	info.itemName = name;
-	info.itemDescription = std::format("Spawn ball");
+	info.itemDescription = std::format("Spawn balls");
 	info.usageDescription = "LMB";
 }
 
 
 
 void BallSpawnerTool::Equip() {
-	std::cout << name << " Mining tool equipped\n";
 	isEquipped = true;
 }
 
 void BallSpawnerTool::UnEquip() {
-	std::cout << name << " Mining tool unequipped\n";
 	isEquipped = false;
 }
 
 const ItemInfo& BallSpawnerTool::GetInfo() const {
 	return info;
 }
-void BallSpawnerTool::DrawInfo(Rectangle& displayArea) {}
+void BallSpawnerTool::DrawInfo(const Rectangle& displayArea) {}
+void BallSpawnerTool::AdaptDrawInfoRectangle(Rectangle& displayArea) {}
+
 
 void BallSpawnerTool::Awake() {}
 
 void BallSpawnerTool::Print(std::ostream& os) const {
-	os << "Mining tool: " << name;
+	os << "Ball spawning tool: " << name;
 }
 void BallSpawnerTool::Update(float deltaTime) {
 	if(!isEquipped) return;

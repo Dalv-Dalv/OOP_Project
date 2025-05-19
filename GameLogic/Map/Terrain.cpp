@@ -71,8 +71,11 @@ void Terrain::Awake() {
 	terrainShader = AssetManager::LoadShader("Shaders/squareMarchingShader.frag");
 	oreAtlas = AssetManager::LoadTexture("Textures/OreAtlas.png");
 	oreColors = AssetManager::LoadTexture("Textures/OreColors.png");
+	mapColors = AssetManager::LoadTexture("Textures/MapColors.png");
+
 	SetTextureWrap(oreAtlas, TEXTURE_WRAP_CLAMP);
 	SetTextureWrap(oreColors, TEXTURE_WRAP_CLAMP);
+	SetTextureWrap(mapColors, TEXTURE_WRAP_CLAMP);
 
 	Vector2 screenSize(GameManager::GetWindowWidth(), GameManager::GetWindowHeight());
 
@@ -86,6 +89,8 @@ void Terrain::Awake() {
 	int chunkWorldSizeLoc = GetShaderLocation(terrainShader, "chunkWorldSize");
 	atlasLoc = GetShaderLocation(terrainShader, "oreAtlas");
 	oreColorsLoc = GetShaderLocation(terrainShader, "oreColors");
+	mapColorsLoc = GetShaderLocation(terrainShader, "mapColors");
+
 
 	SetShaderValue(terrainShader, screenSizeLoc, &screenSize, SHADER_UNIFORM_VEC2);
 	SetShaderValue(terrainShader, surfaceLevelLoc, &surfaceLevel, SHADER_UNIFORM_FLOAT);
@@ -132,7 +137,7 @@ void Terrain::Render(RenderTexture2D& prev) {
 
 	for(int y = bound_ly; y <= bound_ry; y++) {
 		for(int x = bound_lx; x <= bound_rx; x++) {
-			chunks[y][x]->Render(terrainShader, textureLoc, posLoc, atlasLoc, oreAtlas, oreColorsLoc, oreColors);
+			chunks[y][x]->Render(terrainShader, textureLoc, posLoc, atlasLoc, oreAtlas, oreColorsLoc, oreColors, mapColorsLoc, mapColors);
 		}
 	}
 }

@@ -7,8 +7,8 @@ InventoryManager* InventoryManager::instance = nullptr;
 ActionEvent<int> InventoryManager::onActiveSlotChanged;
 ActionEvent<int> InventoryManager::onNrOfLockedSlotsChanged;
 ActionEvent<int> InventoryManager::onItemRemoved;
-ActionEvent<pair<IItem*, int>> InventoryManager::onItemAdded;
-ActionEvent<pair<int, int>> InventoryManager::onItemsSwapped;
+ActionEvent<IItem*, int> InventoryManager::onItemAdded;
+ActionEvent<int, int> InventoryManager::onItemsSwapped;
 
 InventoryManager::InventoryManager() {
 	slots = vector<InventorySlot>(10);
@@ -56,15 +56,15 @@ void InventoryManager::SwapItems(int i1, int i2) {
 	if(instance->slots[i1].locked || instance->slots[i2].locked) return;
 
 	if(i1 == instance->activeSlotIndex) {
-		instance->slots[i1].item->UnEquip();
-		instance->slots[i2].item->Equip();
+		if(instance->slots[i1].item != nullptr) instance->slots[i1].item->UnEquip();
+		if(instance->slots[i2].item != nullptr) instance->slots[i2].item->Equip();
 	}else if(i2 == instance->activeSlotIndex) {
-		instance->slots[i2].item->UnEquip();
-		instance->slots[i1].item->Equip();
+		if(instance->slots[i2].item != nullptr) instance->slots[i2].item->UnEquip();
+		if(instance->slots[i1].item != nullptr) instance->slots[i1].item->Equip();
 	}
 
 	swap(instance->slots[i1], instance->slots[i2]);
-	onItemsSwapped({i1, i2});
+	onItemsSwapped(i1, i2);
 }
 
 void InventoryManager::UnlockSlots(int count) {
@@ -124,11 +124,10 @@ void InventoryManager::GiveItem(IItem* item) {
 		if(instance->slots[i].item != nullptr) continue;
 
 		instance->slots[i].item = item;
-		onItemAdded.Invoke({item, i});
+		onItemAdded.Invoke(item, i);
 
 		if(instance->activeSlotIndex == i) {
 			item->Equip();
-			std::cout << "huh\n";
 		}
 		return;
 	}

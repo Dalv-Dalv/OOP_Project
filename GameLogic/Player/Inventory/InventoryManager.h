@@ -24,8 +24,8 @@ public:
 	static ActionEvent<int> onActiveSlotChanged;
 	static ActionEvent<int> onNrOfLockedSlotsChanged;
 	static ActionEvent<int> onItemRemoved;
-	static ActionEvent<pair<IItem*, int>> onItemAdded;
-	static ActionEvent<pair<int, int>> onItemsSwapped;
+	static ActionEvent<IItem*, int> onItemAdded;
+	static ActionEvent<int, int> onItemsSwapped;
 
 	static const IItem* EquipItem(int index);
 	static void SwapItems(int i1, int i2);

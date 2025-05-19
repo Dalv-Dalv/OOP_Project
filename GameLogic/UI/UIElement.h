@@ -27,11 +27,12 @@ public:
 	UIElement(int zIndex, Rectangle rect, bool stopsPropagation = true);
 	virtual ~UIElement();
 
-	virtual void Draw() = 0;
+	virtual void Draw(){};
 
-	virtual void OnMouseDown() = 0;
-	virtual void OnMouseUp() = 0;
-	virtual void OnHover() = 0;
+	virtual void OnClicked(){};
+	virtual void OnMouseDown(){};
+	virtual void OnMouseUp(){};
+	virtual void OnHover(){};
 
 	virtual bool ContainsPoint(Vector2 point) const;
 

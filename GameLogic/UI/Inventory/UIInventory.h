@@ -12,15 +12,26 @@ private:
 
 	int activeIndex = 0;
 
+	bool isHoveredOver = false;
+	int prevHoverIndex = -1;
+
+	bool isBeingClickedOn = false; float clickTime = -1.0f;
+	bool isDragging = false; int clickIndex = -1;
+
+	int GetSlotIndexFromPos(Vector2 pos) const;
+	void HandleClickOrDrag();
+
 public:
 	UIInventory(float slotSize, float spacing);
 
 	void HandleActiveChanged(int index);
+	void HandleItemsSwapped(int i1, int i2);
 	void HandleOnItemAdded(IItem* item, int index);
 	void HandleNrOfLockedSlotsChanged(int nrOfLockedSlots);
 
 	void Draw() override;
-	void OnMouseDown() override;
+	void OnClicked() override;
 	void OnMouseUp() override;
 	void OnHover() override;
+	bool ContainsPoint(Vector2 point) const override;
 };

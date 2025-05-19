@@ -28,7 +28,8 @@ public:
 	void UnEquip() override;
 
 	const ItemInfo& GetInfo() const override;
-	void DrawInfo(Rectangle& displayArea) override;
+	void DrawInfo(const Rectangle& displayArea) override;
+	void AdaptDrawInfoRectangle(Rectangle& displayArea) override;
 
 
 protected:

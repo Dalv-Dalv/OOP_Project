@@ -20,9 +20,10 @@ private:
 	const float TerrainScale = 15.0;
 
 	shared_ptr<RenderPass> renderPass;
-	Shader terrainShader; int textureLoc, posLoc, atlasLoc, oreColorsLoc;
+	Shader terrainShader; int textureLoc, posLoc;
 
-	Texture2D oreAtlas, oreColors;
+	int atlasLoc, oreColorsLoc, mapColorsLoc;
+	Texture2D oreAtlas, oreColors, mapColors;
 
 	void InitializeChunks();
 	void Render(RenderTexture2D& prev);

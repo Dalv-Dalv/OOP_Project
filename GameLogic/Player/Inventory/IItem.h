@@ -21,7 +21,8 @@ public:
 	virtual void UnEquip() = 0;
 
 	virtual const ItemInfo& GetInfo() const = 0;
-	virtual void DrawInfo(Rectangle& displayArea) = 0;
+	virtual void DrawInfo(const Rectangle& displayArea) = 0;
+	virtual void AdaptDrawInfoRectangle(Rectangle& displayArea) = 0;
 	virtual const Texture2D& GetIcon() const {
 		return icon;
 	}

@@ -8,6 +8,7 @@
 
 #include "Terrain.h"
 #include "../../config.h"
+#include "../../cmake-build-release/_deps/raylib-src/src/rlgl.h"
 #include "../../CoreGameLogic/GameCamera.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/GameUtilities.h"
@@ -50,13 +51,14 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 	};
 
 	gpuData = LoadTextureFromImage(mapImage);
+	SetTextureFilter(gpuData, TEXTURE_FILTER_POINT);
 }
 TerrainChunk::~TerrainChunk() {
 	delete cpuData;
 }
 
 
-void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D oreAtlas, int oreColorsLoc, const Texture2D oreColors) {
+void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D& oreAtlas, int oreColorsLoc, const Texture2D& oreColors, int mapColorsLoc, const Texture2D& mapColors) {
 	Vector2 newPos(position);
 	auto camPos = GameCamera::GetActiveCamera()->GetGameObject()->position * GameCamera::GetActiveCamera()->GetZoom();
 	auto offset = GameCamera::GetActiveCamera()->GetOffsetPos();
@@ -69,6 +71,7 @@ void TerrainChunk::Render(Shader& shader, int textureLoc, int posLoc, int atlasL
 		SetShaderValueTexture(shader, textureLoc, gpuData);
 		SetShaderValueTexture(shader, atlasLoc, oreAtlas);
 		SetShaderValueTexture(shader, oreColorsLoc, oreColors);
+		SetShaderValueTexture(shader, mapColorsLoc, mapColors);
 		SetShaderValue(shader, GetShaderLocation(shader, "time"), &time, SHADER_UNIFORM_FLOAT);
 		SetShaderValue(shader, posLoc, &newPos, SHADER_UNIFORM_VEC2);
 		DrawRectangle(newPos.x, newPos.y, width + 1, height + 1, WHITE);

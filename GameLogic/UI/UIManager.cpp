@@ -29,11 +29,11 @@ void UIManager::Render(RenderTexture2D& prev) {
 
 	UIElement::DeleteAllMarked();
 
-	instance->CheckEvents();
 	for(UIElement* element : instance->elements) {
 		if(!element->IsActive()) continue;
 		element->Draw();
 	}
+	instance->CheckEvents();
 }
 
 void UIManager::CheckEvents() {
@@ -45,7 +45,8 @@ void UIManager::CheckEvents() {
 	}
 
 	Vector2 mousePos = InputManager::GetMousePosition();
-	bool mousePressed = InputManager::IsMouseDown(MOUSE_LEFT_BUTTON);
+	bool mousePressed = InputManager::IsMousePressed(MOUSE_LEFT_BUTTON);
+	bool mouseDown = InputManager::IsMouseDown(MOUSE_LEFT_BUTTON);
 	bool mouseUp = InputManager::IsMouseUp(MOUSE_LEFT_BUTTON);
 
 	for(UIElement* element : elements) {
@@ -53,9 +54,8 @@ void UIManager::CheckEvents() {
 		if(!element->ContainsPoint(mousePos)) continue;
 
 		element->OnHover();
-		if(mousePressed) {
-			element->OnMouseDown();
-		}
+		if(mousePressed) element->OnClicked();
+		if(mouseDown) element->OnMouseDown();
 		if(mouseUp) element->OnMouseUp();
 
 		if(element->DoesStopPropagation()) {

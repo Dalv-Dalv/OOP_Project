@@ -25,19 +25,21 @@ MiningTool::MiningTool(std::string name, float miningPower, int miningRadius, Co
 
 
 void MiningTool::Equip() {
-	std::cout << name << " Mining tool equipped\n";
 	isEquipped = true;
 }
 
 void MiningTool::UnEquip() {
-	std::cout << name << " Mining tool unequipped\n";
 	isEquipped = false;
 }
 
 const ItemInfo& MiningTool::GetInfo() const {
 	return info;
 }
-void MiningTool::DrawInfo(Rectangle& displayArea) {}
+void MiningTool::DrawInfo(const Rectangle& displayArea) {
+	DrawCircle(displayArea.x + displayArea.width / 2, displayArea.y + displayArea.height / 2, 15, GREEN);
+}
+void MiningTool::AdaptDrawInfoRectangle(Rectangle& displayArea) {}
+
 
 void MiningTool::Awake() {}
 

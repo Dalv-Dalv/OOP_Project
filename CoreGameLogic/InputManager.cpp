@@ -18,6 +18,14 @@ bool InputManager::TryGetIsMouseUp(int button, bool& out) {
 	out = IsMouseButtonUp(button);
 	return true;
 }
+bool InputManager::TryGetIsMousePressed(int button, bool& out) {
+	if(captured) return false;
+	out = IsMouseButtonPressed(button);
+	return true;
+}
+
+
+
 
 Vector2 InputManager::GetMousePosition() {
 	return ::GetMousePosition();
@@ -28,6 +36,12 @@ bool InputManager::IsMouseDown(int button) {
 bool InputManager::IsMouseUp(int button) {
 	return IsMouseButtonUp(button);
 }
+bool InputManager::IsMousePressed(int button) {
+	return IsMouseButtonPressed(button);
+}
+
+
+
 
 void InputManager::CaptureMouse() {
 	captured = true;

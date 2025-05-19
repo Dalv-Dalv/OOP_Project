@@ -25,13 +25,9 @@
 
 
 /*----------------------------------------------------------------------
-	CRITICAL: DEBUG WHY ORES ARE BROKEN VISUALLY
-	WIP: Input manager and event passthrough
-	WIP: UI
+	CRITICAL: MEMORY LEAK
 	WIP: Ores UI
 	WIP: Ores
-
-	CRITICAL: Use a color ramp texture for terrain 
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders
 	QOL: void(Args...) pt idamageable
@@ -56,6 +52,8 @@ int main() {
 	AssetManager::LoadTexture("Textures/Transparent.png");
 	AssetManager::LoadTexture("Textures/OreAtlas.png");
 	AssetManager::LoadTexture("Textures/OreColors.png");
+	AssetManager::LoadTexture("Textures/MapFGColors.png");
+	AssetManager::LoadTexture("Textures/MapBGColors.png");
 	AssetManager::LoadTexture("Textures/Items/DrillBig.png");
 	AssetManager::LoadTexture("Textures/Items/Jackhammer.png");
 	AssetManager::LoadTexture("Textures/Items/MiningWheel.png");
@@ -66,7 +64,7 @@ int main() {
 
 	auto* player = new GameObject({15901.1, 1202.34});
 	player->AddComponent(new PlayerRenderer(25.0f, BLUE));
-	player->AddComponent(new PlayerMovement(400, 1.9, 22.0f));
+	player->AddComponent(new PlayerMovement(1400, 1.9, 22.0f));
 	player->AddComponent(new PlayerInventory());
 
 	InventoryManager::UnlockSlots(3);

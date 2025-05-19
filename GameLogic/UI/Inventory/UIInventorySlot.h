@@ -6,7 +6,7 @@
 
 struct UIInventorySlot {
 	bool locked = false;
-	std::optional<Texture2D> icon;
+	IItem* item = nullptr;
 	float highlight = 0, roundness = 1, size = 1;
 	float targetHighlight = 0, targetRoundness = 1.4, targetSize = 1;
 
