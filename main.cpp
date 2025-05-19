@@ -28,8 +28,6 @@
 	CRITICAL: MEMORY LEAK
 	WIP: Ores UI
 	WIP: Ores
-
-	CRITICAL: BUG WITH INVENTORY, SWAP ITEMS REPEATEDLY
 ------------------------------------------------------------------------
 	QOL: Make mining outline in square marching post processing shaders
 	QOL: void(Args...) pt idamageable
