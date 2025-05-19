@@ -97,6 +97,8 @@ void GameManager::Update(float deltaTime) {
 }
 
 void GameManager::Dispose() {
+	AssetManager::UnloadAll();
+	delete InventoryManager::instance;
 	delete instance;
 }
 

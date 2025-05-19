@@ -26,7 +26,9 @@ void InventoryManager::Initialize() {
 	instance = new InventoryManager();
 
 	onItemRemoved += [](int x) {
-		instance->slots[x].item = nullptr;
+		if (x >= 0 && x < instance->slots.size()) {
+			instance->slots[x].item = nullptr;
+		}
 	};
 
 }

@@ -8,6 +8,7 @@
 
 class InventoryManager {
 private:
+	friend class GameManager;
 	static InventoryManager* instance;
 	InventoryManager();
 
