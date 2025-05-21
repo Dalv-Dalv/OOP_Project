@@ -24,7 +24,7 @@ public:
 
 	static ActionEvent<int> onActiveSlotChanged;
 	static ActionEvent<int> onNrOfLockedSlotsChanged;
-	static ActionEvent<int> onItemRemoved;
+	static ActionEvent<IItem*, int> onItemRemoved;
 	static ActionEvent<IItem*, int> onItemAdded;
 	static ActionEvent<int, int> onItemsSwapped;
 
@@ -39,8 +39,8 @@ public:
 
 	static bool IsFull();
 
-	static const IItem* GetActiveItem();
-	static const IItem* GetItemAt(int index);
+	static IItem* const GetActiveItem();
+	static IItem* const GetItemAt(int index);
 
 	static void GiveItem(IItem* item);
 };

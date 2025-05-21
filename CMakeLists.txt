@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30) # FetchContent is available in 3.11+
 project(ProiectPOO)
 
 # For sanitizers
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # Debug-specific flags
@@ -124,6 +124,11 @@ add_executable(${PROJECT_NAME} main.cpp
         CoreGameLogic/AssetManager.h
         GameLogic/Player/Tools/BallSpawnerTool.cpp
         GameLogic/Player/Tools/BallSpawnerTool.h
+        GameLogic/Player/Items/SingleOreTankItem.cpp
+        GameLogic/Player/Items/SingleOreTankItem.h
+        GameLogic/Ores/OreInfo.cpp
+        GameLogic/Ores/OreInfo.h
+        GameLogic/Ores/IOreContainer.h
 )
 target_link_libraries(${PROJECT_NAME} raylib)
 

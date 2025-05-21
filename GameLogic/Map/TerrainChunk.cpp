@@ -9,10 +9,13 @@
 #include "Terrain.h"
 #include "../../config.h"
 #include "../../cmake-build-release/_deps/raylib-src/src/rlgl.h"
+#include "../../CoreGameLogic/AssetManager.h"
 #include "../../CoreGameLogic/GameCamera.h"
 #include "../../CoreGameLogic/GameObject.h"
 #include "../../Utilities/GameUtilities.h"
 #include "../../Utilities/Vector2Utils.h"
+
+Sound TerrainChunk::orePickupSound;
 
 const vector<vector<int>> TerrainChunk::squareMarchingTable = {
 	{},			 // Case 0 // 0 Bottom
@@ -49,6 +52,8 @@ TerrainChunk::TerrainChunk(Vector2 position, int width, int height, int chunkWid
 		.mipmaps = 1,
 		.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
 	};
+
+	orePickupSound = AssetManager::LoadSound("Sounds/Ore_Pickup.wav");
 
 	gpuData = LoadTextureFromImage(mapImage);
 	SetTextureFilter(gpuData, TEXTURE_FILTER_POINT);
@@ -91,7 +96,7 @@ float TerrainChunk::MiningFalloff(float radius, float distSqr) {
 	t = 1 - t * t * t;
 	return t;
 }
-void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime) {
+void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, float deltaTime, OreInfo& miningResult) {
 	float surfaceLevel = Terrain::GetActiveTerrain()->GetSurfaceLevel();
 	posy -= 1;
 
@@ -108,33 +113,23 @@ void TerrainChunk::MineAt(int posx, int posy, float radius, float miningPower, f
 			float falloff = MiningFalloff(radius, distSqr);
 
 			auto val = cpuData->GetValueAt(x, y);
-			// cout << val.surfaceValue << endl;
 
 			if(val.surfaceValue < 0.1) continue;
 
 			if(val.oreValue <= 0 || val.oreType < 0.05) {
+				if(val.hardness < 0.05) continue;
 				val.surfaceValue -= Clamp(miningPower * deltaTime * falloff * val.hardness, 0, 1);
 			} else {
-				val.oreValue -= Clamp(miningPower * deltaTime * falloff, 0, 1);
+				float oreMined = Clamp(miningPower * deltaTime * falloff, 0, val.oreValue);
+				val.oreValue -= oreMined;
+
 				if(val.oreValue <= 0) {
-					// PlaySound(orePickupSound);
+					miningResult.AddOreFromMap(val.oreType, 1);
+					PlaySound(orePickupSound);
 				}
 			}
 
-			// if(val.surfaceValue > surfaceLevel) {
-			//
-			// }else {
-			// 	// cout << "hello?" << endl;
-			// }
-
 			cpuData->SetValueAt(x, y, val);
-
-			// if(miningPower * deltaTime * falloff > val.oreValue || val.oreValue <= 0) {
-			// 	if(val.surfaceValue > surfaceLevel) {
-			// 		if(miningPower * deltaTime * falloff > val.surfaceValue) val.surfaceValue = surfaceLevel - 0.01;
-			// 		else val.surfaceValue -= miningPower * deltaTime * falloff;
-			// 	}
-			// } else val.oreValue -= miningPower * deltaTime * falloff;
 		}
 	}
 
@@ -237,7 +232,7 @@ CollisionInfo TerrainChunk::CheckCollisions(Vector2 pos, int posx, int posy, flo
 void TerrainChunk::RaySegmentIntersection(Vector2 rOrigin, Vector2 rDir, Vector2 p1, Vector2 p2, RaycastHitInfo& hitInfo) {
 	Vector2 seg = p2 - p1;
 	float denominator = seg.x * rDir.y - seg.y * rDir.x;
-		// Lines are close to parallel
+	// Lines are close to parallel
 	if(abs(denominator) < 0.000001) { return; }
 
 	Vector2 diff = rOrigin - p1;
@@ -250,8 +245,6 @@ void TerrainChunk::RaySegmentIntersection(Vector2 rOrigin, Vector2 rDir, Vector2
 		minRay.normal *= GameUtilities::fastInverseSqrt(seg.x * seg.x + seg.y * seg.y);
 		minRay.hitPoint = p1 + seg * t;
 		minRay.hitDistance = GameUtilities::Distance(hitInfo.origin, minRay.hitPoint);
-		// DrawCircle(minRay.hitPoint.x, minRay.hitPoint.y, 7, RED);
-		// DrawLineEx(minRay.hitPoint, minRay.hitPoint + minRay.normal * 200, 3, MAGENTA);
 		minRay.hasHit = true;
 		hitInfo = min(minRay, hitInfo);
 	}
@@ -262,10 +255,6 @@ void TerrainChunk::CheckRay(Vector2 entryPos, Vector2 dir, int cellX, int cellY,
 	cellY = chunkHeight - cellY - 2;
 	if(cellX < 1 || cellX > chunkWidth - 2) return;
 	if(cellY < 1 || cellY > chunkHeight - 2) return;
-
-	// DrawCircle(entryPos.x, entryPos.y, 3, RED);
-	// DrawRectangle(position.x + unit * (cellX - 1), position.y + unit * (chunkHeight - cellY - 2), unit, unit, {255, 0, 0, 100});
-
 
 	float offsX = position.x + (cellX - 1) * unit;
 	float offsY = position.y + (chunkHeight - cellY - 1) * unit;
@@ -308,8 +297,6 @@ void TerrainChunk::CheckRay(Vector2 entryPos, Vector2 dir, int cellX, int cellY,
 	for(int i = 0; i < squareMarchingTable[caseIndex].size(); i += 2) {
 		const Vector2& p1 = edgePoints[squareMarchingTable[caseIndex][i]];
 		const Vector2& p2 = edgePoints[squareMarchingTable[caseIndex][i + 1]];
-
-		// DrawLineEx(p1, p2, 4, RED);
 
 		RaySegmentIntersection(entryPos, dir, p1, p2, hitInfo);
 	}

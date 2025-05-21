@@ -16,6 +16,7 @@
 #include "GameLogic/Map/Terrain.h"
 #include "GameLogic/Player/Inventory/InventoryManager.h"
 #include "GameLogic/Player/Inventory/PlayerInventory.h"
+#include "GameLogic/Player/Items/SingleOreTankItem.h"
 #include "GameLogic/Player/Tools/BallSpawnerTool.h"
 #include "GameLogic/Player/Tools/MiningTool.h"
 #include "GameLogic/Testing/OrbDeployer.h"
@@ -25,7 +26,8 @@
 
 
 /*----------------------------------------------------------------------
-	CRITICAL: MEMORY LEAK
+	CRITICAL: MEMORY LEAK?
+	CRITICAL: Properly handle removals in inventory manager, chane onRemove to pass IItem*
 	WIP: Ores UI
 	WIP: Ores
 ------------------------------------------------------------------------
@@ -58,8 +60,9 @@ int main() {
 	AssetManager::LoadTexture("Textures/Items/Jackhammer.png");
 	AssetManager::LoadTexture("Textures/Items/MiningWheel.png");
 
+	AssetManager::LoadSound("Sounds/Ore_Pickup.wav");
+
 	// UI Stuff
-	new UIOreMeter(1);
 	new UIInventory(100, 10);
 
 	auto* player = new GameObject({15901.1, 1202.34});
@@ -67,11 +70,13 @@ int main() {
 	player->AddComponent(new PlayerMovement(500, 1.9, 22.0f));
 	player->AddComponent(new PlayerInventory());
 
-	InventoryManager::UnlockSlots(3);
+	InventoryManager::UnlockSlots(5);
 
 	PlayerInventory::GiveItem(new MiningTool("Fizz", 0.1f, 5, RED, "Textures/Items/DrillBig.png"));
 	PlayerInventory::GiveItem(new MiningTool("Buzz", 0.5f, 2, BLUE, "Textures/Items/Jackhammer.png"));
 	PlayerInventory::GiveItem(new BallSpawnerTool("Baller", GREEN, "Textures/Items/MiningWheel.png"));
+	PlayerInventory::GiveItem(new SingleOreTankItem(120.0f, "Textures/Items/SingleOreTank.png"));
+	PlayerInventory::GiveItem(new SingleOreTankItem(180.0f, "Textures/Items/SingleOreTank.png"));
 
 	// player->AddComponent(new OrbDeployer());
 	// player->AddComponent(new TerrainRaycasterTest());

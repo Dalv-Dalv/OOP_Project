@@ -49,6 +49,8 @@ void GameManager::Initialize(int windowWidth, int windowHeight, bool startInFull
 	InitializeRenderPipeline();
 	UIManager::Initialize();
 	InventoryManager::Initialize();
+
+	InitAudioDevice();
 }
 
 void GameManager::StartGameLoop() {
@@ -98,6 +100,7 @@ void GameManager::Update(float deltaTime) {
 
 void GameManager::Dispose() {
 	AssetManager::UnloadAll();
+	CloseAudioDevice();
 	delete InventoryManager::instance;
 	delete instance;
 }

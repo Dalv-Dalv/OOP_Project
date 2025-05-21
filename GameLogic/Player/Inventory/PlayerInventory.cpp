@@ -5,11 +5,23 @@
 #include "InventoryManager.h"
 #include "../../../CoreGameLogic/GameObject.h"
 #include "../../../CoreGameLogic/InputManager.h"
+#include "../../Ores/OreInfo.h"
 
 PlayerInventory* PlayerInventory::activeInstance = nullptr;
 
 PlayerInventory::PlayerInventory() {
 	activeInstance = this;
+
+	InventoryManager::onItemAdded += [](IItem* item, int index) {
+		activeInstance->HandleItemAdded(item, index);
+	};
+
+	InventoryManager::onItemRemoved += [](IItem* item, int index) {
+		activeInstance->HandleItemRemoved(item, index);
+	};
+	InventoryManager::onItemsSwapped += [](int i1, int i2) {
+		activeInstance->HandleItemSwapped(i1, i2);
+	};
 }
 
 
@@ -37,7 +49,7 @@ void PlayerInventory::Print(std::ostream& os) const {
 }
 
 void PlayerInventory::GiveItem(IItem* item) {
-	Component* compItem = dynamic_cast<Component*>(item);
+	auto compItem = dynamic_cast<Component*>(item);
 	if(compItem != nullptr) {
 		activeInstance->gameObject->AddComponent(compItem);
 	}
@@ -45,4 +57,28 @@ void PlayerInventory::GiveItem(IItem* item) {
 	InventoryManager::GiveItem(item);
 }
 
+void PlayerInventory::GiveOres(OreInfo& ores) {
+	for(int i = 0; i < 10; i++) {
+		if(activeInstance->oreContainers[i] == nullptr) continue;
+
+		activeInstance->oreContainers[i]->AddOres(ores);
+	}
+}
+
+
+void PlayerInventory::HandleItemAdded(IItem* item, int index) {
+	auto* oreContainer = dynamic_cast<IOreContainer*>(item);
+	if(oreContainer == nullptr) return;
+
+	oreContainers[index] = oreContainer;
+}
+void PlayerInventory::HandleItemRemoved(IItem* item, int index) {
+	auto oreContainer = dynamic_cast<IOreContainer*>(item);
+	if(oreContainer == nullptr) return;
+
+	oreContainers[index] = nullptr;
+}
+void PlayerInventory::HandleItemSwapped(int i1, int i2) {
+	swap(oreContainers[i1], oreContainers[i2]);
+}
 

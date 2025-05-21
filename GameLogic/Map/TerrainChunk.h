@@ -7,6 +7,7 @@
 
 #include "../Collisions/CollisionInfo.h"
 #include "../Collisions/RaycastHitInfo.h"
+#include "../Ores/OreInfo.h"
 
 class TerrainChunk {
 private:
@@ -15,6 +16,8 @@ private:
 	const int chunkWidth, chunkHeight;
 	Texture2D gpuData; // Used for rendering
 	TerrainData* cpuData; // Used for collisions
+
+	static Sound orePickupSound;
 
 	static const vector<vector<int>> squareMarchingTable;
 
@@ -29,7 +32,7 @@ public:
 
 	// TODO: Possible Optimization (MUST MEASURE FIRST): each chunk with its own shader instance
 	void Render(Shader& shader, int textureLoc, int posLoc, int atlasLoc, const Texture2D& oreAtlas, int oreColorsLoc, const Texture2D& oreColors, int mapColorsLoc, const Texture2D& mapColors);
-	void MineAt(int posx, int posy, float radius, float miningPower, float deltaTime);
+	void MineAt(int posx, int posy, float radius, float miningPower, float deltaTime, OreInfo& miningResult);
 
 	CollisionInfo CheckCollisions(Vector2 pos, int posx, int posy, float radius, float surfaceLevel, float unit);
 	void RaySegmentIntersection(Vector2 rOrigin, Vector2 rDir, Vector2 p1, Vector2 p2, RaycastHitInfo& hitInfo);

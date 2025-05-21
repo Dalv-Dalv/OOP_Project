@@ -18,7 +18,7 @@ private:
 	Color ballColor;
 
 public:
-	BallSpawnerTool(std::string name, Color ballColor, std::string iconPath);
+	BallSpawnerTool(const std::string& name, Color ballColor, std::string iconPath);
 
 	void Equip() override;
 	void UnEquip() override;

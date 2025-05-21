@@ -5,6 +5,7 @@
 #include "../../CoreGameLogic/RenderPass.h"
 #include "../Collisions/CollisionInfo.h"
 #include "../Collisions/RaycastHitInfo.h"
+#include "../Ores/OreInfo.h"
 
 class Terrain : public Component {
 private:
@@ -34,11 +35,11 @@ protected:
 
 public:
 	Terrain(const TerrainData* data, float surfaceLevel, float scale, float interpolationAmount, int chunkSize = 16);
-	~Terrain();
+	~Terrain() override;
 
 	void UpdateSurfaceLevel(float newSurfaceLevel);
 
-	void MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime);
+	OreInfo MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime);
 
 	float GetSurfaceLevel() const;
 

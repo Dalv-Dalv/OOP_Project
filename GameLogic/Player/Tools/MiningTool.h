@@ -22,7 +22,7 @@ private:
 	void Render();
 
 public:
-	MiningTool(std::string name, float miningPower, int miningRadius, Color rayColor, std::string iconPath);
+	MiningTool(const std::string& name, float miningPower, int miningRadius, Color rayColor, std::string iconPath);
 
 	void Equip() override;
 	void UnEquip() override;

@@ -14,7 +14,7 @@
 
 using namespace GameUtilities;
 
-BallSpawnerTool::BallSpawnerTool(std::string name, Color ballColor, std::string iconPath)
+BallSpawnerTool::BallSpawnerTool(const std::string& name, Color ballColor, std::string iconPath)
 	: name(name), ballColor(ballColor), IItem(iconPath) {
 	info.itemName = name;
 	info.itemDescription = std::format("Spawn balls");

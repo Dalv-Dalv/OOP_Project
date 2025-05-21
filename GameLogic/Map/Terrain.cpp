@@ -150,7 +150,8 @@ void Terrain::UpdateSurfaceLevel(float newSurfaceLevel) {
 	SetShaderValue(terrainShader, surfaceLevelLoc, &surfaceLevel, SHADER_UNIFORM_FLOAT);
 }
 
-void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime) {
+OreInfo Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float deltaTime) {
+	OreInfo miningResult;
 	float unit = TerrainScale * worldScale;
 
 	// Snap mouse position to nearest pixel
@@ -174,9 +175,11 @@ void Terrain::MineAt(Vector2 minePos, int radius, float miningPower, float delta
 			int localY = pixelY - y * chunkSize;
 			localY = (chunkSize + 2) - localY;
 
-			chunks[y][x]->MineAt(localX + 1, localY, radius, miningPower, deltaTime);
+			chunks[y][x]->MineAt(localX + 1, localY, radius, miningPower, deltaTime, miningResult);
 		}
 	}
+
+	return miningResult;
 }
 
 void Terrain::CheckChunkRaycast(Vector2 entryPos, Vector2 dir, float maxDistance, int cellX, int cellY, float unit, RaycastHitInfo& hitInfo) {

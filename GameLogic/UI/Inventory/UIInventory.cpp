@@ -19,6 +19,9 @@ UIInventory::UIInventory(float slotSize, float spacing)
     InventoryManager::onItemAdded += [this](IItem* item, int index) {
         HandleOnItemAdded(item, index);
     };
+    InventoryManager::onItemRemoved += [this](IItem* item, int index) {
+        HandleOnItemRemoved(item, index);
+    };
     InventoryManager::onNrOfLockedSlotsChanged += [this](int nrOfLockedSlots) {
         HandleNrOfLockedSlotsChanged(nrOfLockedSlots);
     };
@@ -47,6 +50,10 @@ void UIInventory::HandleOnItemAdded(IItem* item, int index) {
     if(index < 0 || index > slots.size()) return;
     slots[index].item = item;
 }
+void UIInventory::HandleOnItemRemoved(IItem* item, int index) {
+    slots[index].item = nullptr;
+}
+
 void UIInventory::HandleNrOfLockedSlotsChanged(int nrOfLockedSlots) {
     int newSize = nrOfLockedSlots + 1;
     while(slots.size() < newSize) {
@@ -188,7 +195,7 @@ void UIInventory::OnHover() {
 
     ItemInfo info = slots[i].item->GetInfo();
 
-    Rectangle contextInfoRect(pos.x, pos.y, 170, 100);
+    Rectangle contextInfoRect(pos.x, pos.y, 170, 80);
 
     contextInfoRect.width = max(contextInfoRect.width, float(info.itemDescription.length() * 10.6) + 40);
     slots[i].item->AdaptDrawInfoRectangle(contextInfoRect);

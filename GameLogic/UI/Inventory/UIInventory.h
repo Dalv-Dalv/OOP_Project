@@ -30,6 +30,7 @@ public:
 	void HandleActiveChanged(int index);
 	void HandleItemsSwapped(int i1, int i2);
 	void HandleOnItemAdded(IItem* item, int index);
+	void HandleOnItemRemoved(IItem* item, int index);
 	void HandleNrOfLockedSlotsChanged(int nrOfLockedSlots);
 
 	void Draw() override;

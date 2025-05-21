@@ -87,6 +87,8 @@ void UIManager::RemoveElement(UIElement* element) {
 void UIManager::Dispose() {
 	if(instance == nullptr) return;
 
+	//CRITICAL Memory leak
+
 	while (!instance->elements.empty()) {
 		delete *instance->elements.begin();
 	}

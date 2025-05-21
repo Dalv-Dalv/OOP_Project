@@ -14,7 +14,7 @@ protected:
 	Texture2D icon;
 
 public:
-	explicit IItem(std::string iconPath);
+	explicit IItem(const std::string& iconPath);
 	virtual ~IItem();
 
 	virtual void Equip() = 0;

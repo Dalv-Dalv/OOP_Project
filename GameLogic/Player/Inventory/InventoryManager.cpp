@@ -6,7 +6,7 @@
 InventoryManager* InventoryManager::instance = nullptr;
 ActionEvent<int> InventoryManager::onActiveSlotChanged;
 ActionEvent<int> InventoryManager::onNrOfLockedSlotsChanged;
-ActionEvent<int> InventoryManager::onItemRemoved;
+ActionEvent<IItem*, int> InventoryManager::onItemRemoved;
 ActionEvent<IItem*, int> InventoryManager::onItemAdded;
 ActionEvent<int, int> InventoryManager::onItemsSwapped;
 
@@ -25,12 +25,11 @@ void InventoryManager::Initialize() {
 	if(instance != nullptr) return;
 	instance = new InventoryManager();
 
-	onItemRemoved += [](int x) {
+	onItemRemoved += [](IItem* item, int x) {
 		if (x >= 0 && x < instance->slots.size()) {
 			instance->slots[x].item = nullptr;
 		}
 	};
-
 }
 
 const IItem* InventoryManager::EquipItem(int index) {
@@ -105,12 +104,12 @@ bool InventoryManager::IsFull() {
 }
 
 
-const IItem* InventoryManager::GetActiveItem() {
+IItem* const InventoryManager::GetActiveItem() {
 	if(instance->slots[instance->activeSlotIndex].locked) return nullptr;
 	return instance->slots[instance->activeSlotIndex].item;
 }
 
-const IItem* InventoryManager::GetItemAt(int index) {
+IItem* const InventoryManager::GetItemAt(int index) {
 	if(index < 0 || index > instance->slots.size()) return nullptr;
 	if(instance->slots[index].locked) return nullptr;
 	return instance->slots[index].item;

@@ -9,9 +9,10 @@
 #include "../../../CoreGameLogic/GameManager.h"
 #include "../../../CoreGameLogic/InputManager.h"
 #include "../../Map/Terrain.h"
+#include "../Inventory/PlayerInventory.h"
 
 
-MiningTool::MiningTool(std::string name, float miningPower, int miningRadius, Color rayColor, std::string iconPath)
+MiningTool::MiningTool(const std::string& name, float miningPower, int miningRadius, Color rayColor, std::string iconPath)
 	: name(name), miningPower(miningPower), miningRadius(miningRadius), rayColor(rayColor), IItem(iconPath) {
 	info.itemName = name;
 	info.itemDescription = std::format("Mining tool with a power of {} and a mining radius of {}", miningPower, miningRadius);
@@ -35,9 +36,7 @@ void MiningTool::UnEquip() {
 const ItemInfo& MiningTool::GetInfo() const {
 	return info;
 }
-void MiningTool::DrawInfo(const Rectangle& displayArea) {
-	DrawCircle(displayArea.x + displayArea.width / 2, displayArea.y + displayArea.height / 2, 15, GREEN);
-}
+void MiningTool::DrawInfo(const Rectangle& displayArea) {}
 void MiningTool::AdaptDrawInfoRectangle(Rectangle& displayArea) {}
 
 
@@ -58,8 +57,10 @@ void MiningTool::Update(float deltaTime) {
 		float dist = Vector2Length(dir);
 		dir = dir / dist;
 		hitInfo = Terrain::GetActiveTerrain()->Raycast(gameObject->position, dir, dist);
-		if(hitInfo.hasHit)
-			Terrain::GetActiveTerrain()->MineAt(hitInfo.hitPoint, miningRadius, miningPower, deltaTime);
+		if(hitInfo.hasHit) {
+			auto miningInfo = Terrain::GetActiveTerrain()->MineAt(hitInfo.hitPoint, miningRadius, miningPower, deltaTime);
+			PlayerInventory::GiveOres(miningInfo);
+		}
 	}else {
 		isHoldingClick = false;
 	}
